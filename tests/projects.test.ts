@@ -14,21 +14,16 @@ test('clicking a project card opens the modal', async ({ page }) => {
   await expect(page.locator('[role="dialog"]')).toBeVisible();
 });
 
-test('pressing Escape closes the modal', async ({ page }) => {
+test('close button closes the modal', async ({ page }) => {
   await page.goto('/projects');
   await page.locator('button[aria-label^="Voir le projet"]').first().click();
   await expect(page.locator('[role="dialog"]')).toBeVisible();
-  // Click the close button (triggered by same closeModal function as Escape)
-  await page.locator('[role="dialog"] ~ button[aria-label="Fermer"], button[aria-label="Fermer"]').click();
+  await page.locator('button[aria-label="Fermer"]').click();
   await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 3000 });
 });
 
 test('back link navigates to home', async ({ page }) => {
   await page.goto('/projects');
-  // Use evaluate to click the link bypassing pointer event interception
-  await page.evaluate(() => {
-    const link = document.querySelector('a[href="/"]') as HTMLAnchorElement | null;
-    if (link) link.click();
-  });
+  await page.locator('a[href="/"]').first().evaluate((el: HTMLAnchorElement) => el.click());
   await expect(page).toHaveURL('/');
 });

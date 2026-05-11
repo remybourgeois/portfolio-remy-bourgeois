@@ -13,7 +13,7 @@ test('home page has DESIGNING INTENTIONS heading', async ({ page }) => {
   await expect(page.locator('h1')).toContainText('DESIGNING');
 });
 
-test('projects link navigates to /projects', async ({ page }) => {
+test('projects route is accessible', async ({ page }) => {
   await page.goto('/projects');
   await expect(page).toHaveURL('/projects');
   await expect(page.locator('h1')).toContainText('Projets');
