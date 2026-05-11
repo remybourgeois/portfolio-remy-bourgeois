@@ -8,7 +8,7 @@
 
   let menuOpen = false;
   $: isMuted = $audioStore.isMuted;
-  $: visible = $introDone;
+  $: visible = $introDone && ($page.url.pathname as string) !== '/';
 </script>
 
 <nav

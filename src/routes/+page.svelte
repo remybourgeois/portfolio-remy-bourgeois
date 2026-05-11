@@ -1,5 +1,6 @@
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import IntroScene from '$lib/components/IntroScene.svelte';
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
@@ -15,13 +16,27 @@
   const marqueeItems = [...CLIENT_LOGOS, ...CLIENT_LOGOS];
 
   let selectedProject: typeof PROJECTS[0] | null = null;
+  let expandedTestimonial: number | null = null;
+  let scrollY = 0;
+  let contentEl: HTMLElement | null = null;
 
   const impacts = [
-    { value: 13, suffix: '+', label: "Années d'expérience" },
-    { value: 7,  suffix: ' ans', label: 'En robotique humanoïde' },
-    { value: 14, suffix: '+', label: 'Clients & projets' },
-    { value: 1,  suffix: ' lien', label: 'Créé ici même' }
+    { value: 13, suffix: '+',  label: "Années d'expérience" },
+    { value: 80, suffix: '+',  label: 'Projets livrés' },
+    { value: 10, suffix: 'M+', label: 'Utilisateurs impactés' },
+    { value: 7,  suffix: '+',  label: 'Années en IA' }
   ];
+
+  onMount(() => {
+    contentEl = document.getElementById('main-content');
+    const onScroll = () => { scrollY = contentEl?.scrollTop ?? 0; };
+    contentEl?.addEventListener('scroll', onScroll);
+    return () => contentEl?.removeEventListener('scroll', onScroll);
+  });
+
+  function scrollToTop() {
+    contentEl?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   function openModal(p: typeof PROJECTS[0]) {
     selectedProject = p;
@@ -39,17 +54,17 @@
 </svelte:head>
 
 <IntroScene>
-  <!-- Barre de nav post-intro -->
-  <nav aria-label="Barre post-intro" class="fixed top-0 w-full z-50 bg-[#020205]/90 backdrop-blur-md border-b border-white/5 px-6 py-4 flex flex-col gap-4 items-center md:flex-row md:justify-between">
-    <a href="/" use:sfx class="order-2 md:order-1 flex items-center gap-2 text-white/70 hover:text-white text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-4 py-2 rounded-full focus-visible:ring-2 focus-visible:ring-[#706bfe]">
+  <!-- Barre post-intro : Recommencer + Lien établi -->
+  <div class="fixed top-0 w-full z-50 px-6 py-4 flex items-center justify-between pointer-events-none">
+    <a href="/" use:sfx class="pointer-events-auto flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-4 py-2 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]">
       <Icon name="RefreshCw" size={12} />
       <span>Recommencer l'expérience</span>
     </a>
-    <div class="order-1 md:order-2 flex items-center gap-2" role="status">
-      <div class="w-2 h-2 rounded-full shadow-[0_0_10px_#706bfe] bg-[#706bfe]" aria-hidden="true"></div>
-      <span class="text-white/70 text-xs font-mono uppercase">Lien établi</span>
+    <div class="pointer-events-auto flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full" role="status">
+      <div class="w-2 h-2 rounded-full shadow-[0_0_10px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
+      <span class="text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
     </div>
-  </nav>
+  </div>
 
   <main class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40">
 
@@ -69,7 +84,7 @@
               <Icon name="Briefcase" size={12} /> Freelance
             </li>
             <li class="px-3 py-1.5 rounded-full bg-[#38bdf8]/10 text-[#38bdf8] text-xs font-medium border border-[#38bdf8]/20 flex items-center gap-2">
-              <Icon name="Award" size={12} /> +13 ans d'expérience
+              <Icon name="Award" size={12} /> +14 ans d'expérience
             </li>
           </ul>
         </div>
@@ -83,7 +98,7 @@
           <strong class="font-medium text-[#706bfe]">Je conçois des expériences où l'humain et l'IA travaillent ensemble.</strong>
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Avec <strong class="font-medium text-[#706bfe]">13+ ans d'expérience</strong>, dont <strong class="font-medium text-[#706bfe]">7 ans en robotique humanoïde</strong>,
+          Avec <strong class="font-medium text-[#706bfe]">14+ ans d'expérience</strong>, dont <strong class="font-medium text-[#706bfe]">7 ans en robotique humanoïde</strong>,
           j'imagine des <strong class="font-medium text-[#706bfe]">AI assistants</strong>, des <strong class="font-medium text-[#706bfe]">Design Systems</strong> et des
           <strong class="font-medium text-[#706bfe]">interfaces complexes</strong> qui rendent les produits plus clairs, plus intelligents et plus humains.
         </p>
@@ -128,7 +143,17 @@
                   <img src={t.logo} alt={t.company} class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
                 </div>
               </div>
-              <p class="text-gray-300 text-sm leading-relaxed line-clamp-4">{t.text}</p>
+              <p class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id ? '' : 'line-clamp-4'}">{t.text}</p>
+              <button
+                on:click={() => expandedTestimonial = expandedTestimonial === t.id ? null : t.id}
+                class="mt-3 text-[#706bfe] hover:text-[#a78bfa] text-xs flex items-center gap-1 transition-colors self-start"
+              >
+                {#if expandedTestimonial === t.id}
+                  Réduire ↑
+                {:else}
+                  Lire le témoignage +
+                {/if}
+              </button>
             </div>
           {/each}
         </div>
@@ -168,7 +193,7 @@
               <span class="text-4xl md:text-5xl font-bold text-white mb-2">
                 <AnimatedCounter end={item.value} suffix={item.suffix} />
               </span>
-              <span class="text-xs text-white/50 uppercase tracking-wider">{item.label}</span>
+              <span class="text-xs text-[#706bfe] uppercase tracking-wider font-semibold">{item.label}</span>
             </div>
           {/each}
         </div>
@@ -220,7 +245,7 @@
         </div>
         <div class="mt-12 flex justify-center">
           <a href="/projects" use:sfx
-            class="flex items-center gap-3 px-8 py-4 rounded-full border border-[#706bfe]/30 text-[#706bfe] hover:bg-[#706bfe]/10 hover:border-[#706bfe] transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
+            class="flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white hover:border-white/40 hover:bg-white/5 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
             Découvrir tous les projets <Icon name="ArrowRight" size={16} />
           </a>
         </div>
@@ -231,18 +256,29 @@
     <RevealOnScroll>
       <div class="w-full py-20 relative">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="relative text-center">
-          <p class="text-xs uppercase tracking-widest text-white/40 mb-4">Disponible en freelance</p>
-          <h2 class="text-4xl md:text-6xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-[#706bfe] to-[#a78bfa]">
-            Travaillons ensemble
-          </h2>
-          <p class="text-white/60 max-w-xl mx-auto mb-10 text-base md:text-lg">
-            Un projet de Design System, d'IA conversationnelle, ou d'interface complexe ?
+        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
+          <p class="text-white/60 text-base leading-relaxed mb-8">
+            Je vous accompagne dans vos projets de <span class="text-[#706bfe]">IA</span>, de <span class="text-[#a78bfa]">design system</span>,
+            d'<span class="text-[#a78bfa]">interfaces complexes</span> et de <span class="text-[#a78bfa]">conseil stratégique</span> —
+            que vous soyez une <strong class="font-semibold text-white/80">startup</strong>, une <strong class="font-semibold text-white/80">scale-up</strong>,
+            une <strong class="font-semibold text-white/80">PME</strong> ou une <strong class="font-semibold text-white/80">grande entreprise</strong>.
           </p>
+          <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span> Disponible
+            </span>
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
+              <Icon name="Wifi" size={12} /> Full remote préféré
+            </span>
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
+              <Icon name="MapPin" size={12} /> Basé à Lyon
+            </span>
+          </div>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:remy.bourgeois@gmail.com" use:sfx
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#706bfe] text-white font-medium hover:bg-[#5a55e0] transition-all focus-visible:ring-2 focus-visible:ring-white">
-              <Icon name="Mail" size={16} /> Me contacter
+              <Icon name="Mail" size={16} /> remy.bourgeois@gmail.com
             </a>
             <a href="https://www.linkedin.com/in/remybourgeois" target="_blank" rel="noopener noreferrer" use:sfx
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
@@ -250,10 +286,26 @@
             </a>
           </div>
         </div>
+
+        <div class="mt-16 text-center">
+          <p class="text-white/30 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>
+          <p class="text-white/20 text-xs">© 2025 Rémy Bourgeois</p>
+        </div>
       </div>
     </RevealOnScroll>
 
   </main>
+
+  <!-- Scroll-to-top -->
+  {#if scrollY > 400}
+    <button
+      on:click={scrollToTop}
+      aria-label="Remonter en haut"
+      class="fixed bottom-8 right-8 z-[100] p-3 rounded-full bg-[#706bfe]/20 border border-[#706bfe]/40 text-white hover:bg-[#706bfe]/60 transition-all shadow-lg backdrop-blur-sm"
+    >
+      <Icon name="ChevronUp" size={20} />
+    </button>
+  {/if}
 </IntroScene>
 
 <!-- Project Modal (outside IntroScene to be above all z-index) -->

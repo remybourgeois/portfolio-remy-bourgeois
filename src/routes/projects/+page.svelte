@@ -10,12 +10,16 @@
 
   onMount(() => {
     introDone.set(true);
+    document.body.style.overflow = 'auto';
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && selected) closeModal();
     };
     window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
   });
 
   function openModal(p: Project) {
@@ -36,7 +40,7 @@
   <meta name="description" content="Portfolio de projets : Design System, IA conversationnelle, SaaS B2B, robotique humanoïde.">
 </svelte:head>
 
-<div class="min-h-screen bg-[#020205] text-white custom-cursor">
+<div class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
 
     <header class="mb-16">
@@ -65,7 +69,7 @@
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
           <div class="relative h-56 overflow-hidden">
-            <div class="mesh-gradient-bg opacity-20" aria-hidden="true"></div>
+            <div class="mesh-gradient-bg opacity-0 group-hover:opacity-20 transition-opacity duration-500" aria-hidden="true"></div>
             <img
               src={project.image}
               alt=""
