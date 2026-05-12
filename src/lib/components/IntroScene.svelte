@@ -81,6 +81,12 @@
     spiralPos   = new Float32Array(N*3); diamondPos  = new Float32Array(N*3);
     ringPos     = new Float32Array(N*3); cylinderPos = new Float32Array(N*3);
     infinityPos = new Float32Array(N*3);
+    const trailBuffers: Float32Array[] = [
+      new Float32Array(N * 3).fill(0),
+      new Float32Array(N * 3).fill(0),
+      new Float32Array(N * 3).fill(0),
+    ];
+    let trailIdx = 0;
     const colorBase = new THREE.Color(PRIMARY);
 
     for (let i=0;i<N;i++) {
@@ -102,7 +108,7 @@
     geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
     geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
     const sprite = new THREE.TextureLoader().load('/assets/spark.png');
-    const mat = new THREE.PointsMaterial({size:.15,map:sprite,transparent:true,opacity:.85,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
+    let mat = new THREE.PointsMaterial({size:.15,map:sprite,transparent:true,opacity:.75,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
     particlesSystem = new THREE.Points(geo,mat);
     scene.add(particlesSystem);
 
@@ -204,6 +210,19 @@
         tempColor.lerp(targetColor.clone().lerp(hotColor,Math.min(1,frictionHeat*1.5)), .1);
         colArr[i3]=tempColor.r; colArr[i3+1]=tempColor.g; colArr[i3+2]=tempColor.b;
       }
+
+      trailBuffers[trailIdx].set(posArr);
+      trailIdx = (trailIdx + 1) % trailBuffers.length;
+
+      if ((isLocked || isReturning) && !prefersRM) {
+        mat.opacity = 0.65;
+        mat.size = 0.18;
+      } else {
+        mat.opacity = 0.75;
+        mat.size = 0.15;
+      }
+      mat.needsUpdate = true;
+
       posAttr.needsUpdate = true; colAttr.needsUpdate = true;
 
       const bgPosAttr = bgSystem.geometry.attributes.position as THREE.BufferAttribute;
