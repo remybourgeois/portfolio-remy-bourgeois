@@ -6,7 +6,9 @@
   import { SITE_URL } from '$lib/data/site';
 
   const { data }: { data: PageData } = $props();
-  const { project, prev, next } = data;
+  const project = $derived(data.project);
+  const prev = $derived(data.prev);
+  const next = $derived(data.next);
 </script>
 
 <svelte:head>
