@@ -31,7 +31,7 @@
   function closeModal() {
     audioStore.engine?.playSound(SFX_BACK);
     selected = null;
-    document.body.style.overflow = '';
+    document.body.style.overflow = 'auto';
   }
 </script>
 

@@ -255,7 +255,7 @@
     const target = e.target as HTMLElement;
     if (target.closest('button') || target.closest('a')) return;
     audioStore.engine?.init();
-    audioStore.engine?.wakeUp();
+    if (sceneStep < 2) audioStore.engine?.wakeUp();
 
     if (sceneStep === 2) return;
 

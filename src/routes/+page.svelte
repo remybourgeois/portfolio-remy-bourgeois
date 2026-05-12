@@ -56,10 +56,14 @@
 <IntroScene>
   <!-- Barre post-intro : Recommencer + Lien établi -->
   <div class="fixed top-0 w-full z-50 px-6 py-4 flex items-center justify-between pointer-events-none">
-    <a href="/" use:sfx class="pointer-events-auto flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-4 py-2 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]">
+    <button
+      on:click={() => { window.location.href = '/'; }}
+      use:sfx
+      class="pointer-events-auto flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-4 py-2 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+    >
       <Icon name="RefreshCw" size={12} />
       <span>Recommencer l'expérience</span>
-    </a>
+    </button>
     <div class="pointer-events-auto flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full" role="status">
       <div class="w-2 h-2 rounded-full shadow-[0_0_10px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
       <span class="text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
