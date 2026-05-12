@@ -1,20 +1,31 @@
-// tests/home.test.ts
 import { test, expect } from '@playwright/test';
 
-test('home page loads with intro scene', async ({ page }) => {
-  await page.goto('/');
+test.beforeEach(async ({ page }) => {
+  await page.goto('/home');
+});
+
+test('has correct page title', async ({ page }) => {
   await expect(page).toHaveTitle(/Rémy Bourgeois/);
-  // The intro scene wrapper is always present in the DOM
-  await expect(page.locator('[aria-label="Expérience immersive portfolio"]')).toBeVisible();
 });
 
-test('home page has DESIGNING INTENTIONS heading', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toContainText('DESIGNING');
+test('shows Senior Product Designer heading', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: /Senior Product Designer/ })).toBeVisible();
 });
 
-test('projects route is accessible', async ({ page }) => {
-  await page.goto('/projects');
-  await expect(page).toHaveURL('/projects');
-  await expect(page.locator('h1')).toContainText('Projets');
+test('shows impact counters section', async ({ page }) => {
+  await expect(page.getByText(/Années d'expérience/)).toBeVisible();
+});
+
+test('shows contact section with email link', async ({ page }) => {
+  await expect(page.getByRole('link', { name: /remy.bourgeois@gmail.com/ })).toBeVisible();
+});
+
+test('shows featured projects with links to case studies', async ({ page }) => {
+  const projectLinks = page.locator('a[href^="/projects/"]');
+  await expect(projectLinks.first()).toBeVisible();
+});
+
+test('scroll-to-top button appears after scrolling', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 500));
+  await expect(page.getByRole('button', { name: /Remonter en haut/ })).toBeVisible();
 });
