@@ -1,63 +1,41 @@
+<!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { PROJECTS, type Project } from '$lib/data/projects';
+  import { PROJECTS } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { audioStore, SFX_BACK } from '$lib/stores/audio';
-
-  let selected: Project | null = null;
-
-  onMount(() => {
-    document.body.style.overflow = 'auto';
-
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selected) closeModal();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => {
-      window.removeEventListener('keydown', handleKey);
-      document.body.style.overflow = '';
-    };
-  });
-
-  function openModal(p: Project) {
-    selected = p;
-    document.body.style.overflow = 'hidden';
-    audioStore.engine?.playRandomSFX();
-  }
-
-  function closeModal() {
-    audioStore.engine?.playSound(SFX_BACK);
-    selected = null;
-    document.body.style.overflow = 'auto';
-  }
+  import { SITE_URL } from '$lib/data/site';
 </script>
 
 <svelte:head>
   <title>Projets — Rémy Bourgeois</title>
-  <meta name="description" content="Portfolio de projets : Design System, IA conversationnelle, SaaS B2B, robotique humanoïde.">
+  <meta name="description" content="Portfolio de projets : Design System, IA conversationnelle, SaaS B2B, robotique humanoïde." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
+  <meta property="og:title" content="Projets — Rémy Bourgeois" />
+  <meta property="og:description" content="Design System, IA conversationnelle, interfaces complexes — 14 ans de travail condensé." />
+  <meta property="og:image" content="{SITE_URL}/assets/1_Photo%20Remy%20Bourgeois%20Pro.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
 
     <header class="mb-16">
-      <a href="/" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors">
+      <a href="/home" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
         <Icon name="ArrowLeft" size={14} /> Retour
       </a>
       <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
         Projets
       </h1>
       <p class="text-white/50 text-base max-w-xl">
-        Design System, IA conversationnelle, interfaces complexes — 13 ans de travail condensé.
+        Design System, IA conversationnelle, interfaces complexes — 14 ans de travail condensé.
       </p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#each PROJECTS as project}
-        <button
-          type="button"
-          on:click={() => openModal(project)}
+        <a
+          href="/projects/{project.id}"
           use:sfx
           aria-label="Voir le projet {project.title}"
           class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
@@ -90,67 +68,9 @@
               {/each}
             </div>
           </div>
-        </button>
+        </a>
       {/each}
     </div>
 
   </div>
 </div>
-
-<!-- Modal -->
-{#if selected}
-  <div
-    class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title-projects"
-    style="animation: fadeIn 0.3s ease-out"
-  >
-    <div
-      class="absolute inset-0 bg-black/90 backdrop-blur-xl"
-      on:click={closeModal}
-      aria-hidden="true"
-    ></div>
-
-    <button
-      on:click={closeModal}
-      aria-label="Fermer"
-      class="absolute top-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white z-20 transition-all focus-visible:ring-2 focus-visible:ring-white"
-    >
-      <Icon name="X" size={24} />
-    </button>
-
-    <div class="relative w-full max-w-6xl max-h-full flex flex-col items-center z-10 pointer-events-none">
-      <div
-        class="relative w-full pointer-events-auto rounded-[48px] overflow-hidden shadow-2xl bg-white/5 border border-white/10 flex items-center justify-center max-h-[70vh]"
-        style="backdrop-filter:blur(30px)"
-      >
-        <div class="mesh-gradient-bg" aria-hidden="true"></div>
-        <img
-          src={selected.image}
-          alt="Aperçu du projet {selected.title}"
-          class="relative z-10 w-full h-full object-contain max-h-[70vh] p-8 shadow-image-modal"
-        />
-      </div>
-
-      <div class="mt-6 w-full pointer-events-auto flex flex-col md:flex-row gap-4 items-start md:items-center bg-black/50 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10">
-        <div class="flex items-center gap-4 flex-shrink-0">
-          <div class="h-6 opacity-90">
-            <img src={selected.logo} alt={selected.client} class="h-full object-contain brightness-0 invert" />
-          </div>
-          <div class="w-px h-4 bg-white/20" aria-hidden="true"></div>
-          <span id="modal-title-projects" class="text-white font-semibold text-sm">{selected.title}</span>
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {#each selected.tags as tag}
-            <span class="px-2.5 py-0.5 rounded-full bg-white/10 text-white/70 text-[11px] border border-white/10">{tag}</span>
-          {/each}
-        </div>
-      </div>
-
-      <div class="mt-4 w-full pointer-events-auto bg-black/30 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/5">
-        <p class="text-white/70 text-sm leading-relaxed whitespace-pre-line">{selected.description}</p>
-      </div>
-    </div>
-  </div>
-{/if}
