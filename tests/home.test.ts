@@ -14,6 +14,9 @@ test('shows Senior Product Designer heading', async ({ page }) => {
 
 test('shows impact counters section', async ({ page }) => {
   await expect(page.getByText(/Années d'expérience/)).toBeVisible();
+  // Scroll to counters to trigger IntersectionObserver, then wait for animation
+  await page.evaluate(() => document.querySelector('[aria-label^="0+"]')?.scrollIntoView());
+  await expect(page.locator('[aria-label="13+"]')).toBeVisible({ timeout: 10000 });
 });
 
 test('shows contact section with email link', async ({ page }) => {
@@ -21,11 +24,16 @@ test('shows contact section with email link', async ({ page }) => {
 });
 
 test('shows featured projects with links to case studies', async ({ page }) => {
-  const projectLinks = page.locator('a[href^="/projects/"]');
-  await expect(projectLinks.first()).toBeVisible();
+  await expect(page.locator('a[href^="/projects/"]')).toHaveCount(6);
 });
 
 test('scroll-to-top button appears after scrolling', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 500));
   await expect(page.getByRole('button', { name: /Remonter en haut/ })).toBeVisible();
+});
+
+test('testimonial expand/collapse works', async ({ page }) => {
+  const expandBtn = page.getByRole('button', { name: /Lire le témoignage/ }).first();
+  await expandBtn.click();
+  await expect(page.getByRole('button', { name: /Réduire/ }).first()).toBeVisible();
 });

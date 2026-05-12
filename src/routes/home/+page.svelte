@@ -61,7 +61,7 @@
       <Icon name="RefreshCw" size={12} />
       <span>Recommencer l'expérience</span>
     </a>
-    <div class="pointer-events-auto flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full" role="status">
+    <div class="pointer-events-auto flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
       <div class="w-2 h-2 rounded-full shadow-[0_0_10px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
       <span class="text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
     </div>
@@ -76,7 +76,7 @@
           <img src="/assets/1_Photo Remy Bourgeois Pro.jpg" alt="Portrait de Rémy Bourgeois" class="w-full h-full object-cover" loading="eager" />
         </div>
         <div class="text-center md:text-left">
-          <h2 class="text-4xl md:text-5xl font-semibold text-white mb-6">Senior Product Designer</h2>
+          <h1 class="text-4xl md:text-5xl font-semibold text-white mb-6">Senior Product Designer</h1>
           <ul class="flex flex-wrap justify-center md:justify-start gap-3 list-none p-0 m-0">
             <li class="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-300 text-xs font-medium border border-amber-500/20 flex items-center gap-2">
               <Icon name="BrainCircuit" size={12} /> IA Expert
@@ -124,9 +124,9 @@
     <!-- Testimonials -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h3 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Recommandations <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h3>
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {#each TESTIMONIALS as t, i}
             <div class="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 h-fit {i===1||i===4 ? 'lg:mt-10' : ''}">
@@ -164,16 +164,16 @@
     <!-- Expertises -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h3 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Expertises <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h3>
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
           {#each EXPERTISES as exp}
             <div class="group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-expert hover:translate-y-[-4px] transition-all duration-300">
-              <div class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300" style="box-shadow:0 0 15px #706bfe33">
+              <div class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-[0_0_15px_#706bfe33]">
                 <Icon name={exp.icon} size={24} className="text-white group-hover:text-[#38bdf8] transition-colors" />
               </div>
-              <h4 class="text-lg font-semibold mb-2">{exp.title}</h4>
+              <h3 class="text-lg font-semibold mb-2">{exp.title}</h3>
               <p class="text-sm text-white/70">{exp.desc}</p>
             </div>
           {/each}
@@ -185,9 +185,9 @@
     <RevealOnScroll>
       <div class="w-full mb-24 py-10 relative">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-32 bg-[#706bfe] opacity-10 blur-[100px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <h3 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Impact <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h3>
+        </h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {#each impacts as item}
             <div class="flex flex-col items-center text-center p-6 rounded-xl bg-white/5 border border-white/10">
@@ -204,9 +204,9 @@
     <!-- Featured projects (3) — liens vers case studies -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h3 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Projets <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h3>
+        </h2>
         <div class="flex flex-col gap-8">
           {#each homeProjects as project, i}
             {@const alt = i % 2 !== 0}
