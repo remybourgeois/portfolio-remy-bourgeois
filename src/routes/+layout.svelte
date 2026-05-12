@@ -25,9 +25,7 @@
   onNavigate((navigation) => {
     const conn = (navigator as any).connection;
     const slow = conn?.effectiveType === '2g';
-    const reduced = typeof window !== 'undefined'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!document.startViewTransition || slow || reduced) return;
     return new Promise((resolve) => {
       document.startViewTransition(async () => {
