@@ -1,6 +1,7 @@
 <!-- src/lib/components/IntroScene.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
   import * as THREE from 'three';
   import { audioStore, SFX_SUCCESS } from '$lib/stores/audio';
   import { introDone } from '$lib/stores/intro';
@@ -62,6 +63,11 @@
   let N = 0;
 
   onMount(() => {
+    // Si l'intro a déjà été faite (retour depuis /projects), skip directement au contenu
+    if (get(introDone)) {
+      sceneStep = 2;
+    }
+
     const w = window.innerWidth, h = window.innerHeight;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#020205');

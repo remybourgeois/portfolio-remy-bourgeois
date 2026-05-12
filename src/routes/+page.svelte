@@ -289,7 +289,7 @@
 
         <div class="mt-16 text-center">
           <p class="text-white/30 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>
-          <p class="text-white/20 text-xs">© 2025 Rémy Bourgeois</p>
+          <p class="text-white/20 text-xs">© 2026 Rémy Bourgeois</p>
         </div>
       </div>
     </RevealOnScroll>
