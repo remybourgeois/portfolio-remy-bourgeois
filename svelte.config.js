@@ -5,6 +5,6 @@ export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({ fallback: '404.html' }),
-    prerender: { entries: ['/', '/projects'] }
+    prerender: { entries: ['/', '/home', '/projects'] }
   }
 };
