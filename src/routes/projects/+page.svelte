@@ -3,13 +3,11 @@
   import { PROJECTS, type Project } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { introDone } from '$lib/stores/intro';
   import { audioStore, SFX_BACK } from '$lib/stores/audio';
 
   let selected: Project | null = null;
 
   onMount(() => {
-    introDone.set(true);
     document.body.style.overflow = 'auto';
 
     const handleKey = (e: KeyboardEvent) => {
