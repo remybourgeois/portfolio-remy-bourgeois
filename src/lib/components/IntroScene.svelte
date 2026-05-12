@@ -313,7 +313,7 @@
 
   <!-- Sound toggle -->
   <div class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-auto z-50
-              transition-all duration-500 {sceneStep < 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}">
+              transition-all duration-500 opacity-100 translate-y-0">
     <button
       on:click|stopPropagation={audioStore.toggleMute}
       aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
