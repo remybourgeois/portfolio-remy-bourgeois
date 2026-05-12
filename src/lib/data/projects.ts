@@ -8,6 +8,11 @@ export interface Project {
   description: string;
   color: string;
   image: string;
+  // v2 — optionnels, extensibles
+  images?: string[];
+  role?: string;
+  year?: string;
+  url?: string;
 }
 
 export const PROJECTS: Project[] = [
