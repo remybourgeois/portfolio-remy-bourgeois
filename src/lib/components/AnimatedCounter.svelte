@@ -13,10 +13,12 @@
       let start: number;
       const tick = (ts: number) => {
         if (!start) start = ts;
-        const p = Math.min((ts-start)/duration, 1);
-        const ease = p === 1 ? 1 : 1 - Math.pow(2, -10*p);
-        count = Math.floor(end * ease);
-        if (p < 1) requestAnimationFrame(tick);
+        const p = Math.min((ts - start) / duration, 1);
+        // easeOutExpo — mais on stoppe dès que le chiffre affiché atteint end
+        const ease = p < 1 ? 1 - Math.pow(2, -10 * p) : 1;
+        count = Math.round(end * ease);
+        if (p < 1 && count < end) requestAnimationFrame(tick);
+        else count = end; // atterrissage propre, pas de dead zone
       };
       requestAnimationFrame(tick);
     }, { threshold: 0.5 });

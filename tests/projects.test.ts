@@ -1,29 +1,18 @@
 // tests/projects.test.ts
 import { test, expect } from '@playwright/test';
 
-test('projects page shows project cards', async ({ page }) => {
+test('shows projects grid', async ({ page }) => {
   await page.goto('/projects');
-  await expect(page.locator('h1')).toContainText('Projets');
-  const cards = page.locator('button[aria-label^="Voir le projet"]');
-  await expect(cards).toHaveCount(7);
+  await expect(page.getByRole('link', { name: /Voir le projet/ }).first()).toBeVisible();
 });
 
-test('clicking a project card opens the modal', async ({ page }) => {
+test('back link goes to /home', async ({ page }) => {
   await page.goto('/projects');
-  await page.locator('button[aria-label^="Voir le projet"]').first().click();
-  await expect(page.locator('[role="dialog"]')).toBeVisible();
+  await expect(page.getByRole('link', { name: /Retour/ })).toHaveAttribute('href', '/home');
 });
 
-test('close button closes the modal', async ({ page }) => {
+test('project card navigates to case study', async ({ page }) => {
   await page.goto('/projects');
-  await page.locator('button[aria-label^="Voir le projet"]').first().click();
-  await expect(page.locator('[role="dialog"]')).toBeVisible();
-  await page.locator('button[aria-label="Fermer"]').click();
-  await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 3000 });
-});
-
-test('back link navigates to home', async ({ page }) => {
-  await page.goto('/projects');
-  await page.locator('a[href="/"]').first().evaluate((el: HTMLAnchorElement) => el.click());
-  await expect(page).toHaveURL('/');
+  await page.getByRole('link', { name: /Voir le projet/ }).first().click();
+  await expect(page.url()).toMatch(/\/projects\/\d+/);
 });

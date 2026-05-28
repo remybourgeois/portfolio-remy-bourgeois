@@ -1,10 +1,9 @@
 <!-- src/lib/components/IntroScene.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
   import * as THREE from 'three';
   import { audioStore, SFX_SUCCESS } from '$lib/stores/audio';
-  import { introDone } from '$lib/stores/intro';
   import { POETIC_PHRASES } from '$lib/data/phrases';
   import Icon from '$lib/components/Icons.svelte';
 
@@ -52,9 +51,6 @@
   let isLocked = false, isReturning = false;
   let time = 0;
   let introStartTime: number | null = null;
-  const prefersReducedMotion = typeof window !== 'undefined'
-    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    : false;
 
   // position arrays — init lazily in onMount
   let spherePos: Float32Array, heartPos: Float32Array, cubePos: Float32Array;
@@ -63,12 +59,8 @@
   let N = 0;
 
   onMount(() => {
-    // Si l'intro a déjà été faite (retour depuis /projects), skip directement au contenu
-    if (get(introDone)) {
-      sceneStep = 2;
-    }
-
     const w = window.innerWidth, h = window.innerHeight;
+    const prefersRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#020205');
     scene.fog = new THREE.FogExp2(0x020205, 0.002);
@@ -82,13 +74,19 @@
     mountEl.innerHTML = '';
     mountEl.appendChild(renderer.domElement);
 
-    N = prefersReducedMotion ? 500 : 2800;
+    N = prefersRM ? 500 : w < 768 ? 1200 : 2800;
     const positions = new Float32Array(N*3), colors = new Float32Array(N*3);
     spherePos   = new Float32Array(N*3); heartPos    = new Float32Array(N*3);
     cubePos     = new Float32Array(N*3); torusPos    = new Float32Array(N*3);
     spiralPos   = new Float32Array(N*3); diamondPos  = new Float32Array(N*3);
     ringPos     = new Float32Array(N*3); cylinderPos = new Float32Array(N*3);
     infinityPos = new Float32Array(N*3);
+    const trailBuffers: Float32Array[] = [
+      new Float32Array(N * 3).fill(0),
+      new Float32Array(N * 3).fill(0),
+      new Float32Array(N * 3).fill(0),
+    ];
+    let trailIdx = 0;
     const colorBase = new THREE.Color(PRIMARY);
 
     for (let i=0;i<N;i++) {
@@ -109,12 +107,12 @@
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
     geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
-    const sprite = new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/spark1.png');
-    const mat = new THREE.PointsMaterial({size:.15,map:sprite,transparent:true,opacity:.85,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
+    const sprite = new THREE.TextureLoader().load('/assets/spark.png');
+    let mat = new THREE.PointsMaterial({size:.15,map:sprite,transparent:true,opacity:.75,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
     particlesSystem = new THREE.Points(geo,mat);
     scene.add(particlesSystem);
 
-    const bgN = prefersReducedMotion ? 200 : 2500;
+    const bgN = prefersRM ? 200 : 2500;
     const bgGeo = new THREE.BufferGeometry();
     const bgPos = new Float32Array(bgN*3), bgCol = new Float32Array(bgN*3);
     const bgVel: {x:number,y:number,z:number}[] = [];
@@ -143,7 +141,7 @@
     const tempColor   = new THREE.Color();
     const curPosV = new THREE.Vector3(), tarPosV = new THREE.Vector3();
     let curRotX=0, curRotY=0;
-    const speedFactor = prefersReducedMotion ? 0.1 : 1.0;
+    const speedFactor = prefersRM ? 0.1 : 1.0;
 
     const animate = () => {
       reqId = requestAnimationFrame(animate);
@@ -165,18 +163,18 @@
       if (vibration > 0) vibration = Math.max(0, vibration - 0.05);
       if (flood !== 0) flood = flood > 0 ? flood + 0.01 : (flood+.05 > 0 ? 0 : flood+.05);
 
-      const tRX = prefersReducedMotion ? .001 : .001+mouseVec.y*.3;
-      const tRY = prefersReducedMotion ? .002 : .002+mouseVec.x*.3;
-      const iner = prefersReducedMotion ? .01 : .03;
+      const tRX = prefersRM ? .001 : .001+mouseVec.y*.3;
+      const tRY = prefersRM ? .002 : .002+mouseVec.x*.3;
+      const iner = prefersRM ? .01 : .03;
       curRotX += (tRX - curRotX) * iner;
       curRotY += (tRY - curRotY) * iner + .003*speedFactor;
       particlesSystem.rotation.x = curRotX;
       particlesSystem.rotation.y = curRotY;
 
-      const tX = prefersReducedMotion ? 0 : mouseVec.x*.8;
-      const tY = prefersReducedMotion ? 0 : mouseVec.y*.8;
-      particlesSystem.position.x += (tX - particlesSystem.position.x) * (prefersReducedMotion?.02:.08);
-      particlesSystem.position.y += (tY - particlesSystem.position.y) * (prefersReducedMotion?.02:.08);
+      const tX = prefersRM ? 0 : mouseVec.x*.8;
+      const tY = prefersRM ? 0 : mouseVec.y*.8;
+      particlesSystem.position.x += (tX - particlesSystem.position.x) * (prefersRM?.02:.08);
+      particlesSystem.position.y += (tY - particlesSystem.position.y) * (prefersRM?.02:.08);
 
       const shape = targetGeometry;
       if (['heart','breathing'].includes(shape)) targetColor.set(PRIMARY);
@@ -193,7 +191,7 @@
       for (let i=0;i<N;i++) {
         const i3=i*3;
         let tx=tarArr[i3], ty=tarArr[i3+1], tz=tarArr[i3+2];
-        if (!prefersReducedMotion) {
+        if (!prefersRM) {
           if (shape==='heart') { const b=1+Math.sin(time*4)*.03; tx*=b; ty*=b; tz*=b; }
           else if (shape==='breathing') { const b=1+Math.sin(time*3+i*.01)*.15; tx*=b; ty*=b; tz*=b; }
           else if (shape==='wave') { tx+=Math.sin(time*2+ty)*.2; tz+=Math.cos(time*2+tx)*.2; }
@@ -205,13 +203,26 @@
 
         curPosV.set(posArr[i3], posArr[i3+1], posArr[i3+2]);
         tarPosV.set(tx,ty,tz);
-        const spd = isReturning ? .12 : isLocked ? .08 : frictionHeat>.5 ? .2 : prefersReducedMotion ? .01 : .03;
+        const spd = isReturning ? .12 : isLocked ? .08 : frictionHeat>.5 ? .2 : prefersRM ? .01 : .03;
         curPosV.lerp(tarPosV, spd);
         posArr[i3]=curPosV.x; posArr[i3+1]=curPosV.y; posArr[i3+2]=curPosV.z;
         tempColor.setRGB(colArr[i3], colArr[i3+1], colArr[i3+2]);
         tempColor.lerp(targetColor.clone().lerp(hotColor,Math.min(1,frictionHeat*1.5)), .1);
         colArr[i3]=tempColor.r; colArr[i3+1]=tempColor.g; colArr[i3+2]=tempColor.b;
       }
+
+      trailBuffers[trailIdx].set(posArr);
+      trailIdx = (trailIdx + 1) % trailBuffers.length;
+
+      if ((isLocked || isReturning) && !prefersRM) {
+        mat.opacity = 0.65;
+        mat.size = 0.18;
+      } else {
+        mat.opacity = 0.75;
+        mat.size = 0.15;
+      }
+      mat.needsUpdate = true;
+
       posAttr.needsUpdate = true; colAttr.needsUpdate = true;
 
       const bgPosAttr = bgSystem.geometry.attributes.position as THREE.BufferAttribute;
@@ -255,9 +266,7 @@
     const target = e.target as HTMLElement;
     if (target.closest('button') || target.closest('a')) return;
     audioStore.engine?.init();
-    if (sceneStep < 2) audioStore.engine?.wakeUp();
-
-    if (sceneStep === 2) return;
+    audioStore.engine?.wakeUp();
 
     if (sceneStep === 0) {
       sceneStep = 1;
@@ -307,8 +316,7 @@
       setTimeout(() => { if (!isMuted) audioStore.engine?.fadeOutBGM(); }, ANIM_DURATION);
       setTimeout(() => { flood = 0.1; }, ANIM_DURATION);
       setTimeout(() => {
-        sceneStep = 2;
-        introDone.set(true);
+        goto('/home');
       }, ANIM_DURATION + TRANSITION_DELAY);
     }
   }
@@ -324,7 +332,7 @@
 
   <!-- Sound toggle -->
   <div class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-auto z-50
-              transition-all duration-500 {sceneStep < 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}">
+              transition-all duration-500 opacity-100 translate-y-0">
     <button
       on:click|stopPropagation={audioStore.toggleMute}
       aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
@@ -392,14 +400,4 @@
     </div>
   </div>
 
-  <!-- Main content slot (sceneStep 2) -->
-  <div
-    id="main-content"
-    tabindex="-1"
-    class="absolute inset-0 z-30 bg-[#020205]/95 backdrop-blur-sm transition-transform duration-1000 ease-in-out
-           overflow-y-auto overflow-x-hidden
-           {sceneStep === 2 ? 'translate-y-0 pointer-events-auto' : 'translate-y-full pointer-events-none invisible'}"
-  >
-    <slot />
-  </div>
 </div>

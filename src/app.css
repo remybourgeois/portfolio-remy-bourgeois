@@ -12,8 +12,7 @@
 body {
   margin: 0;
   background-color: var(--color-bg);
-  overflow: hidden;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   touch-action: pan-y pinch-zoom;
 }
 
@@ -29,9 +28,6 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
 .custom-cursor { cursor: crosshair; }
-/* Override cursor and selection in scrollable content area */
-#main-content { cursor: auto; user-select: text; }
-#main-content a, #main-content button, #main-content [role="button"] { cursor: pointer; user-select: none; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0;
@@ -60,6 +56,12 @@ body {
 
 .shadow-image-modal { filter: drop-shadow(0 0 40px rgba(112,107,254,0.6)); }
 .shadow-expert { box-shadow: 0 0 50px rgba(112,107,254,0.05); }
+
+/* Termes mis en avant dans les textes de projet */
+.project-text strong {
+  color: #a8a5ff;
+  font-weight: 500;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
