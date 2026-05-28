@@ -13,5 +13,6 @@ export const CLIENT_LOGOS: string[] = [
   '/assets/veolia.png',
   '/assets/sncf.png',
   '/assets/pernod.png',
-  '/assets/sfr.png'
+  '/assets/sfr.png',
+  '/assets/ofelia.svg'
 ];

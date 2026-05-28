@@ -33,9 +33,9 @@ export const EXPERTISES: Expertise[] = [
   },
   {
     id: 5,
-    title: 'Vibe Coding',
+    title: 'Vibe Coding & Engineering',
     icon: 'Code',
-    desc: 'Prototypage rapide et interfaces sensibles.'
+    desc: 'Supprimer le hand-off et les maquettes mortes en itérant directement dans le code (Git, Claude Code, Storybook).'
   },
   {
     id: 6,

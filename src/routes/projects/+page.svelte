@@ -24,18 +24,15 @@
       <a href="/home" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
         <Icon name="ArrowLeft" size={14} /> Retour
       </a>
-      <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+      <h1 class="text-4xl md:text-6xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
         Projets
       </h1>
-      <p class="text-white/50 text-base max-w-xl">
-        Design System, IA conversationnelle, interfaces complexes — 14 ans de travail condensé.
-      </p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#each PROJECTS as project}
         <a
-          href="/projects/{project.id}"
+          href="/projects/{project.slug}"
           use:sfx
           aria-label="Voir le projet {project.title}"
           class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
@@ -46,17 +43,38 @@
         >
           <div class="relative h-56 overflow-hidden">
             <div class="mesh-gradient-bg opacity-0 group-hover:opacity-20 transition-opacity duration-500" aria-hidden="true"></div>
-            <img
-              src={project.image}
-              alt=""
-              class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-              loading="lazy"
-            />
+            {#if project.video}
+              <video
+                src={project.video}
+                autoplay
+                loop
+                muted
+                playsinline
+                class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
+              ></video>
+            {:else if project.image || project.media?.length}
+              <img
+                src={project.image || project.media![0].src}
+                alt=""
+                class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            {:else}
+              <div class="w-full h-full flex items-center justify-center">
+                <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
+              </div>
+            {/if}
           </div>
           <div class="p-6">
-            <div class="h-6 mb-3 opacity-70">
-              <img src={project.logo} alt="" class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
-            </div>
+            {#if project.logo}
+              <div class="h-6 mb-3 opacity-70">
+                <img src={project.logo} alt="" class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
+              </div>
+            {:else}
+              <div class="h-6 mb-3 opacity-70 flex items-center">
+                <span class="text-sm font-semibold text-white/50">{project.client}</span>
+              </div>
+            {/if}
             <h2 class="text-lg font-semibold text-white mb-3 group-hover:text-[#706bfe] transition-colors">
               {project.title}
             </h2>

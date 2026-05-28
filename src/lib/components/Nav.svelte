@@ -8,7 +8,7 @@
   let menuOpen = $state(false);
   let isMuted = $derived($audioStore.isMuted);
   let currentPath = $derived($page.url.pathname);
-  let visible = $derived(currentPath !== '/');
+  let visible = $derived(currentPath !== '/' && currentPath !== '/home');
 </script>
 
 <nav

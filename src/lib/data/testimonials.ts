@@ -23,8 +23,8 @@ export const TESTIMONIALS: Testimonial[] = [
     id: 2,
     name: 'Aure Pellefigue',
     role: 'Head of Product',
-    company: 'Bonitasoft',
-    logo: '/assets/bonitasoft.png',
+    company: 'Ofelia',
+    logo: '/assets/ofelia.svg',
     image: '/assets/aure.png',
     text: "Collab en cours… et on ne lâche pas une équipe qui gagne ! 💥 Depuis plusieurs mois, Remy nous accompagne dans un projet produit stratégique et exigeant (IA, conversationnel, refonte UX complète). Vrai copilote de l'équipe produit, il nous aide à structurer ce qu'il y a à faire, à créer les bons artefacts pour tester rapidement et faire avancer nos idées."
   },

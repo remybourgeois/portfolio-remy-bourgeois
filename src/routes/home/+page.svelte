@@ -10,8 +10,9 @@
   import { CLIENT_LOGOS } from '$lib/data/clients';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
+  import { md } from '$lib/utils/text';
 
-  const homeProjectIds = [2, 3, 6];
+  const homeProjectIds = [8, 1, 3, 4];
   const homeProjects = homeProjectIds
     .map(id => PROJECTS.find(p => p.id === id))
     .filter((p): p is NonNullable<typeof p> => p != null);
@@ -21,10 +22,10 @@
   let scrollY = $state(0);
 
   const impacts = [
-    { value: 13, suffix: '+',  label: "Années d'expérience" },
+    { value: 14, suffix: '+',  label: "Années d'expérience" },
     { value: 80, suffix: '+',  label: 'Projets livrés' },
     { value: 10, suffix: 'M+', label: 'Utilisateurs impactés' },
-    { value: 7,  suffix: '+',  label: 'Années en IA' }
+    { value: 8,  suffix: '+',  label: 'Années en IA' }
   ];
 
   onMount(() => {
@@ -73,7 +74,7 @@
     <RevealOnScroll>
       <div class="w-full flex flex-col md:flex-row gap-8 items-center justify-center mb-12">
         <div class="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl flex-shrink-0">
-          <img src="/assets/1_Photo Remy Bourgeois Pro.jpg" alt="Portrait de Rémy Bourgeois" class="w-full h-full object-cover" loading="eager" />
+          <img src="/assets/remy-bourgeois.png" alt="Portrait de Rémy Bourgeois" class="w-full h-full object-cover" loading="eager" />
         </div>
         <div class="text-center md:text-left">
           <h1 class="text-4xl md:text-5xl font-semibold text-white mb-6">Senior Product Designer</h1>
@@ -102,6 +103,9 @@
           Avec <strong class="font-medium text-[#706bfe]">14+ ans d'expérience</strong>, dont <strong class="font-medium text-[#706bfe]">7 ans en robotique humanoïde</strong>,
           j'imagine des <strong class="font-medium text-[#706bfe]">AI assistants</strong>, des <strong class="font-medium text-[#706bfe]">Design Systems</strong> et des
           <strong class="font-medium text-[#706bfe]">interfaces complexes</strong> qui rendent les produits plus clairs, plus intelligents et plus humains.
+        </p>
+        <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
+          Je supprime le <strong class="font-medium text-[#706bfe]">hand-off</strong> en itérant directement <strong class="font-medium text-[#706bfe]">dans le code</strong> pour accélérer la <strong class="font-medium text-[#706bfe]">vélocité des équipes tech</strong>.
         </p>
       </div>
     </RevealOnScroll>
@@ -215,20 +219,30 @@
                 <div class="flex-1 relative min-h-[240px] md:min-h-[300px] flex items-center justify-center overflow-hidden {alt ? 'lg:order-1' : 'lg:order-2'} p-4 lg:p-6">
                   <div class="mesh-gradient-bg opacity-30" aria-hidden="true"></div>
                   <a
-                    href="/projects/{project.id}"
+                    href="/projects/{project.slug}"
                     use:sfx
                     aria-label="Voir le projet {project.title}"
                     class="relative z-10 w-full h-full absolute inset-0 focus-visible:ring-4 focus-visible:ring-[#706bfe] focus:outline-none"
                   >
-                    <img src={project.image} alt="" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
+                    {#if project.video}
+                      <video src={project.video} autoplay loop muted playsinline class="w-full h-full object-contain shadow-2xl"></video>
+                    {:else if project.image || project.media?.length}
+                      <img src={project.image || project.media![0].src} alt="" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
+                    {:else}
+                      <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
+                    {/if}
                   </a>
                 </div>
                 <div class="flex-1 p-8 md:p-12 flex flex-col justify-center {alt ? 'lg:order-2' : 'lg:order-1'}">
                   <div class="h-8 mb-6 opacity-80">
-                    <img src={project.logo} alt="" class="h-full object-contain brightness-0 invert" loading="lazy" />
+                    {#if project.logo}
+                      <img src={project.logo} alt="" class="h-full object-contain brightness-0 invert" loading="lazy" />
+                    {:else}
+                      <span class="text-base font-semibold text-white/50">{project.client}</span>
+                    {/if}
                   </div>
                   <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
-                    <a href="/projects/{project.id}" use:sfx class="text-left hover:text-[#706bfe] transition-colors focus-visible:underline focus:outline-none">
+                    <a href="/projects/{project.slug}" use:sfx class="text-left hover:text-[#706bfe] transition-colors focus-visible:underline focus:outline-none">
                       {project.title}
                     </a>
                   </h3>
@@ -237,7 +251,7 @@
                       <span class="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium border border-white/10">{tag}</span>
                     {/each}
                   </div>
-                  <p class="text-gray-400 text-base leading-relaxed max-w-lg">{project.description}</p>
+                  <p class="project-text text-gray-400 text-base leading-relaxed max-w-lg">{@html md(project.description)}</p>
                 </div>
               </div>
             </div>
@@ -259,10 +273,10 @@
         <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto">
           <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
           <p class="text-white/60 text-base leading-relaxed mb-8">
-            Je vous accompagne dans vos projets de <span class="text-[#706bfe]">IA</span>, de <span class="text-[#a78bfa]">design system</span>,
-            d'<span class="text-[#a78bfa]">interfaces complexes</span> et de <span class="text-[#a78bfa]">conseil stratégique</span> —
-            que vous soyez une <strong class="font-semibold text-white/80">startup</strong>, une <strong class="font-semibold text-white/80">scale-up</strong>,
-            une <strong class="font-semibold text-white/80">PME</strong> ou une <strong class="font-semibold text-white/80">grande entreprise</strong>.
+            Je vous accompagne dans vos projets de <strong class="font-medium text-[#706bfe]">IA</strong>, de <strong class="font-medium text-[#706bfe]">design system</strong>,
+            d'<strong class="font-medium text-[#706bfe]">interfaces complexes</strong> et de <strong class="font-medium text-[#706bfe]">conseil stratégique</strong> —
+            que vous soyez une <strong class="font-medium text-[#706bfe]">startup</strong>, une <strong class="font-medium text-[#706bfe]">scale-up</strong>,
+            une <strong class="font-medium text-[#706bfe]">PME</strong> ou une <strong class="font-medium text-[#706bfe]">grande entreprise</strong>.
           </p>
           <div class="flex flex-wrap justify-center gap-3 mb-8">
             <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">

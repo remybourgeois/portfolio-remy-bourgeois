@@ -5,6 +5,16 @@ export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({ fallback: '404.html' }),
-    prerender: { entries: ['/', '/home', '/projects'] }
+    prerender: {
+      entries: ['/', '/home', '/projects'],
+      handleHttpError: ({ path, message }) => {
+        // Ignore missing static assets (e.g. videos not yet committed)
+        if (path.startsWith('/assets/')) {
+          console.warn(`[prerender] asset not found — skipping: ${path}`);
+          return;
+        }
+        throw new Error(message);
+      }
+    }
   }
 };

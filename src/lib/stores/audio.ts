@@ -27,6 +27,13 @@ class AudioEngine {
   isGlobalMuted = false;
   sfxBuffers: Record<string, AudioBuffer> = {};
 
+  /**
+   * BGM is only allowed to play on the intro page (/).
+   * Set to true by startBGM/fadeInBGM, false by disableBGM.
+   * wakeUp() and resumeFromVisibility() check this flag before resuming BGM.
+   */
+  bgmActive = false;
+
   private ensureContext() {
     if (!this.ctx) {
       const AC = window.AudioContext || (window as any).webkitAudioContext;
@@ -84,13 +91,17 @@ class AudioEngine {
     } catch {}
   }
 
+  /** Resume AudioContext — only resumes BGM if it was already active on the intro. */
   wakeUp() {
     if (this.ctx?.state === 'suspended') this.ctx.resume();
-    if (this.bgmElement?.paused && !this.isGlobalMuted) this.bgmElement.play().catch(() => {});
+    if (this.bgmActive && this.bgmElement?.paused && !this.isGlobalMuted) {
+      this.bgmElement.play().catch(() => {});
+    }
   }
 
   startBGM() {
     if (!this.bgmElement) return;
+    this.bgmActive = true;
     if (!this.isInitialized) this.init();
     if (this.bgmGain) {
       this.bgmGain.gain.cancelScheduledValues(this.ctx!.currentTime);
@@ -110,6 +121,7 @@ class AudioEngine {
 
   fadeInBGM() {
     if (!this.bgmElement || !this.bgmGain || !this.ctx) return;
+    this.bgmActive = true;
     if (!this.isInitialized) this.init();
     this.bgmElement.currentTime = 0;
     this.bgmElement.play().catch(() => {});
@@ -118,6 +130,15 @@ class AudioEngine {
     this.bgmGain.gain.cancelScheduledValues(now);
     this.bgmGain.gain.setValueAtTime(0, now);
     this.bgmGain.gain.linearRampToValueAtTime(target, now + 2);
+  }
+
+  /**
+   * Called when navigating away from the intro page.
+   * Permanently disables BGM for this session (until a new intro is started).
+   */
+  disableBGM() {
+    this.bgmActive = false;
+    this.fadeOutBGM();
   }
 
   setGlobalMute(muted: boolean) {
@@ -139,6 +160,7 @@ class AudioEngine {
   }
 
   playRandomSFX() {
+    if (!this.bgmActive) return; // SFX uniquement pendant l'expérience intro
     const url = SFX_CLICKS[Math.floor(Math.random() * SFX_CLICKS.length)];
     this.playSound(url);
   }
@@ -204,10 +226,15 @@ class AudioEngine {
   }
 
   suspendForVisibility() { this.ctx?.suspend(); this.bgmElement?.pause(); }
+
+  /** Resume AudioContext on visibility — only resumes BGM if it was active on the intro. */
   resumeFromVisibility() {
     this.ctx?.resume();
-    if (this.bgmElement && !this.isGlobalMuted) this.bgmElement.play().catch(() => {});
+    if (this.bgmActive && this.bgmElement && !this.isGlobalMuted) {
+      this.bgmElement.play().catch(() => {});
+    }
   }
+
   destroy() { this.ctx?.close(); }
 }
 
@@ -228,11 +255,15 @@ function createAudioStore() {
     subscribe,
     engine,
     toggleMute() {
-      engine.init(); engine.wakeUp();
+      engine.init();
+      engine.wakeUp(); // safe: bgmActive check inside wakeUp
       engine.isGlobalMuted = !engine.isGlobalMuted;
       engine.setGlobalMute(engine.isGlobalMuted);
-      if (engine.isGlobalMuted) engine.fadeOutBGM();
-      else engine.startBGM();
+      if (engine.isGlobalMuted) {
+        engine.fadeOutBGM(); // mute: fade BGM without touching bgmActive
+      } else if (engine.bgmActive) {
+        engine.startBGM(); // unmute: only restart BGM if we're supposed to have it
+      }
       update(() => ({ isMuted: engine.isGlobalMuted }));
     }
   };
