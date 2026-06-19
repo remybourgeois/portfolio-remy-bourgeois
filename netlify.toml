@@ -11,3 +11,25 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Assets fingerprintés par Vite (nom hashé) → cache long immuable.
+[[headers]]
+  for = "/_app/immutable/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Médias (images, audio, vidéo) : noms non hashés → cache 7 jours
+# (une mise à jour d'asset peut rester en cache jusqu'à 7 j pour les visiteurs récurrents).
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# En-têtes de sécurité de base sur tout le site.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

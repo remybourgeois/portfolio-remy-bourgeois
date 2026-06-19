@@ -12,7 +12,7 @@
 body {
   margin: 0;
   background-color: var(--color-bg);
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, sans-serif;
   touch-action: pan-y pinch-zoom;
 }
 

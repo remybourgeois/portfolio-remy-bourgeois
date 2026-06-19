@@ -23,6 +23,7 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.2.8",
     "three": "^0.170.0"
   },
   "type": "module"

@@ -1,6 +1,7 @@
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import '../app.css';
+  import '@fontsource-variable/dm-sans'; // DM Sans auto-hébergée (plus de Google Fonts)
   import Nav from '$lib/components/Nav.svelte';
   import { audioStore } from '$lib/stores/audio';
   import { browser } from '$app/environment';
