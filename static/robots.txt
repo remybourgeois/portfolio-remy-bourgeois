@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://remybourgeois.netlify.app/sitemap.xml
+Sitemap: https://remybourgeois.com/sitemap.xml
