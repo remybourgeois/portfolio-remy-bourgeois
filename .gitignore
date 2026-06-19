@@ -10,3 +10,7 @@ dist/
 .superpowers/
 .claude/
 test-results/
+
+# Artefacts de travail locaux (planning, explorations design) — pas dans le repo public
+designs/
+docs/
