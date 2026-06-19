@@ -4,6 +4,7 @@
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
+  import { projectSrcset } from '$lib/utils/img';
 </script>
 
 <svelte:head>
@@ -62,6 +63,8 @@
             {:else if project.image || project.media?.length}
               <img
                 src={project.image || project.media![0].src}
+                srcset={projectSrcset(project.image || project.media![0].src)}
+                sizes="(min-width: 768px) 50vw, 100vw"
                 alt=""
                 width="1920"
                 height="1080"

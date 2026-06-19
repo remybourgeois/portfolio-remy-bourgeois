@@ -11,6 +11,7 @@
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
   import { md } from '$lib/utils/text';
+  import { projectSrcset } from '$lib/utils/img';
 
   const homeProjectIds = [8, 1, 3, 4];
   const homeProjects = homeProjectIds
@@ -276,7 +277,7 @@
                     {#if project.video}
                       <video src={project.video} autoplay loop muted playsinline aria-hidden="true" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl"></video>
                     {:else if project.image || project.media?.length}
-                      <img src={project.image || project.media![0].src} alt="" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
+                      <img src={project.image || project.media![0].src} srcset={projectSrcset(project.image || project.media![0].src)} sizes="(min-width: 1024px) 50vw, 100vw" alt="" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
                     {:else}
                       <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
                     {/if}

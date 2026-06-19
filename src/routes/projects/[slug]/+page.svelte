@@ -5,6 +5,7 @@
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
   import { md } from '$lib/utils/text';
+  import { projectSrcset } from '$lib/utils/img';
 
   const { data }: { data: PageData } = $props();
   const project = $derived(data.project);
@@ -191,7 +192,8 @@
             <track kind="captions" src="" label="Captions" />
           </video>
         {:else}
-          <img src={lbSlide.src} alt={lbCaption ?? project.title}
+          <img src={lbSlide.src} srcset={projectSrcset(lbSlide.src)} sizes="100vw"
+               alt={lbCaption ?? project.title}
                width="1920" height="1080"
                class="max-w-full max-h-[78vh] object-contain rounded-xl" />
         {/if}
@@ -318,6 +320,8 @@
               {:else}
                 <img
                   src={slide.src}
+                  srcset={projectSrcset(slide.src)}
+                  sizes="(min-width: 1024px) 1024px, 100vw"
                   alt={slide.caption ?? ''}
                   loading={i === 0 ? 'eager' : 'lazy'}
                   width="1920" height="1080"
@@ -397,7 +401,7 @@
 
       <!-- Description principale -->
       <div class="pl-5 border-l border-white/[0.1]">
-        <p class="text-[9px] uppercase tracking-[0.25em] text-white/25 font-semibold mb-4">Contexte</p>
+        <p class="text-[9px] uppercase tracking-[0.25em] text-white/45 font-semibold mb-4">Contexte</p>
         <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
           {@html md(project.description)}
         </p>
@@ -445,7 +449,7 @@
         >
           <Icon name="ArrowLeft" size={15} className="text-white/30 group-hover:text-white/80 transition-colors flex-shrink-0" />
           <div class="min-w-0">
-            <div class="text-[9px] text-white/25 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
+            <div class="text-[9px] text-white/45 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
             <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{prev.title}</div>
           </div>
         </a>
@@ -463,7 +467,7 @@
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
           <div class="min-w-0">
-            <div class="text-[9px] text-white/25 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
+            <div class="text-[9px] text-white/45 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
             <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{next.title}</div>
           </div>
           <Icon name="ArrowRight" size={15} className="text-white/30 group-hover:text-white/80 transition-colors flex-shrink-0" />
