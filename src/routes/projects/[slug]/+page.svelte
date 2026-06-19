@@ -57,22 +57,45 @@
   });
 
   // ── Lightbox ───────────────────────────────────────────────────────────────
-  let lbOpen  = $state(false);
-  let lbIndex = $state(0);
+  let lbOpen    = $state(false);
+  let lbIndex   = $state(0);
+  let lbCloseEl = $state<HTMLButtonElement | null>(null);
+  let lbTrigger: HTMLButtonElement | null = null;
 
   const lbSlide   = $derived(slides[lbIndex]);
   const lbCaption = $derived(slides[lbIndex]?.caption ?? null);
   const lbBadge   = $derived(slides.length > 1 ? `${lbIndex + 1} / ${slides.length}` : null);
 
-  function openSlide(i: number) {
-    lbIndex = i;
-    lbOpen  = true;
+  function openSlide(i: number, trigger?: HTMLButtonElement) {
+    lbTrigger = trigger ?? null;
+    lbIndex   = i;
+    lbOpen    = true;
     lockScroll(true);
+    // Focus déplacé vers "Fermer" après le rendu
+    setTimeout(() => lbCloseEl?.focus(), 50);
   }
 
   function closeLightbox() {
     lbOpen = false;
     lockScroll(false);
+    lbTrigger?.focus();
+  }
+
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab' || !lbCloseEl) return;
+    const dialog = lbCloseEl.closest('[role="dialog"]') as HTMLElement;
+    if (!dialog) return;
+    const focusable = [...dialog.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), a[href], input, [tabindex]:not([tabindex="-1"])'
+    )];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
   }
 
   function lbPrev() { if (lbIndex > 0) lbIndex--; }
@@ -88,6 +111,7 @@
   if (e.key === 'Escape')     closeLightbox();
   if (e.key === 'ArrowLeft')  lbPrev();
   if (e.key === 'ArrowRight') lbNext();
+  trapFocus(e);
 }} />
 
 <svelte:head>
@@ -97,8 +121,14 @@
   <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
   <meta property="og:title" content="{project.title} — Rémy Bourgeois" />
   <meta property="og:description" content={project.description.replace(/\*\*/g, '').slice(0, 160)} />
-  <meta property="og:image" content="{SITE_URL}{project.image || project.media?.[0]?.src || ''}" />
+  <meta property="og:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:url" content="{SITE_URL}/projects/{project.slug}" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta name="twitter:url" content="{SITE_URL}/projects/{project.slug}" />
 </svelte:head>
 
 <!-- ─── Lightbox ─────────────────────────────────────────────────────────── -->
@@ -125,9 +155,10 @@
         {/if}
       </div>
       <button
+        bind:this={lbCloseEl}
         class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-white/50 hover:text-white text-xs transition-all"
         onclick={closeLightbox}
-        aria-label="Fermer"
+        aria-label="Fermer la lightbox"
       >
         <Icon name="X" size={13} /> Fermer
       </button>
@@ -155,11 +186,13 @@
         {#if lbSlide.type === 'video'}
           <!-- svelte-ignore a11y_media_has_caption -->
           <video src={lbSlide.src} controls autoplay
+                 width="1920" height="1080"
                  class="max-w-full max-h-[78vh] object-contain rounded-xl">
             <track kind="captions" src="" label="Captions" />
           </video>
         {:else}
-          <img src={lbSlide.src} alt={lbCaption ?? ''}
+          <img src={lbSlide.src} alt={lbCaption ?? project.title}
+               width="1920" height="1080"
                class="max-w-full max-h-[78vh] object-contain rounded-xl" />
         {/if}
       </div>
@@ -181,7 +214,7 @@
 {/if}
 
 <!-- ─── Page ──────────────────────────────────────────────────────────────── -->
-<div class="min-h-screen bg-[#020205] text-white">
+<main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-5xl mx-auto px-6 pt-28 pb-24">
 
     <!-- Retour -->
@@ -216,10 +249,14 @@
           </span>
         {/if}
 
+        <h1 class="text-xl md:text-2xl font-semibold text-white/80 leading-snug">
+          {project.title}
+        </h1>
+
         {#if project.tags.length > 0}
           <div class="flex flex-wrap gap-2">
             {#each project.tags as tag}
-              <span class="px-3 py-1 rounded-full bg-white/[0.05] text-white/45 text-[11px] font-medium border border-white/[0.1]">
+              <span class="px-3 py-1 rounded-full bg-white/[0.05] text-white/65 text-[11px] font-medium border border-white/[0.1]">
                 {tag}
               </span>
             {/each}
@@ -234,13 +271,13 @@
                     border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0">
           {#if project.role}
             <div>
-              <div class="text-[9px] uppercase tracking-[0.2em] text-white/20 mb-1">Rôle</div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-1">Rôle</div>
               <div class="text-[13px] text-[#706bfe]/80 font-medium leading-snug">{project.role}</div>
             </div>
           {/if}
           {#if project.year}
             <div>
-              <div class="text-[9px] uppercase tracking-[0.2em] text-white/20 mb-1">Année</div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-1">Année</div>
               <div class="text-[13px] text-white/60 font-mono">{project.year}</div>
             </div>
           {/if}
@@ -265,7 +302,7 @@
           {#each slides as slide, i}
             <button
               class="flex-[0_0_100%] flex items-center justify-center p-6 md:p-10 min-h-[380px] md:min-h-[500px] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-              onclick={() => openSlide(i)}
+              onclick={(e) => openSlide(i, e.currentTarget as HTMLButtonElement)}
               tabindex={i === carIndex ? 0 : -1}
               aria-label="Voir en plein écran"
             >
@@ -274,6 +311,8 @@
                   src={slide.src}
                   poster={slide.poster}
                   autoplay loop muted playsinline
+                  aria-hidden="true"
+                  width="1920" height="1080"
                   class="max-w-full max-h-[65vh] object-contain pointer-events-none"
                 ></video>
               {:else}
@@ -281,6 +320,7 @@
                   src={slide.src}
                   alt={slide.caption ?? ''}
                   loading={i === 0 ? 'eager' : 'lazy'}
+                  width="1920" height="1080"
                   class="max-w-full max-h-[65vh] object-contain pointer-events-none"
                 />
               {/if}
@@ -309,7 +349,7 @@
                    bg-black/40 backdrop-blur-sm border border-white/10
                    flex items-center justify-center text-white/50
                    hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
-                   transition-all z-10 opacity-0 group-hover:opacity-100"
+                   transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
             onclick={(e) => { e.stopPropagation(); carPrev(); }}
             aria-label="Précédent"
           >
@@ -320,7 +360,7 @@
                    bg-black/40 backdrop-blur-sm border border-white/10
                    flex items-center justify-center text-white/50
                    hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
-                   transition-all z-10 opacity-0 group-hover:opacity-100"
+                   transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
             onclick={(e) => { e.stopPropagation(); carNext(); }}
             aria-label="Suivant"
           >
@@ -434,7 +474,7 @@
     </div>
 
   </div>
-</div>
+</main>
 
 <style>
   .lb-enter {

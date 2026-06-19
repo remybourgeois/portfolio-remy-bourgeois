@@ -4,7 +4,7 @@ export const CLIENT_LOGOS: string[] = [
   '/assets/aldebaran.svg',
   '/assets/lagardere.png',
   '/assets/ca.png',
-  '/assets/canal.png',
+  '/assets/canal.webp',
   '/assets/ce.png',
   '/assets/edf.png',
   '/assets/ipify.png',

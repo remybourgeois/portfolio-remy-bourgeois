@@ -69,8 +69,8 @@ export const PROJECTS: Project[] = [
     role: 'Senior Product Designer',
     year: '2023 – 2024',
     media: [
-      { type: 'image', src: '/assets/portfolio-ipify-ai.png', span: 2, caption: 'IA Conversationnelle' },
-      { type: 'image', src: '/assets/portfolio-ipify-interface.png', span: 2, caption: 'Portail & Design System' }
+      { type: 'image', src: '/assets/portfolio-ipify-ai.webp', span: 2, caption: 'IA Conversationnelle' },
+      { type: 'image', src: '/assets/portfolio-ipify-interface.webp', span: 2, caption: 'Portail & Design System' }
     ]
   },
   {
@@ -87,7 +87,7 @@ export const PROJECTS: Project[] = [
     outcome:
       'Pour rendre l\'expérience fluide et vivante, j\'ai dû sortir des grilles traditionnelles et orchestrer une **UX multimodale**, mêlant design d\'interface embarquée, comportements physiques, scénarisation voix (**VUI**) et sound design.\n\n• **Déploiement massif** — Mes applications ont été embarquées sur des milliers de robots expédiés dans **plus de 70 pays**.\n• **Traction B2B2C** — Des expériences utilisées par **plusieurs millions de personnes** chaque mois dans des contextes de Retail et d\'Hospitality de pointe.\n• **Pionnier de l\'IA** — Ces 7 années passées à "humaniser" la logique d\'une machine ont posé les fondations de mon expertise actuelle. J\'y ai appris la mécanique profonde du **design conversationnel**, bien avant l\'ère des LLMs.',
     color: '#00857e',
-    image: '/assets/portfolio-aldebaran.png',
+    image: '/assets/portfolio-aldebaran.webp',
     role: 'Designer d\'Interaction',
     year: '2013 – 2020'
   },
@@ -109,9 +109,9 @@ export const PROJECTS: Project[] = [
     role: 'Lead UI & Référent Design System',
     year: '2021 – 2024',
     media: [
-      { type: 'image', src: '/assets/portfolio-ca-portail-client.png', span: 2, caption: 'Portail client credit-agricole.fr' },
-      { type: 'image', src: '/assets/portfolio-ca-app-mobile.png', span: 1, caption: 'App mobile Ma Banque' },
-      { type: 'image', src: '/assets/portfolio-ca-design-system.png', span: 1, caption: 'Design System' }
+      { type: 'image', src: '/assets/portfolio-ca-portail-client.webp', span: 2, caption: 'Portail client credit-agricole.fr' },
+      { type: 'image', src: '/assets/portfolio-ca-app-mobile.webp', span: 1, caption: 'App mobile Ma Banque' },
+      { type: 'image', src: '/assets/portfolio-ca-design-system.webp', span: 1, caption: 'Design System' }
     ]
   },
   {
@@ -128,7 +128,7 @@ export const PROJECTS: Project[] = [
     outcome:
       'Pour résoudre cette équation de scalabilité, j\'ai construit une **architecture "multi-thème"** de dernière génération :\n\n• **Architecture orientée Tokens** — Structuration de l\'intégralité de l\'UI autour de **Design Tokens** et de variables sémantiques (couleurs, typographies, espacements, effets/élévations).\n• **Scalabilité par les "Modes"** — Exploitation de la pleine puissance des modes Figma pour créer un système où chaque marque cliente agit comme un **"calque" de personnalisation**. La structure reste identique, seul l\'habillage visuel bascule dynamiquement.\n• **Gouvernance & Implémentation** — Alignement total avec l\'ingénierie pour s\'assurer que l\'architecture des tokens dans Figma reflète exactement l\'architecture du code (CSS/JSON).\n\nL\'impact ? Le **Time-to-Market** pour déployer une nouvelle marque blanche est passé de plusieurs semaines d\'intégration à **quelques jours seulement**.',
     color: '#00857e',
-    image: '/assets/portfolio-highlight-design-sytem.png',
+    image: '/assets/portfolio-highlight-design-sytem.webp',
     role: 'Senior Product Designer & Architecte Design System',
     year: '2024'
   }

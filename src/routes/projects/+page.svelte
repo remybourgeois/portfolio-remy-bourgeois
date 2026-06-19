@@ -13,11 +13,16 @@
   <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
   <meta property="og:title" content="Projets — Rémy Bourgeois" />
   <meta property="og:description" content="Design System, IA conversationnelle, interfaces complexes — 14 ans de travail condensé." />
-  <meta property="og:image" content="{SITE_URL}/assets/1_Photo%20Remy%20Bourgeois%20Pro.jpg" />
+  <meta property="og:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:url" content="{SITE_URL}/projects" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
 </svelte:head>
 
-<div class="min-h-screen bg-[#020205] text-white">
+<main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
 
     <header class="mb-16">
@@ -50,12 +55,16 @@
                 loop
                 muted
                 playsinline
+                width="1920"
+                height="1080"
                 class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
               ></video>
             {:else if project.image || project.media?.length}
               <img
                 src={project.image || project.media![0].src}
                 alt=""
+                width="1920"
+                height="1080"
                 class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
               />
@@ -91,4 +100,4 @@
     </div>
 
   </div>
-</div>
+</main>

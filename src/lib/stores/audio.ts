@@ -2,14 +2,11 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-const BGM_URL = '/assets/music-background.ogg';
-const SFX_CLICKS = [
-  '/assets/sfx-1.ogg','/assets/sfx-2.ogg','/assets/sfx-3.ogg',
-  '/assets/sfx-4.ogg','/assets/sfx-5.ogg','/assets/sfx-6.ogg',
-  '/assets/sfx-7.ogg','/assets/sfx-8.ogg','/assets/sfx-9.ogg'
-];
-export const SFX_SUCCESS = '/assets/sfx-success.ogg';
-export const SFX_BACK    = '/assets/sfx-back.ogg';
+// MP3 is universally supported (Chrome, Firefox, Safari, iOS) — no detection needed
+const BGM_URL = '/assets/music-background.mp3';
+export const SFX_CLICKS = [1,2,3,4,5,6,7,8,9].map(n => `/assets/sfx-${n}.mp3`);
+export const SFX_SUCCESS = '/assets/sfx-success.mp3';
+export const SFX_BACK    = '/assets/sfx-back.mp3';
 
 class AudioEngine {
   ctx: AudioContext | null = null;
@@ -25,43 +22,55 @@ class AudioEngine {
   bgmVolume = 0.8;
   sfxVolume = 0.5;
   isGlobalMuted = false;
+  isBGMSuppressed = false;
   sfxBuffers: Record<string, AudioBuffer> = {};
-
-  /**
-   * BGM is only allowed to play on the intro page (/).
-   * Set to true by startBGM/fadeInBGM, false by disableBGM.
-   * wakeUp() and resumeFromVisibility() check this flag before resuming BGM.
-   */
   bgmActive = false;
 
-  private ensureContext() {
-    if (!this.ctx) {
-      const AC = window.AudioContext || (window as any).webkitAudioContext;
-      this.ctx = new AC();
-      this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.value = this.isGlobalMuted ? 0 : 0.15;
-      this.masterGain.connect(this.ctx.destination);
-      this.bgmGain = this.ctx.createGain();
-      this.bgmGain.gain.value = this.bgmVolume;
-      this.bgmGain.connect(this.masterGain);
-    }
+  // Raw ArrayBuffers fetched before any AudioContext exists (iOS-safe)
+  private rawSFX: Record<string, ArrayBuffer> = {};
+
+  private createContext() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || (window as any).webkitAudioContext;
+    this.ctx = new AC();
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = this.isGlobalMuted ? 0 : 0.15;
+    this.masterGain.connect(this.ctx.destination);
+    this.bgmGain = this.ctx.createGain();
+    this.bgmGain.gain.value = this.bgmVolume;
+    this.bgmGain.connect(this.masterGain);
   }
 
+  // Phase 1 — called at startup, NO AudioContext needed
   async loadSFX(urls: string[]) {
-    this.ensureContext();
     await Promise.all(urls.map(async (url) => {
       try {
         const res = await fetch(url);
         if (!res.ok) return;
-        const ab = await res.arrayBuffer();
-        this.sfxBuffers[url] = await this.ctx!.decodeAudioData(ab);
-      } catch (e) { console.warn(`SFX load error ${url}`, e); }
+        this.rawSFX[url] = await res.arrayBuffer();
+      } catch (e) { console.warn(`SFX fetch error ${url}`, e); }
     }));
   }
 
+  // Phase 2 — called from init() which runs inside a user gesture
+  private async decodeSFX() {
+    if (!this.ctx) return;
+    const urls = Object.keys(this.rawSFX);
+    console.log('[Audio] decodeSFX — decoding', urls.length, 'files');
+    await Promise.all(Object.entries(this.rawSFX).map(async ([url, ab]) => {
+      try {
+        this.sfxBuffers[url] = await this.ctx!.decodeAudioData(ab.slice(0));
+      } catch (e) { console.warn(`[Audio] SFX decode error ${url}`, e); }
+    }));
+    console.log('[Audio] decodeSFX — done, buffers:', Object.keys(this.sfxBuffers).length);
+  }
+
+  // Must be called inside a user gesture handler (tap/click)
   init() {
     if (this.isInitialized) return;
-    this.ensureContext();
+    this.createContext();          // create context IN the gesture
+    this.ctx!.resume();            // resume synchronously IN the gesture chain (iOS requirement)
+    console.log('[Audio] init — ctx state:', this.ctx!.state, 'sampleRate:', this.ctx!.sampleRate);
     const bufferSize = this.ctx!.sampleRate * 2;
     const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
     const data = buffer.getChannelData(0);
@@ -75,7 +84,10 @@ class AudioEngine {
     this.staticBuffer = buffer;
     if (this.bgmElement && !this.bgmSourceNode) this.connectBGM();
     this.isInitialized = true;
+    this.decodeSFX(); // async decode now that context exists — ready well before next click
   }
+
+  markBGMActive() { this.bgmActive = true; }
 
   setupBGM(url: string) {
     this.bgmElement = new Audio(url);
@@ -91,7 +103,6 @@ class AudioEngine {
     } catch {}
   }
 
-  /** Resume AudioContext — only resumes BGM if it was already active on the intro. */
   wakeUp() {
     if (this.ctx?.state === 'suspended') this.ctx.resume();
     if (this.bgmActive && this.bgmElement?.paused && !this.isGlobalMuted) {
@@ -103,10 +114,11 @@ class AudioEngine {
     if (!this.bgmElement) return;
     this.bgmActive = true;
     if (!this.isInitialized) this.init();
-    if (this.bgmGain) {
-      this.bgmGain.gain.cancelScheduledValues(this.ctx!.currentTime);
+    if (this.bgmGain && this.ctx) {
+      this.bgmGain.gain.cancelScheduledValues(this.ctx.currentTime);
       this.bgmGain.gain.value = this.isGlobalMuted ? 0 : this.bgmVolume;
     }
+    // play() called synchronously inside the user gesture — iOS autoplay policy satisfied
     this.bgmElement.play().catch(() => {});
   }
 
@@ -132,10 +144,6 @@ class AudioEngine {
     this.bgmGain.gain.linearRampToValueAtTime(target, now + 2);
   }
 
-  /**
-   * Called when navigating away from the intro page.
-   * Permanently disables BGM for this session (until a new intro is started).
-   */
   disableBGM() {
     this.bgmActive = false;
     this.fadeOutBGM();
@@ -150,17 +158,24 @@ class AudioEngine {
 
   playSound(url: string) {
     if (!this.ctx || !this.sfxBuffers[url] || this.isGlobalMuted) return;
-    const src = this.ctx.createBufferSource();
-    src.buffer = this.sfxBuffers[url];
-    const gain = this.ctx.createGain();
-    gain.gain.value = this.sfxVolume;
-    src.connect(gain);
-    gain.connect(this.masterGain!);
-    src.start(0);
+    const play = () => {
+      const src = this.ctx!.createBufferSource();
+      src.buffer = this.sfxBuffers[url];
+      const gain = this.ctx!.createGain();
+      gain.gain.value = this.sfxVolume;
+      src.connect(gain);
+      gain.connect(this.masterGain!);
+      src.start(0);
+    };
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume().then(play).catch(() => {});
+    } else {
+      play();
+    }
   }
 
   playRandomSFX() {
-    if (!this.bgmActive) return; // SFX uniquement pendant l'expérience intro
+    if (!this.bgmActive) return;
     const url = SFX_CLICKS[Math.floor(Math.random() * SFX_CLICKS.length)];
     this.playSound(url);
   }
@@ -191,43 +206,60 @@ class AudioEngine {
   }
 
   playIntro() {
+    console.log('[Audio] playIntro — init:', this.isInitialized, 'ctx:', this.ctx?.state, 'muted:', this.isGlobalMuted, 'buf:', !!this.staticBuffer);
     if (!this.isInitialized || !this.ctx || this.isGlobalMuted) return;
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    const t = this.ctx.currentTime;
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = this.staticBuffer;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(200, t);
-    filter.frequency.linearRampToValueAtTime(800, t + 1);
-    filter.frequency.exponentialRampToValueAtTime(100, t + 2.5);
-    const noiseGain = this.ctx.createGain();
-    noiseGain.gain.setValueAtTime(0, t);
-    noiseGain.gain.linearRampToValueAtTime(0.4 * this.sfxVolume, t + 0.5);
-    noiseGain.gain.linearRampToValueAtTime(0, t + 2.5);
-    noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(this.masterGain!);
-    noise.start(); noise.stop(t + 3);
+    if (!this.staticBuffer) { console.warn('[Audio] playIntro — staticBuffer null'); return; }
+    const doPlay = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      console.log('[Audio] playIntro doPlay — ctx state:', this.ctx.state, 't:', t);
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = this.staticBuffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(200, t);
+      filter.frequency.linearRampToValueAtTime(800, t + 1);
+      filter.frequency.exponentialRampToValueAtTime(100, t + 2.5);
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0, t);
+      noiseGain.gain.linearRampToValueAtTime(0.4 * this.sfxVolume, t + 0.5);
+      noiseGain.gain.linearRampToValueAtTime(0, t + 2.5);
+      noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(this.masterGain!);
+      noise.start(); noise.stop(t + 3);
+    };
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume().then(doPlay).catch(() => {});
+    } else {
+      doPlay();
+    }
   }
 
   playReset() {
     if (this.sfxBuffers[SFX_BACK]) { this.playSound(SFX_BACK); return; }
     if (!this.ctx || this.isGlobalMuted) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const g = this.ctx.createGain();
-    osc.connect(g); g.connect(this.masterGain!);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(440, t);
-    osc.frequency.setValueAtTime(330, t + 0.1);
-    osc.frequency.setValueAtTime(220, t + 0.2);
-    g.gain.setValueAtTime(0.15 * this.sfxVolume, t);
-    g.gain.linearRampToValueAtTime(0, t + 0.5);
-    osc.start(t); osc.stop(t + 0.5);
+    const doPlay = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.connect(g); g.connect(this.masterGain!);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, t);
+      osc.frequency.setValueAtTime(330, t + 0.1);
+      osc.frequency.setValueAtTime(220, t + 0.2);
+      g.gain.setValueAtTime(0.15 * this.sfxVolume, t);
+      g.gain.linearRampToValueAtTime(0, t + 0.5);
+      osc.start(t); osc.stop(t + 0.5);
+    };
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume().then(doPlay).catch(() => {});
+    } else {
+      doPlay();
+    }
   }
 
   suspendForVisibility() { this.ctx?.suspend(); this.bgmElement?.pause(); }
 
-  /** Resume AudioContext on visibility — only resumes BGM if it was active on the intro. */
   resumeFromVisibility() {
     this.ctx?.resume();
     if (this.bgmActive && this.bgmElement && !this.isGlobalMuted) {
@@ -245,10 +277,11 @@ function createAudioStore() {
   const engine = new AudioEngine();
   engine.setupBGM(BGM_URL);
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  if (isMobile) engine.setGlobalMute(true);
+  // isBGMSuppressed removed — startBGM is called synchronously inside the user gesture, iOS accepts it
 
-  const { subscribe, update } = writable({ isMuted: isMobile });
+  const { subscribe, update } = writable({ isMuted: false });
 
+  // Only fetch raw bytes here — NO AudioContext created (iOS requires context inside gesture)
   engine.loadSFX([...SFX_CLICKS, SFX_SUCCESS, SFX_BACK]);
 
   return {
@@ -256,13 +289,13 @@ function createAudioStore() {
     engine,
     toggleMute() {
       engine.init();
-      engine.wakeUp(); // safe: bgmActive check inside wakeUp
+      engine.wakeUp();
       engine.isGlobalMuted = !engine.isGlobalMuted;
       engine.setGlobalMute(engine.isGlobalMuted);
       if (engine.isGlobalMuted) {
-        engine.fadeOutBGM(); // mute: fade BGM without touching bgmActive
+        engine.fadeOutBGM();
       } else if (engine.bgmActive) {
-        engine.startBGM(); // unmute: only restart BGM if we're supposed to have it
+        engine.startBGM();
       }
       update(() => ({ isMuted: engine.isGlobalMuted }));
     }

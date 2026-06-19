@@ -57,24 +57,27 @@ body {
 .shadow-image-modal { filter: drop-shadow(0 0 40px rgba(112,107,254,0.6)); }
 .shadow-expert { box-shadow: 0 0 50px rgba(112,107,254,0.05); }
 
-/* Termes mis en avant dans les textes de projet */
-.project-text strong {
+/* Termes mis en avant — style unifié sur toute l'interface */
+.project-text strong,
+.body-text strong {
   color: #a8a5ff;
   font-weight: 500;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
-  @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
-  @keyframes spin    { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-  @keyframes pulse-scale { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
+@keyframes slideUp    { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn     { from { opacity:0; } to { opacity:1; } }
+@keyframes marquee    { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
+@keyframes spin       { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+@keyframes pulse-scale { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
 
-  .animate-marquee    { animation: marquee 50s linear infinite; }
-  .animate-spin-slow  { animation: spin 3s linear infinite; }
-  .animate-pulse-scale{ animation: pulse-scale 0.3s ease-out; }
-  .animate-pulse-slow { animation: pulse-scale 2s ease-in-out infinite; }
-}
+.animate-marquee     { animation: marquee 15s linear infinite; }
+.marquee-track       { filter: brightness(0) invert(1); transform: translate3d(0,0,0); }
+.animate-spin-slow   { animation: spin 3s linear infinite; }
+.animate-pulse-scale { animation: pulse-scale 0.3s ease-out; }
+.animate-pulse-slow  { animation: pulse-scale 2s ease-in-out infinite; }
+
+@media (min-width: 640px)  { .animate-marquee { animation-duration: 25s; } }
+@media (min-width: 1024px) { .animate-marquee { animation-duration: 40s; } }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse {

@@ -6,6 +6,8 @@
   import { browser } from '$app/environment';
   import { onNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { SITE_URL } from '$lib/data/site';
 
   onMount(() => {
     if (!browser) return;
@@ -45,7 +47,17 @@
 
 <svelte:head>
   <meta name="author" content="Rémy Bourgeois" />
+  <link rel="canonical" href="{SITE_URL}{$page.url.pathname}" />
 </svelte:head>
 
+<!-- Skip link : sur l'intro (pas de #main-content) on saute directement au portfolio -->
+<a
+  href={$page.url.pathname === '/' ? '/home' : '#main-content'}
+  class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999]
+         focus:px-4 focus:py-2 focus:rounded-full focus:bg-[#706bfe] focus:text-white
+         focus:text-sm focus:font-medium focus:outline-none"
+>
+  {$page.url.pathname === '/' ? 'Accéder au portfolio' : 'Passer au contenu'}
+</a>
 <Nav />
 <slot />

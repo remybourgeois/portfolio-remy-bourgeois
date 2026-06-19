@@ -16,7 +16,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Design System Manager',
     company: 'Crédit Agricole',
     logo: '/assets/ca.png',
-    image: '/assets/melanie.png',
+    image: '/assets/melanie.webp',
     text: "Rémy est dans le chapitre UX/UI depuis presque 3 ans et c'est un plaisir. Rémy est un collègue agréable au quotidien. En tant que designer, il a toujours de bonnes idées, il est pertinent et précis. Il challenge toujours en bonne intelligence et c'est agréable d'échanger sur toutes sortes de sujet UI 🙂"
   },
   {
@@ -25,7 +25,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Head of Product',
     company: 'Ofelia',
     logo: '/assets/ofelia.svg',
-    image: '/assets/aure.png',
+    image: '/assets/aure.webp',
     text: "Collab en cours… et on ne lâche pas une équipe qui gagne ! 💥 Depuis plusieurs mois, Remy nous accompagne dans un projet produit stratégique et exigeant (IA, conversationnel, refonte UX complète). Vrai copilote de l'équipe produit, il nous aide à structurer ce qu'il y a à faire, à créer les bons artefacts pour tester rapidement et faire avancer nos idées."
   },
   {
@@ -33,8 +33,8 @@ export const TESTIMONIALS: Testimonial[] = [
     name: 'Vincent Rabaud',
     role: 'Senior Software Engineer',
     company: 'Google',
-    logo: '/assets/google.png',
-    image: '/assets/vincent.jpeg',
+    logo: '/assets/google.webp',
+    image: '/assets/vincent.webp',
     text: "I co-managed Rémy on sound design projects. His job was hard, as he had to come up with ideas, implement them and even advertise them. Apart from his technical expertise, Rémy is also creative and able to translate clients' will into a successful product. Working with him was also a pleasure."
   },
   {
@@ -43,7 +43,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Product Owner',
     company: 'Hoomano',
     logo: '/assets/hoomano.png',
-    image: '/assets/ali.jpeg',
+    image: '/assets/ali.webp',
     text: "J'ai eu la chance de travailler avec Rémy dans un contexte particulièrement agile et innovant. Rémy a toujours étonné par sa capacité à retranscrire de manière très efficace et pragmatique les besoins clients en fonctionnalités applicatives. Sa capacité à convaincre et faire adhérer à ces idées font de lui un excellent Designer."
   },
   {
@@ -61,7 +61,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'VP Product',
     company: 'iPify',
     logo: '/assets/ipify.png',
-    image: '/assets/daniil.jpeg',
+    image: '/assets/daniil.webp',
     text: "Rémy quickly grasped our complex business domain and delivered visually compelling prototypes for new features. He also led client-facing UX workshops and managed to gather an invaluable feedback. Self-directed and hardworking, he consistently produces outstanding results."
   }
 ];

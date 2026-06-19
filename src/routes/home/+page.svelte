@@ -19,7 +19,11 @@
   const marqueeItems = [...CLIENT_LOGOS, ...CLIENT_LOGOS];
 
   let expandedTestimonial = $state<number | null>(null);
-  let scrollY = $state(0);
+  let showTopBtn = $state(false);
+  let topSentinel: HTMLDivElement;
+
+  // Photo micro-interaction: glow + scale
+  let photoHovered = $state(false);
 
   const impacts = [
     { value: 14, suffix: '+',  label: "Années d'expérience" },
@@ -29,9 +33,14 @@
   ];
 
   onMount(() => {
-    const onScroll = () => { scrollY = window.scrollY; };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    // Bouton « back-to-top » : visible une fois la sentinelle (~400px) dépassée.
+    // IntersectionObserver plutôt qu'un listener scroll déclenché à chaque frame.
+    const io = new IntersectionObserver(
+      ([entry]) => { showTopBtn = !entry.isIntersecting; },
+      { rootMargin: '0px' }
+    );
+    io.observe(topSentinel);
+    return () => io.disconnect();
   });
 
   function scrollToTop() {
@@ -46,38 +55,80 @@
   <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
   <meta property="og:title" content="Rémy Bourgeois — Senior Product Designer & Expert IA" />
   <meta property="og:description" content="Senior Product Designer basé à Lyon. Expert Design System, IA Conversationnelle, interfaces complexes SaaS B2B. 14+ ans d'expérience." />
-  <meta property="og:image" content="{SITE_URL}/assets/1_Photo%20Remy%20Bourgeois%20Pro.jpg" />
+  <meta property="og:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:url" content="{SITE_URL}/home" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta name="twitter:url" content="{SITE_URL}/home" />
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Rémy Bourgeois",
+    "jobTitle": "Senior Product Designer",
+    "description": "Senior Product Designer basé à Lyon, expert en Design System, IA Conversationnelle et interfaces complexes SaaS B2B. 14+ ans d'expérience.",
+    "url": SITE_URL + "/home",
+    "image": SITE_URL + "/assets/remy-bourgeois.webp",
+    "email": "remy.bourgeois@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Lyon", "addressCountry": "FR" },
+    "sameAs": ["https://www.linkedin.com/in/remy-bourgeois/"],
+    "knowsAbout": ["Product Design", "Design System", "Intelligence Artificielle", "UX/UI", "SaaS B2B"]
+  })}</script>`}
 </svelte:head>
 
-<div class="min-h-screen bg-[#020205] text-white">
+<div class="relative min-h-screen bg-[#020205] text-white">
+
+  <!-- Sentinelle pour le bouton back-to-top (≈400px du haut) -->
+  <div bind:this={topSentinel} class="absolute top-[400px] left-0 w-px h-px pointer-events-none" aria-hidden="true"></div>
 
   <!-- Barre top : Recommencer + Lien établi -->
-  <div class="fixed top-0 w-full z-50 px-6 py-4 flex items-center justify-between pointer-events-none">
+  <div class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 pointer-events-none">
     <a
       href="/"
       use:sfx
-      class="pointer-events-auto flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-4 py-2 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+      class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-white/60 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
     >
-      <Icon name="RefreshCw" size={12} />
-      <span>Recommencer l'expérience</span>
+      <Icon name="RefreshCw" size={11} />
+      <span class="whitespace-nowrap">Recommencer l'expérience</span>
     </a>
-    <div class="pointer-events-auto flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
-      <div class="w-2 h-2 rounded-full shadow-[0_0_10px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
-      <span class="text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
+    <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-3 sm:px-4 py-2 rounded-full">
+      <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shadow-[0_0_8px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
+      <span class="whitespace-nowrap text-white/60 text-[11px] sm:text-xs font-mono uppercase tracking-wider">Lien établi</span>
     </div>
   </div>
 
-  <main class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40">
+  <main id="main-content" class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40">
 
     <!-- Hero -->
     <RevealOnScroll>
       <div class="w-full flex flex-col md:flex-row gap-8 items-center justify-center mb-12">
-        <div class="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl flex-shrink-0">
-          <img src="/assets/remy-bourgeois.png" alt="Portrait de Rémy Bourgeois" class="w-full h-full object-cover" loading="eager" />
+        <div
+          class="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden flex-shrink-0 transition-shadow duration-300 ease-out"
+          style="box-shadow: {photoHovered
+            ? '0 0 24px 6px rgba(112,107,254,0.35), 0 0 60px 16px rgba(112,107,254,0.12), 0 20px 40px rgba(0,0,0,0.5)'
+            : '0 20px 40px rgba(0,0,0,0.4)'};"
+          onmouseenter={() => photoHovered = true}
+          onmouseleave={() => photoHovered = false}
+          role="img"
+          aria-label="Portrait de Rémy Bourgeois"
+        >
+          <img
+            src="/assets/remy-bourgeois.webp"
+            alt=""
+            width="500"
+            height="500"
+            class="w-full h-full object-cover transition-transform duration-300 ease-out"
+            style="transform: scale({photoHovered ? 1.03 : 1});"
+            loading="eager"
+          />
         </div>
         <div class="text-center md:text-left">
-          <h1 class="text-4xl md:text-5xl font-semibold text-white mb-6">Senior Product Designer</h1>
+          <h1 class="mb-6 leading-tight">
+            <span class="block text-xs font-semibold text-[#706bfe] uppercase tracking-[0.12em] mb-1">Rémy Bourgeois</span>
+            <span class="block text-4xl md:text-5xl font-bold text-white tracking-tight">Senior Product Designer</span>
+          </h1>
           <ul class="flex flex-wrap justify-center md:justify-start gap-3 list-none p-0 m-0">
             <li class="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-300 text-xs font-medium border border-amber-500/20 flex items-center gap-2">
               <Icon name="BrainCircuit" size={12} /> IA Expert
@@ -95,17 +146,17 @@
 
     <!-- Bio -->
     <RevealOnScroll>
-      <div class="w-full mb-12 flex flex-col gap-6 max-w-3xl mx-auto">
+      <div class="body-text w-full mb-12 flex flex-col gap-6 max-w-3xl mx-auto">
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          <strong class="font-medium text-[#706bfe]">Je conçois des expériences où l'humain et l'IA travaillent ensemble.</strong>
+          <strong>Je conçois des expériences où l'humain et l'IA travaillent ensemble.</strong>
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Avec <strong class="font-medium text-[#706bfe]">14+ ans d'expérience</strong>, dont <strong class="font-medium text-[#706bfe]">7 ans en robotique humanoïde</strong>,
-          j'imagine des <strong class="font-medium text-[#706bfe]">AI assistants</strong>, des <strong class="font-medium text-[#706bfe]">Design Systems</strong> et des
-          <strong class="font-medium text-[#706bfe]">interfaces complexes</strong> qui rendent les produits plus clairs, plus intelligents et plus humains.
+          14+ ans d'expérience, dont <strong>7 ans en robotique humanoïde</strong>.
+          J'imagine des <strong>AI assistants</strong>, des Design Systems et des interfaces complexes
+          qui rendent les produits plus clairs, plus intelligents et plus humains.
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Je supprime le <strong class="font-medium text-[#706bfe]">hand-off</strong> en itérant directement <strong class="font-medium text-[#706bfe]">dans le code</strong> pour accélérer la <strong class="font-medium text-[#706bfe]">vélocité des équipes tech</strong>.
+          Je supprime le hand-off en <strong>itérant directement dans le code</strong>, pour accélérer la vélocité des équipes tech.
         </p>
       </div>
     </RevealOnScroll>
@@ -115,10 +166,10 @@
       <div class="w-full overflow-hidden py-6 relative">
         <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#020205] to-transparent z-10 pointer-events-none"></div>
         <div class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#020205] to-transparent z-10 pointer-events-none"></div>
-        <div class="flex w-max animate-marquee items-center" aria-hidden="true">
+        <div class="flex w-max animate-marquee items-center marquee-track" aria-hidden="true">
           {#each marqueeItems as logo, i (i)}
-            <div class="mx-2 md:mx-8 flex items-center justify-center">
-              <img src={logo} alt="" class="h-6 w-auto object-contain brightness-0 invert opacity-60 hover:opacity-100 transition-opacity" loading="lazy" />
+            <div class="mx-5 sm:mx-8 md:mx-10 flex items-center justify-center">
+              <img src={logo} alt="" class="h-6 w-auto object-contain opacity-60" loading="eager" decoding="async" />
             </div>
           {/each}
         </div>
@@ -137,27 +188,25 @@
               <div class="flex justify-between items-start gap-3 mb-4">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-white/5 flex-shrink-0">
-                    <img src={t.image} alt={t.name} class="w-full h-full object-cover" loading="lazy" />
+                    <img src={t.image} alt={t.name} width="80" height="80" class="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div>
                     <span class="text-white font-semibold text-sm block">{t.name}</span>
-                    <span class="text-white/70 text-[11px] uppercase tracking-wider font-medium">{t.role}</span>
+                    <span class="text-white/70 text-xs uppercase tracking-wider font-medium">{t.role}</span>
                   </div>
                 </div>
                 <div class="h-6 opacity-40 flex-shrink-0">
                   <img src={t.logo} alt={t.company} class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
                 </div>
               </div>
-              <p class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id ? '' : 'line-clamp-4'}">{t.text}</p>
+              <p id="testimonial-{t.id}" class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id ? '' : 'line-clamp-4'}">{t.text}</p>
               <button
                 onclick={() => expandedTestimonial = expandedTestimonial === t.id ? null : t.id}
-                class="mt-3 text-[#706bfe] hover:text-[#a78bfa] text-xs flex items-center gap-1 transition-colors self-start min-h-[44px] md:min-h-0"
+                aria-expanded={expandedTestimonial === t.id}
+                aria-controls="testimonial-{t.id}"
+                class="mt-3 text-[#706bfe] hover:text-[#a78bfa] text-xs flex items-center gap-1 transition-colors self-start min-h-[44px]"
               >
-                {#if expandedTestimonial === t.id}
-                  Réduire ↑
-                {:else}
-                  Lire le témoignage +
-                {/if}
+                {expandedTestimonial === t.id ? 'Réduire' : 'Lire le témoignage'}
               </button>
             </div>
           {/each}
@@ -225,9 +274,9 @@
                     class="relative z-10 w-full h-full absolute inset-0 focus-visible:ring-4 focus-visible:ring-[#706bfe] focus:outline-none"
                   >
                     {#if project.video}
-                      <video src={project.video} autoplay loop muted playsinline class="w-full h-full object-contain shadow-2xl"></video>
+                      <video src={project.video} autoplay loop muted playsinline aria-hidden="true" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl"></video>
                     {:else if project.image || project.media?.length}
-                      <img src={project.image || project.media![0].src} alt="" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
+                      <img src={project.image || project.media![0].src} alt="" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
                     {:else}
                       <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
                     {/if}
@@ -272,11 +321,10 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
         <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto">
           <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
-          <p class="text-white/60 text-base leading-relaxed mb-8">
-            Je vous accompagne dans vos projets de <strong class="font-medium text-[#706bfe]">IA</strong>, de <strong class="font-medium text-[#706bfe]">design system</strong>,
-            d'<strong class="font-medium text-[#706bfe]">interfaces complexes</strong> et de <strong class="font-medium text-[#706bfe]">conseil stratégique</strong> —
-            que vous soyez une <strong class="font-medium text-[#706bfe]">startup</strong>, une <strong class="font-medium text-[#706bfe]">scale-up</strong>,
-            une <strong class="font-medium text-[#706bfe]">PME</strong> ou une <strong class="font-medium text-[#706bfe]">grande entreprise</strong>.
+          <p class="body-text text-white/60 text-base leading-relaxed mb-8">
+            Je vous accompagne sur vos projets d'<strong>IA</strong>, de <strong>design system</strong>,
+            d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong> —
+            que vous soyez une startup, une scale-up, une PME ou une grande entreprise.
           </p>
           <div class="flex flex-wrap justify-center gap-3 mb-8">
             <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
@@ -294,7 +342,7 @@
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#706bfe] text-white font-medium hover:bg-[#5a55e0] transition-all focus-visible:ring-2 focus-visible:ring-white">
               <Icon name="Mail" size={16} /> remy.bourgeois@gmail.com
             </a>
-            <a href="https://www.linkedin.com/in/remybourgeois" target="_blank" rel="noopener noreferrer" use:sfx
+            <a href="https://www.linkedin.com/in/remy-bourgeois/" target="_blank" rel="noopener noreferrer" use:sfx
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
               <Icon name="Linkedin" size={16} /> LinkedIn
             </a>
@@ -310,7 +358,7 @@
   </main>
 
   <!-- Scroll-to-top -->
-  {#if scrollY > 400}
+  {#if showTopBtn}
     <button
       onclick={scrollToTop}
       aria-label="Remonter en haut"

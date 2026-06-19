@@ -5,6 +5,8 @@
 
 <svelte:head>
   <title>Rémy Bourgeois — Portfolio</title>
+  <meta name="description" content="Rémy Bourgeois, Senior Product Designer & Expert IA. Découvrez mon portfolio interactif." />
+  <meta name="robots" content="noindex, follow" />
 </svelte:head>
 
 <IntroScene />

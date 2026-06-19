@@ -13,6 +13,8 @@
 
 <nav
   aria-label="Navigation principale"
+  aria-hidden={!visible}
+  inert={!visible}
   class="fixed top-0 w-full z-50 transition-all duration-500
          bg-[#020205]/90 backdrop-blur-md border-b border-white/5
          {visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}"
@@ -25,13 +27,13 @@
     <div class="hidden md:flex items-center gap-6">
       <a href="/home"
          use:sfx
-         class="text-xs uppercase tracking-wider transition-colors
+         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
                 {currentPath === '/home' ? 'text-white' : 'text-white/60 hover:text-white'}">
         Home
       </a>
       <a href="/projects"
          use:sfx
-         class="text-xs uppercase tracking-wider transition-colors
+         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
                 {currentPath.startsWith('/projects') ? 'text-white' : 'text-white/60 hover:text-white'}">
         Projets
       </a>
@@ -51,18 +53,21 @@
       onclick={() => menuOpen = !menuOpen}
       aria-label="Menu"
       aria-expanded={menuOpen}
+      aria-controls="mobile-menu"
     >
       <Icon name="Menu" size={20} />
     </button>
   </div>
 
   {#if menuOpen}
-    <div class="md:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95">
+    <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95">
       <a href="/home" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Home</a>
       <a href="/projects" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Projets</a>
       <button onclick={audioStore.toggleMute}
+        aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
+        aria-pressed={!isMuted}
         class="flex items-center gap-2 text-sm text-white/60 hover:text-white w-fit py-2 min-h-[44px]">
         <Icon name={isMuted ? 'SpeakerOff' : 'Speaker'} size={14} />
         Son {isMuted ? 'OFF' : 'ON'}
