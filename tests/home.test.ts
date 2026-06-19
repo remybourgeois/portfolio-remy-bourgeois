@@ -24,7 +24,8 @@ test('shows contact section with email link', async ({ page }) => {
 });
 
 test('shows featured projects with links to case studies', async ({ page }) => {
-  await expect(page.locator('a[href^="/projects/"]')).toHaveCount(6);
+  // 4 projets vedettes, chacun lié depuis l'image + le titre = 8 liens
+  await expect(page.locator('main a[href^="/projects/"]')).toHaveCount(8);
 });
 
 test('scroll-to-top button appears after scrolling', async ({ page }) => {
