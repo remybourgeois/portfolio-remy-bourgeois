@@ -3,7 +3,7 @@
 Site portfolio de **Rémy Bourgeois**, Senior Product Designer & Expert IA.
 Une expérience immersive (intro WebGL) suivie d'études de cas, en SvelteKit prérendu.
 
-🔗 **Live** : https://remybourgeois.netlify.app
+🔗 **Live** : https://remybourgeois.com
 
 ## Stack
 
