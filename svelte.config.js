@@ -6,7 +6,7 @@ export default {
   kit: {
     adapter: adapter({ fallback: '404.html' }),
     prerender: {
-      entries: ['/', '/home', '/projects'],
+      entries: ['/', '/home', '/projects', '/sitemap.xml'],
       handleMissingId: 'ignore',
       handleHttpError: ({ path, message }) => {
         // Ignore missing static assets (e.g. videos not yet committed)
