@@ -271,8 +271,15 @@
       </div>
     </RevealOnScroll>
 
-    <!-- Featured projects (3) — liens vers case studies -->
-    <RevealOnScroll>
+    <!--
+      Projets mis en avant. `w-full` est indispensable ici : <main> est en
+      `items-center`, donc sans largeur explicite la section se dimensionne sur
+      sa colonne de texte. Elle n'atteignait la pleine largeur que parce que le
+      lien enveloppant le média était accidentellement en flux (classes
+      `relative` et `absolute` en conflit), apportant la largeur intrinsèque de
+      l'image au calcul.
+    -->
+    <RevealOnScroll class="w-full">
       <div class="w-full mb-20">
         <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Projets <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>

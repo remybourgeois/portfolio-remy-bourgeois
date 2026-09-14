@@ -2,7 +2,10 @@
 <script lang="ts">
   import { onMount, type Snippet } from 'svelte';
 
-  let { children }: { children: Snippet } = $props();
+  // `class` est transmis au wrapper : <main> étant en `items-center`, un enfant
+  // sans largeur explicite se dimensionne sur son contenu. Les sections qui
+  // doivent occuper toute la largeur passent `w-full`.
+  let { children, class: className = '' }: { children: Snippet; class?: string } = $props();
 
   let el = $state<HTMLDivElement | null>(null);
   // On part de `true` : si l'IntersectionObserver ne se déclenche jamais (JS en
@@ -32,7 +35,7 @@
 
 <div
   bind:this={el}
-  class="{animate ? 'transition-all duration-1000 transform' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
+  class="{className} {animate ? 'transition-all duration-1000 transform' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
 >
   {@render children()}
 </div>

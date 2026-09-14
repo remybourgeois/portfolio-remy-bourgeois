@@ -63,3 +63,23 @@ test('testimonial expand/collapse works', async ({ page }) => {
   await expandBtn.click();
   await expect(page.getByRole('button', { name: /Réduire/ }).first()).toBeVisible();
 });
+
+test('featured projects span the full content width', async ({ page }) => {
+  // <main> est en `items-center` : une section sans largeur explicite se
+  // dimensionne sur son contenu. La section Projets n'atteignait la pleine
+  // largeur que par accident (lien média en flux à cause d'un conflit
+  // relative/absolute), et s'est retrouvée rétrécie de 1088 à 715 px une fois
+  // ce conflit nettoyé.
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  await page.goto('/home');
+
+  const measures = await page.evaluate(() => {
+    const main = document.querySelector('main')!;
+    const cs = getComputedStyle(main);
+    const inner = main.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const card = document.querySelector('main a[href^="/projects/"]')!.closest('.rounded-3xl')!;
+    return { inner: Math.round(inner), card: Math.round(card.getBoundingClientRect().width) };
+  });
+
+  expect(measures.card).toBe(measures.inner);
+});
