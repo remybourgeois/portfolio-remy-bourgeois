@@ -14,6 +14,12 @@
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    // Un bloc déjà à l'écran n'est jamais masqué : le cacher pour le révéler
+    // aussitôt produirait un fondu sortant puis entrant. En pratique le premier
+    // callback de l'observer arrive avant le paint, mais cet ordonnancement
+    // n'est pas garanti d'un navigateur à l'autre — ici c'est déterministe.
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+
     animate = true;
     visible = false;
     const obs = new IntersectionObserver(([entry]) => {
