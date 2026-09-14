@@ -1,6 +1,9 @@
 // src/lib/data/testimonials.ts
 export interface Testimonial {
   id: number;
+  /** Langue du témoignage. Sans ça, un texte anglais est lu avec la phonétique
+   *  française par les synthèses vocales, le document étant en lang="fr". */
+  lang?: 'en';
   name: string;
   role: string;
   company: string;
@@ -31,6 +34,7 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: 3,
     name: 'Vincent Rabaud',
+    lang: 'en',
     role: 'Senior Software Engineer',
     company: 'Google',
     logo: '/assets/google.webp',
@@ -58,6 +62,7 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: 6,
     name: 'Daniil Novikov',
+    lang: 'en',
     role: 'VP Product',
     company: 'iPify',
     logo: '/assets/ipify.png',

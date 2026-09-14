@@ -1,8 +1,24 @@
 <!-- src/lib/components/Icons.svelte -->
+<script lang="ts" module>
+  /**
+   * Union des icônes réellement dessinées plus bas. Typer `name` avec elle plutôt
+   * qu'avec `string` fait échouer `npm run check` sur une icône inexistante,
+   * au lieu de rendre un <svg> vide en production.
+   */
+  export type IconName =
+    | 'Activity' | 'ArrowLeft' | 'ArrowRight' | 'Award' | 'BrainCircuit' | 'Briefcase'
+    | 'ChevronDown' | 'ChevronUp' | 'Code' | 'Cpu' | 'Disc' | 'ExternalLink' | 'Heart'
+    | 'InfinityIcon' | 'LayoutIcon' | 'Linkedin' | 'Mail' | 'MapPin' | 'Maximize2'
+    | 'Menu' | 'MessageSquare' | 'RefreshCw' | 'Speaker' | 'SpeakerOff' | 'Wifi'
+    | 'X' | 'Zap';
+</script>
+
 <script lang="ts">
-  export let name: string;
-  export let size: number = 24;
-  export let className: string = '';
+  let { name, size = 24, className = '' }: {
+    name: IconName;
+    size?: number;
+    className?: string;
+  } = $props();
 </script>
 
 <svg
@@ -93,6 +109,11 @@
     <path d="M2 2l20 20M10 6L16 2v20l-6-4"/>
     <rect width="4" height="12" x="2" y="6" rx="2" ry="2"/>
     <path d="M22 14c0-1.5-.6-3-1.7-4.1"/>
+  {:else if name === 'Maximize2'}
+    <polyline points="15 3 21 3 21 9"/>
+    <polyline points="9 21 3 21 3 15"/>
+    <line x1="21" y1="3" x2="14" y2="10"/>
+    <line x1="3" y1="21" x2="10" y2="14"/>
   {:else if name === 'Menu'}
     <line x1="4" x2="20" y1="12" y2="12"/>
     <line x1="4" x2="20" y1="6" y2="6"/>

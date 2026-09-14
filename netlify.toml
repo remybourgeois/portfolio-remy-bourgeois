@@ -2,15 +2,16 @@
   command = "npm run build"
   publish = "build"
 
-# SPA fallback : toutes les URLs non trouvées servent 404.html avec status 200
-# pour que le routeur client-side de SvelteKit prenne le relais.
+[build.environment]
+  NODE_VERSION = "20"
+
+# Toutes les routes réelles sont prérendues en fichiers statiques : rien n'a
+# besoin d'un fallback SPA. Servir 404.html avec un statut 200 produisait des
+# soft 404 — Google indexait des URLs inexistantes sans pouvoir les nettoyer.
 [[redirects]]
   from   = "/*"
   to     = "/404.html"
-  status = 200
-
-[build.environment]
-  NODE_VERSION = "20"
+  status = 404
 
 # Assets fingerprintés par Vite (nom hashé) → cache long immuable.
 [[headers]]
@@ -25,11 +26,14 @@
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
-# En-têtes de sécurité de base sur tout le site.
+# En-têtes de sécurité sur tout le site.
+# La CSP est générée par SvelteKit (kit.csp dans svelte.config.js), qui calcule
+# les hash des scripts inlinés au build : elle n'est donc pas répétée ici.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"

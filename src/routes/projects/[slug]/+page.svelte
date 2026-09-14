@@ -6,6 +6,7 @@
   import { SITE_URL } from '$lib/data/site';
   import { md } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
+  import { heroSize } from '$lib/data/projects';
 
   const { data }: { data: PageData } = $props();
   const project = $derived(data.project);
@@ -14,13 +15,21 @@
   const index   = $derived(data.index);
 
   // ── Slides : hero + galerie fusionnés dans un seul tableau ────────────────
-  type Slide = { type: 'image' | 'video'; src: string; caption?: string; poster?: string };
+  type Slide = {
+    type: 'image' | 'video';
+    src: string;
+    caption?: string;
+    poster?: string;
+    width: number;
+    height: number;
+  };
 
   const slides = $derived.by((): Slide[] => {
     const items: Slide[] = [];
-    if (project.video)  items.push({ type: 'video', src: project.video });
-    else if (project.image) items.push({ type: 'image', src: project.image });
-    if (project.media)  items.push(...project.media);
+    const hero = heroSize(project);
+    if (project.video)      items.push({ type: 'video', src: project.video, poster: project.videoPoster, ...hero });
+    else if (project.image) items.push({ type: 'image', src: project.image, ...hero });
+    if (project.media)      items.push(...project.media);
     return items;
   });
 
@@ -49,11 +58,14 @@
     lockScroll(false);
   });
 
-  // Lecture/pause des vidéos selon le slide actif
+  // Lecture pilotée entièrement ici. Les <video> n'ont ni `autoplay` ni preload :
+  // sans ça le navigateur téléchargeait les trois vidéos en parallèle dès l'arrivée
+  // sur la page, soit 12 Mo pour un seul visuel visible.
   $effect(() => {
     if (!carTrack) return;
     carTrack.querySelectorAll<HTMLVideoElement>('video').forEach((v, i) => {
-      i === carIndex ? v.play().catch(() => {}) : v.pause();
+      if (i === carIndex) v.play().catch(() => {});
+      else v.pause();
     });
   });
 
@@ -147,12 +159,12 @@
     <div role="none" class="flex items-center justify-between px-5 py-4 flex-shrink-0" onclick={(e) => e.stopPropagation()}>
       <div class="flex items-center gap-3">
         {#if lbBadge}
-          <span class="font-mono text-[10px] text-white/25 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full">
+          <span class="font-mono text-[10px] text-white/55 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full">
             {lbBadge}
           </span>
         {/if}
         {#if lbCaption}
-          <span class="text-xs text-white/40">{lbCaption}</span>
+          <span class="text-xs text-white/60">{lbCaption}</span>
         {/if}
       </div>
       <button
@@ -171,7 +183,7 @@
       {#if slides.length > 1}
         <button
           class="flex-shrink-0 w-10 h-10 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08]
-                 flex items-center justify-center text-white/40 hover:text-white transition-all
+                 flex items-center justify-center text-white/60 hover:text-white transition-all
                  disabled:opacity-20 disabled:pointer-events-none"
           onclick={lbPrev}
           disabled={lbIndex === 0}
@@ -187,14 +199,14 @@
         {#if lbSlide.type === 'video'}
           <!-- svelte-ignore a11y_media_has_caption -->
           <video src={lbSlide.src} controls autoplay
-                 width="1920" height="1080"
+                 width={lbSlide.width} height={lbSlide.height}
                  class="max-w-full max-h-[78vh] object-contain rounded-xl">
             <track kind="captions" src="" label="Captions" />
           </video>
         {:else}
           <img src={lbSlide.src} srcset={projectSrcset(lbSlide.src)} sizes="100vw"
                alt={lbCaption ?? project.title}
-               width="1920" height="1080"
+               width={lbSlide.width} height={lbSlide.height}
                class="max-w-full max-h-[78vh] object-contain rounded-xl" />
         {/if}
       </div>
@@ -202,7 +214,7 @@
       {#if slides.length > 1}
         <button
           class="flex-shrink-0 w-10 h-10 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08]
-                 flex items-center justify-center text-white/40 hover:text-white transition-all
+                 flex items-center justify-center text-white/60 hover:text-white transition-all
                  disabled:opacity-20 disabled:pointer-events-none"
           onclick={lbNext}
           disabled={lbIndex === slides.length - 1}
@@ -223,7 +235,7 @@
     <a
       href="/projects"
       use:sfx
-      class="inline-flex items-center gap-2 text-white/40 hover:text-white text-xs uppercase tracking-widest mb-14 transition-colors min-h-[44px]"
+      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-widest mb-14 transition-colors min-h-[44px]"
     >
       <Icon name="ArrowLeft" size={13} />
       Tous les projets
@@ -234,7 +246,7 @@
 
       <!-- Gauche : index + logo + tags -->
       <div class="flex flex-col items-start gap-5">
-        <span class="font-mono text-[10px] text-[#706bfe]/40 tracking-[0.15em]">
+        <span class="font-mono text-[10px] text-[#a8a5ff] tracking-[0.15em]">
           {String(index + 1).padStart(3, '0')}
         </span>
 
@@ -273,13 +285,13 @@
                     border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0">
           {#if project.role}
             <div>
-              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-1">Rôle</div>
-              <div class="text-[13px] text-[#706bfe]/80 font-medium leading-snug">{project.role}</div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-1">Rôle</div>
+              <div class="text-[13px] text-[#a8a5ff] font-medium leading-snug">{project.role}</div>
             </div>
           {/if}
           {#if project.year}
             <div>
-              <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-1">Année</div>
+              <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-1">Année</div>
               <div class="text-[13px] text-white/60 font-mono">{project.year}</div>
             </div>
           {/if}
@@ -303,19 +315,21 @@
         >
           {#each slides as slide, i}
             <button
-              class="flex-[0_0_100%] flex items-center justify-center p-6 md:p-10 min-h-[380px] md:min-h-[500px] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+              class="flex-[0_0_100%] flex items-center justify-center p-4 sm:p-6 md:p-10 min-h-[260px] sm:min-h-[380px] md:min-h-[500px] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#706bfe]"
               onclick={(e) => openSlide(i, e.currentTarget as HTMLButtonElement)}
               tabindex={i === carIndex ? 0 : -1}
-              aria-label="Voir en plein écran"
+              aria-hidden={i === carIndex ? undefined : 'true'}
+              aria-label="Voir {slide.caption ?? `le visuel ${i + 1}`} en plein écran"
             >
               {#if slide.type === 'video'}
                 <video
                   src={slide.src}
                   poster={slide.poster}
-                  autoplay loop muted playsinline
+                  preload="none"
+                  loop muted playsinline
                   aria-hidden="true"
-                  width="1920" height="1080"
-                  class="max-w-full max-h-[65vh] object-contain pointer-events-none"
+                  width={slide.width} height={slide.height}
+                  class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
                 ></video>
               {:else}
                 <img
@@ -324,8 +338,8 @@
                   sizes="(min-width: 1024px) 1024px, 100vw"
                   alt={slide.caption ?? ''}
                   loading={i === 0 ? 'eager' : 'lazy'}
-                  width="1920" height="1080"
-                  class="max-w-full max-h-[65vh] object-contain pointer-events-none"
+                  width={slide.width} height={slide.height}
+                  class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
                 />
               {/if}
             </button>
@@ -334,7 +348,7 @@
 
         <!-- Badge slide x/n -->
         {#if slides.length > 1}
-          <div class="absolute top-4 right-4 font-mono text-[10px] text-white/25 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none">
+          <div class="absolute top-4 right-4 font-mono text-[10px] text-white/55 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none">
             {carIndex + 1} / {slides.length}
           </div>
         {/if}
@@ -392,7 +406,7 @@
     {:else}
       <!-- Placeholder si aucun media -->
       <div class="rounded-3xl bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07] min-h-[300px] flex items-center justify-center mb-14">
-        <span class="text-xs uppercase tracking-[0.4em] text-white/15 font-medium">Bientôt</span>
+        <span class="text-xs uppercase tracking-[0.4em] text-white/50 font-medium">Bientôt</span>
       </div>
     {/if}
 
@@ -401,7 +415,7 @@
 
       <!-- Description principale -->
       <div class="pl-5 border-l border-white/[0.1]">
-        <p class="text-[9px] uppercase tracking-[0.25em] text-white/45 font-semibold mb-4">Contexte</p>
+        <p class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">Contexte</p>
         <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
           {@html md(project.description)}
         </p>
@@ -421,7 +435,7 @@
       <!-- Challenge -->
       {#if project.challenge}
         <div class="pl-5 border-l-2 border-[#706bfe]/50">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-[#706bfe]/70 font-semibold mb-4">Challenge</p>
+          <p class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">Challenge</p>
           <p class="project-text text-white/60 text-base leading-[1.85]">{@html md(project.challenge)}</p>
         </div>
       {/if}
@@ -447,9 +461,9 @@
                  flex-1 sm:flex-none sm:max-w-[240px] min-h-[60px]
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
-          <Icon name="ArrowLeft" size={15} className="text-white/30 group-hover:text-white/80 transition-colors flex-shrink-0" />
+          <Icon name="ArrowLeft" size={15} className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0" />
           <div class="min-w-0">
-            <div class="text-[9px] text-white/45 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
+            <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
             <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{prev.title}</div>
           </div>
         </a>
@@ -467,10 +481,10 @@
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
           <div class="min-w-0">
-            <div class="text-[9px] text-white/45 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
+            <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
             <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{next.title}</div>
           </div>
-          <Icon name="ArrowRight" size={15} className="text-white/30 group-hover:text-white/80 transition-colors flex-shrink-0" />
+          <Icon name="ArrowRight" size={15} className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0" />
         </a>
       {:else}
         <div></div>

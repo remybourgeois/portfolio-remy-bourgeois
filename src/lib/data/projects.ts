@@ -4,7 +4,9 @@ export interface ProjectMedia {
   type: 'image' | 'video';
   src: string;
   poster?: string;
-  span?: 1 | 2;
+  /** Dimensions intrinsèques : le navigateur réserve le bon espace avant chargement. */
+  width: number;
+  height: number;
   caption?: string;
 }
 
@@ -16,10 +18,19 @@ export interface Project {
   title: string;
   tags: string[];
   description: string;
-  color: string;
-  image: string;
+  image?: string;
   video?: string;
+  /** Dimensions du média d'ouverture quand c'est une vidéo (elles ne sont pas en 16:9). */
+  videoWidth?: number;
+  videoHeight?: number;
+  /**
+   * Image affichée avant lecture. Les vidéos sont en `preload="none"` : sans
+   * poster, la carte reste vide tant que la lecture n'a pas démarré.
+   */
+  videoPoster?: string;
   media?: ProjectMedia[];
+  /** Mis en avant sur /home. Évite de piloter la sélection par des identifiants. */
+  featured?: boolean;
   challenge?: string;
   outcome?: string;
   role?: string;
@@ -30,6 +41,7 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     id: 8,
+    featured: true,
     slug: 'ofelia',
     client: 'Ofelia',
     logo: '/assets/ofelia.svg',
@@ -41,18 +53,19 @@ export const PROJECTS: Project[] = [
       'L\'enjeu UX dépassait la simple création d\'écrans. Il ne s\'agissait pas de dessiner un chatbot classique, mais d\'intégrer une véritable **collègue virtuelle** capable d\'**orchestrer des workflows complexes** à partir d\'une simple conversation.\n\nTrès vite, les limites de Figma sont apparues : les **interfaces statiques sont inadaptées** pour modéliser des **interactions agentiques** mouvantes. La tech avançait à toute vitesse, le design devait suivre le même tempo. Il fallait supprimer la friction entre la maquette et l\'ingénierie.',
     outcome:
       'Après avoir posé les bases de l\'UX et du Design System, j\'ai pivoté vers un rôle pur de **Design Engineer** :\n\n• Zéro maquette morte — J\'ai totalement abandonné le **pixel-perfect statique** pour itérer directement dans le code de production.\n• **Workflow Engineering** — J\'utilise désormais **Claude Code** pour travailler directement sur Git et dans Storybook, en ouvrant mes propres Pull Requests.\n• Zéro perte d\'information — Mes PR sont revues par un dev front avant la mise en prod. Le "hand-off" n\'existe plus.\n\nL\'impact ? Notre rythme d\'exécution est devenu **10x plus rapide**. Le produit a été co-construit, testé et validé en temps réel avec nos clients prospects, éliminant l\'effet tunnel specs/design/dev.',
-    color: '#706bfe',
-    image: '',
     video: '/assets/ofelia.mp4',
+    videoWidth: 2026,
+    videoHeight: 1034,
     media: [
-      { type: 'video', src: '/assets/ofelia-2.mp4' },
-      { type: 'video', src: '/assets/ofelia-3.mp4' }
+      { type: 'video', src: '/assets/ofelia-2.mp4', width: 1112, height: 1080 },
+      { type: 'video', src: '/assets/ofelia-3.mp4', width: 1112, height: 1080 }
     ],
     role: 'Product Design Engineer (Founding Designer)',
     year: '2025 – 2026'
   },
   {
     id: 1,
+    featured: true,
     slug: 'ipify',
     client: 'iPify',
     logo: '/assets/ipify.png',
@@ -64,17 +77,16 @@ export const PROJECTS: Project[] = [
       'Le défi était double : structurer l\'existant pour préparer la croissance, et **intégrer l\'IA de manière transparente** dans des workflows métiers très exigeants.\n\nDans un environnement SaaS B2B aussi dense, l\'interface ne pardonne pas. Il fallait rationaliser la production design et dev, tout en imaginant comment un **"agent IA"** pouvait assister les équipes juridiques sans créer de friction, ni ressembler à un gadget superflu.',
     outcome:
       'J\'ai mené de front l\'architecture de l\'interface et l\'innovation produit en me concentrant sur trois piliers :\n\n• **Scalabilité UI** (Design System & Tokens) — Pilotage de la refonte complète du Design System. Mise en place de l\'architecture des **Design Tokens**, création des composants, rédaction de la documentation et instauration d\'une vraie gouvernance pour aligner le design et la tech.\n• **Recherche augmentée** (IA Conversationnelle) — Conception d\'un agent IA intégré nativement au portail. Il permet désormais aux utilisateurs d\'interroger la totalité de leur base de brevets internationaux en **langage naturel** (Natural Language Query).\n• **Gains de productivité** (IA Générative) — Design de features génératives visant à automatiser les tâches les plus chronophages des juristes : rédaction assistée et traduction de documents légaux complexes.\n\nL\'impact ? Une interface devenue prédictible et scalable grâce aux tokens, et un produit qui ne se contente plus de stocker des brevets, mais qui agit comme un véritable **assistant juridique automatisé**.',
-    color: '#00857e',
-    image: '',
     role: 'Senior Product Designer',
     year: '2023 – 2024',
     media: [
-      { type: 'image', src: '/assets/portfolio-ipify-ai.webp', span: 2, caption: 'IA Conversationnelle' },
-      { type: 'image', src: '/assets/portfolio-ipify-interface.webp', span: 2, caption: 'Portail & Design System' }
+      { type: 'image', src: '/assets/portfolio-ipify-ai.webp', width: 1920, height: 1080, caption: 'IA Conversationnelle' },
+      { type: 'image', src: '/assets/portfolio-ipify-interface.webp', width: 1920, height: 1080, caption: 'Portail & Design System' }
     ]
   },
   {
     id: 3,
+    featured: true,
     slug: 'aldebaran',
     client: 'Aldebaran',
     logo: '/assets/aldebaran.svg',
@@ -86,13 +98,13 @@ export const PROJECTS: Project[] = [
       'Concevoir pour un robot, c\'est concevoir pour l\'imprévisible. L\'interface n\'est plus un écran cliquable, mais un **corps dans l\'espace**.\n\nLe défi quotidien était de créer des **interactions humain-robot (HRI)** qui soient immédiatement compréhensibles et accessibles à tous les publics. Il fallait réussir à engager une **conversation naturelle** dans des environnements bruyants et chaotiques, tout en composant avec les contraintes matérielles strictes et le traitement temps-réel d\'une IA alors à ses balbutiements.',
     outcome:
       'Pour rendre l\'expérience fluide et vivante, j\'ai dû sortir des grilles traditionnelles et orchestrer une **UX multimodale**, mêlant design d\'interface embarquée, comportements physiques, scénarisation voix (**VUI**) et sound design.\n\n• **Déploiement massif** — Mes applications ont été embarquées sur des milliers de robots expédiés dans **plus de 70 pays**.\n• **Traction B2B2C** — Des expériences utilisées par **plusieurs millions de personnes** chaque mois dans des contextes de Retail et d\'Hospitality de pointe.\n• **Pionnier de l\'IA** — Ces 7 années passées à "humaniser" la logique d\'une machine ont posé les fondations de mon expertise actuelle. J\'y ai appris la mécanique profonde du **design conversationnel**, bien avant l\'ère des LLMs.',
-    color: '#00857e',
     image: '/assets/portfolio-aldebaran.webp',
     role: 'Designer d\'Interaction',
     year: '2013 – 2020'
   },
   {
     id: 4,
+    featured: true,
     slug: 'credit-agricole',
     client: 'Crédit Agricole',
     logo: '/assets/ca.png',
@@ -104,14 +116,12 @@ export const PROJECTS: Project[] = [
       'Le défi principal n\'était pas seulement esthétique, mais **systémique**. Il fallait maintenir une **cohérence visuelle absolue** sur un écosystème tentaculaire (Web, App, Back-office) opéré par des dizaines d\'équipes distribuées.\n\nLa complexité propre au Crédit Agricole (de multiples caisses régionales avec leurs spécificités) et les contraintes de sécurité bancaire exigeaient une **industrialisation parfaite** du design. Il fallait concevoir vite, bien, et sans jamais casser l\'existant.',
     outcome:
       'Pour soutenir cette échelle, j\'ai axé mon travail sur la gouvernance, la rigueur UI et l\'accompagnement des développeurs :\n\n• **Design System & Tokens** — Pilotage de l\'amélioration continue du Design System groupe. L\'intégration poussée des **Design Tokens** a été la clé pour gérer la déclinaison **multi-marques** régionale et assurer des mises à jour globales sans friction.\n• **Design à grande échelle** — Conception des maquettes interactives et des parcours de l\'application "Ma Banque", avec un niveau d\'exigence (accessibilité, performance) taillé pour le très grand public.\n• **Delivery & QA** — Du prototypage jusqu\'à la mise en production, accompagnement des développeurs au quotidien et recettes fonctionnelles (QA) pour garantir une implémentation au pixel près.\n\nL\'impact ? Un Design System adopté par **plus de 15 équipes produit** et une application **"Ma Banque"** unifiée pour **plus de 30 millions d\'utilisateurs mensuels**.',
-    color: '#00857e',
-    image: '',
     role: 'Lead UI & Référent Design System',
     year: '2021 – 2024',
     media: [
-      { type: 'image', src: '/assets/portfolio-ca-portail-client.webp', span: 2, caption: 'Portail client credit-agricole.fr' },
-      { type: 'image', src: '/assets/portfolio-ca-app-mobile.webp', span: 1, caption: 'App mobile Ma Banque' },
-      { type: 'image', src: '/assets/portfolio-ca-design-system.webp', span: 1, caption: 'Design System' }
+      { type: 'image', src: '/assets/portfolio-ca-portail-client.webp', width: 1920, height: 1080, caption: 'Portail client credit-agricole.fr' },
+      { type: 'image', src: '/assets/portfolio-ca-app-mobile.webp', width: 1920, height: 1080, caption: 'App mobile Ma Banque' },
+      { type: 'image', src: '/assets/portfolio-ca-design-system.webp', width: 1920, height: 1080, caption: 'Design System' }
     ]
   },
   {
@@ -127,9 +137,23 @@ export const PROJECTS: Project[] = [
       'Le défi métier et technique était particulièrement complexe : comment créer un **Design System unique**, qui soit suffisamment rigoureux pour éviter la **dette technique**, mais assez élastique pour absorber **N marques blanches** aux identités visuelles radicalement différentes ?\n\nIl fallait à tout prix éviter le piège classique : multiplier les fichiers, dupliquer le code et rendre la maintenance de la plateforme impossible à chaque nouvelle feature.',
     outcome:
       'Pour résoudre cette équation de scalabilité, j\'ai construit une **architecture "multi-thème"** de dernière génération :\n\n• **Architecture orientée Tokens** — Structuration de l\'intégralité de l\'UI autour de **Design Tokens** et de variables sémantiques (couleurs, typographies, espacements, effets/élévations).\n• **Scalabilité par les "Modes"** — Exploitation de la pleine puissance des modes Figma pour créer un système où chaque marque cliente agit comme un **"calque" de personnalisation**. La structure reste identique, seul l\'habillage visuel bascule dynamiquement.\n• **Gouvernance & Implémentation** — Alignement total avec l\'ingénierie pour s\'assurer que l\'architecture des tokens dans Figma reflète exactement l\'architecture du code (CSS/JSON).\n\nL\'impact ? Le **Time-to-Market** pour déployer une nouvelle marque blanche est passé de plusieurs semaines d\'intégration à **quelques jours seulement**.',
-    color: '#00857e',
-    image: '/assets/portfolio-highlight-design-sytem.webp',
+    image: '/assets/portfolio-highlight-design-system.webp',
     role: 'Senior Product Designer & Architecte Design System',
     year: '2024'
   }
 ];
+
+/**
+ * Dimensions intrinsèques du média d'ouverture, utilisées pour les attributs
+ * width/height. Les captures sont en 16:9, les vidéos non : déclarer 1920x1080
+ * partout réservait un espace faux et dégradait le CLS.
+ */
+export function heroSize(p: Project): { width: number; height: number } {
+  if (p.video)  return { width: p.videoWidth ?? 1920, height: p.videoHeight ?? 1080 };
+  if (p.image)  return { width: 1920, height: 1080 };
+  const first = p.media?.[0];
+  return { width: first?.width ?? 1920, height: first?.height ?? 1080 };
+}
+
+/** Projets mis en avant sur /home, dans l'ordre de déclaration. */
+export const FEATURED_PROJECTS: Project[] = PROJECTS.filter((p) => p.featured);
