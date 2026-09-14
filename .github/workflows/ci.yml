@@ -18,6 +18,11 @@ jobs:
 
       - run: npm ci
 
+      - name: Audit des dépendances
+        # Bloque sur une vulnérabilité haute ou critique : la dérive se voyait
+        # jusqu'ici seulement en lançant npm audit à la main.
+        run: npm audit --audit-level=high
+
       - name: Type & a11y check
         run: npm run check
 

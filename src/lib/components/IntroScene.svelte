@@ -26,17 +26,24 @@
     return {x:x+rr*Math.cos(a),y:y+rr*Math.sin(a),z:(Math.random()-.5)*th*2};
   };
 
-  let mountEl: HTMLDivElement;
-  let isTouch = false;
-  if (typeof window !== 'undefined') isTouch = window.matchMedia('(hover: none)').matches;
-  let sceneStep = 0;
-  let clickCount = 0;
-  let currentMessage: typeof POETIC_PHRASES[0] | null = null;
-  let messageVisible = false;
-  let isClickFlash = false;
+  let mountEl = $state<HTMLDivElement | null>(null);
+  const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+
+  // État lu par le template → runes. Le reste (boucle d'animation) reste en `let`
+  // simple : ces valeurs sont lues à chaque frame, jamais rendues.
+  let sceneStep = $state(0);
+  let clickCount = $state(0);
+  let currentMessage = $state<typeof POETIC_PHRASES[0] | null>(null);
+  let messageVisible = $state(false);
+  let isClickFlash = $state(false);
   let sfxIndex = 0;
-  let isMuted = false;
-  $: isMuted = $audioStore.isMuted;
+  const isMuted = $derived($audioStore.isMuted);
+
+  const advanceLabel = $derived(
+    sceneStep === 0
+      ? "Commencer l'expérience interactive"
+      : `Avancer dans l'expérience, étape ${clickCount} sur 10`
+  );
 
   let reqId: number;
   let renderer: THREE.WebGLRenderer;
@@ -44,10 +51,8 @@
   let bgSystem: THREE.Points;
   const mouseVec  = new THREE.Vector2();
   const prevMouse = new THREE.Vector2();
-  let velocityVal = 0, frictionHeat = 0, vibration = 0, flood = 0;
+  let velocityVal = 0, vibration = 0, flood = 0;
   let mouseRotX = 0, mouseRotY = 0, mousePosX = 0, mousePosY = 0;
-  // friction delay: only jiggle after 500ms of sustained fast movement
-  let fastMouseSince = 0;
   let targetGeometry = 'sphere';
   let isLocked = false, isReturning = false;
   let time = 0;
@@ -60,6 +65,11 @@
   let N = 0;
 
   onMount(() => {
+    if (!mountEl) return;
+    // Les médias audio ne sont demandés QUE par l'intro : les autres pages
+    // n'émettent aucun son et n'ont donc rien à télécharger.
+    audioStore.engine?.prime();
+
     const w = window.innerWidth, h = window.innerHeight;
     const prefersRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isMobile = w < 768;
@@ -386,7 +396,7 @@
         const facing = -nx*sinY + nz*cosY;
         const visibility = ss(-0.25, 0.1, facing);
         const fresnel = Math.pow(Math.max(0, 1 - Math.abs(facing)), 3.5);
-        const t = Math.min(1, fresnel * 0.9 + Math.min(0.4, frictionHeat * 1.5));
+        const t = Math.min(1, fresnel * 0.9);
 
         const cr = (FIB_MID.r + (1-FIB_MID.r)*t*0.4) * visibility;
         const cg = (FIB_MID.g + (1-FIB_MID.g)*t*0.4) * visibility;
@@ -444,7 +454,21 @@
       window.removeEventListener('resize', onResize);
       cancelAnimationFrame(reqId);
       clearStepTimers();
+
+      // Géométries, matériaux et textures vivent côté GPU : le ramasse-miettes JS
+      // ne les libère pas. Sans ce parcours, chaque aller-retour via
+      // « Recommencer l'expérience » laisse les buffers de particules en VRAM.
+      scene.traverse((obj) => {
+        const points = obj as THREE.Points;
+        if (!points.isPoints) return;
+        points.geometry.dispose();
+        const m = points.material;
+        Array.isArray(m) ? m.forEach((mm) => mm.dispose()) : m.dispose();
+      });
+      sprite.dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
+      mountEl?.replaceChildren();
     };
   });
 
@@ -519,21 +543,29 @@
   }
 </script>
 
-<div
-  class="relative w-full h-[100dvh] bg-[#020205] overflow-hidden select-none text-white custom-cursor"
-  role="application"
-  aria-label="Expérience immersive portfolio — appuyez sur Entrée ou Espace pour avancer"
-  tabindex="0"
-  on:pointerdown={(e) => { if (!(e.target as HTMLElement).closest('button, a')) advanceScene(); }}
-  on:keydown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !(e.target as HTMLElement).closest('button, a')) { e.preventDefault(); advanceScene(); } }}
->
+<div class="relative w-full h-[100dvh] bg-[#020205] overflow-hidden select-none text-white custom-cursor">
   <div bind:this={mountEl} class="absolute inset-0 z-0" aria-hidden="true"></div>
 
-  <!-- Sound toggle -->
-  <div class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-auto z-50
-              transition-all duration-500 opacity-100 translate-y-0">
+  <!--
+    Surface d'interaction : un vrai <button> plein écran plutôt qu'une <div>
+    porteuse de tabindex et de handlers. Le clavier, le focus et les lecteurs
+    d'écran fonctionnent nativement, et les contrôles au-dessus (z supérieur)
+    reçoivent leurs propres clics sans qu'on ait à filtrer la cible.
+  -->
+  <button
+    type="button"
+    class="absolute inset-0 z-10 w-full h-full custom-cursor bg-transparent border-0
+           focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#706bfe]"
+    aria-label={advanceLabel}
+    onpointerdown={advanceScene}
+    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); advanceScene(); } }}
+  ></button>
+
+  <!-- Contrôles du bas : pile verticale pleine largeur sur mobile, groupe centré dès md -->
+  <div class="fixed bottom-5 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-auto z-50
+              flex flex-col items-stretch md:items-center gap-2">
     <button
-      on:click|stopPropagation={audioStore.toggleMute}
+      onclick={(e) => { e.stopPropagation(); audioStore.toggleMute(); }}
       aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
       aria-pressed={!isMuted}
       class="w-full md:w-auto flex items-center justify-center gap-3 bg-white/5 backdrop-blur-xl
@@ -548,36 +580,50 @@
       </span>
       <Icon name={isMuted ? 'SpeakerOff' : 'Speaker'} size={14} className="text-white/50" />
     </button>
+
+    <!--
+      Sortie visible de l'intro. Sans elle, le seul raccourci était le lien
+      d'évitement au clavier, invisible à la souris : dix clics de péage pour
+      un visiteur pressé.
+    -->
+    <a
+      href="/home"
+      class="w-full md:w-auto text-center px-5 py-2.5 rounded-xl text-[10px] uppercase tracking-widest
+             font-medium text-white/60 hover:text-white border border-transparent hover:border-white/10
+             transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] focus:outline-none"
+    >
+      Passer l'intro
+    </a>
   </div>
 
   <!-- Progression button (sceneStep 1) -->
-  <div class="absolute top-6 left-1/2 -translate-x-1/2 z-20 transition-all duration-500
+  <div class="absolute top-5 left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-2rem)] transition-all duration-500
               {sceneStep === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}">
     <button
       type="button"
       aria-label="Créer le lien. Progression {clickCount} sur 10."
-      class="bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-2
-             flex items-center gap-4 hover:bg-white/10 transition-all duration-300
+      class="bg-white/5 backdrop-blur-md border border-white/10 rounded-full p-1.5 sm:p-2
+             flex items-center gap-2.5 sm:gap-4 hover:bg-white/10 transition-all duration-300
              focus-visible:ring-2 focus-visible:ring-[#706bfe]
              {isClickFlash ? 'animate-pulse-scale border-white/30 bg-white/10' : ''}"
-      on:click|stopPropagation={advanceScene}
+      onclick={advanceScene}
     >
-      <div class="relative w-12 h-12 flex items-center justify-center">
+      <div class="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0">
         <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" aria-hidden="true">
           <path class="text-white/10" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2"/>
           <path style="stroke:#706bfe" stroke-dasharray="{clickCount*10},100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3" class="transition-all duration-500"/>
         </svg>
         <span class="absolute font-semibold text-sm text-white" aria-hidden="true">{clickCount}</span>
       </div>
-      <div class="flex flex-col pr-4 text-left">
-        <span class="text-white/70 text-[10px] uppercase tracking-wider">Création du Lien</span>
-        <span class="font-medium text-xs text-white">Appuyez pour découvrir</span>
+      <div class="flex flex-col pr-3 sm:pr-4 text-left min-w-0">
+        <span class="text-white/70 text-[9px] sm:text-[10px] uppercase tracking-wider truncate">Création du Lien</span>
+        <span class="font-medium text-[11px] sm:text-xs text-white truncate">Appuyez pour découvrir</span>
       </div>
     </button>
   </div>
 
   <!-- Poetic messages -->
-  <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4" aria-live="polite">
+  <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none px-4" aria-live="polite">
     <div class="transform transition-all duration-700 ease-in-out flex flex-col items-center text-center max-w-md
                 {messageVisible ? 'opacity-100 scale-100 blur-0 translate-y-0' : 'opacity-0 scale-50 blur-xl translate-y-10'}">
       {#if currentMessage}

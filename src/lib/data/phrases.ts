@@ -1,9 +1,11 @@
 // src/lib/data/phrases.ts
+import type { IconName } from '$lib/components/Icons.svelte';
+
 export interface PoeticPhrase {
   id: number;
   text: string;
   shape: string;
-  icon: string;
+  icon: IconName;
   anim: string;
 }
 

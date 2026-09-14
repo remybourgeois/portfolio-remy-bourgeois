@@ -1,10 +1,11 @@
 <!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
-  import { PROJECTS } from '$lib/data/projects';
+  import { PROJECTS, heroSize } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
   import { projectSrcset } from '$lib/utils/img';
+  import { playInView } from '$lib/actions/playInView';
 </script>
 
 <svelte:head>
@@ -52,12 +53,15 @@
             {#if project.video}
               <video
                 src={project.video}
-                autoplay
+                poster={project.videoPoster}
+                use:playInView
+                preload="none"
                 loop
                 muted
                 playsinline
-                width="1920"
-                height="1080"
+                aria-hidden="true"
+                width={heroSize(project).width}
+                height={heroSize(project).height}
                 class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
               ></video>
             {:else if project.image || project.media?.length}
@@ -66,14 +70,14 @@
                 srcset={projectSrcset(project.image || project.media![0].src)}
                 sizes="(min-width: 768px) 50vw, 100vw"
                 alt=""
-                width="1920"
-                height="1080"
+                width={heroSize(project).width}
+                height={heroSize(project).height}
                 class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
                 loading="lazy"
               />
             {:else}
               <div class="w-full h-full flex items-center justify-center">
-                <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
+                <span class="text-xs uppercase tracking-[0.3em] text-white/50 font-medium">Bientôt</span>
               </div>
             {/if}
           </div>

@@ -11,6 +11,9 @@ export const SFX_BACK    = '/assets/sfx-back.mp3';
 class AudioEngine {
   ctx: AudioContext | null = null;
   isInitialized = false;
+  // `primed` = les médias ont été demandés (uniquement sur l'intro).
+  // Tant que c'est false, aucune requête réseau et aucun AudioContext n'est créé.
+  isPrimed = false;
   masterGain: GainNode | null = null;
   bgmGain: GainNode | null = null;
   staticNode: AudioBufferSourceNode | null = null;
@@ -22,12 +25,23 @@ class AudioEngine {
   bgmVolume = 0.8;
   sfxVolume = 0.5;
   isGlobalMuted = false;
-  isBGMSuppressed = false;
   sfxBuffers: Record<string, AudioBuffer> = {};
   bgmActive = false;
 
   // Raw ArrayBuffers fetched before any AudioContext exists (iOS-safe)
   private rawSFX: Record<string, ArrayBuffer> = {};
+
+  /**
+   * Charge les médias audio. Appelé UNIQUEMENT par la scène d'intro, au montage.
+   * Les autres pages n'émettent aucun son (playRandomSFX sort tôt si !bgmActive),
+   * donc elles n'ont aucune raison de télécharger 2,5 Mo de MP3.
+   */
+  prime() {
+    if (this.isPrimed || !browser) return;
+    this.isPrimed = true;
+    this.setupBGM(BGM_URL);
+    this.loadSFX([...SFX_CLICKS, SFX_SUCCESS, SFX_BACK]);
+  }
 
   private createContext() {
     if (this.ctx) return;
@@ -48,29 +62,26 @@ class AudioEngine {
         const res = await fetch(url);
         if (!res.ok) return;
         this.rawSFX[url] = await res.arrayBuffer();
-      } catch (e) { console.warn(`SFX fetch error ${url}`, e); }
+      } catch { /* réseau indisponible : le SFX reste simplement muet */ }
     }));
   }
 
   // Phase 2 — called from init() which runs inside a user gesture
   private async decodeSFX() {
     if (!this.ctx) return;
-    const urls = Object.keys(this.rawSFX);
-    console.log('[Audio] decodeSFX — decoding', urls.length, 'files');
     await Promise.all(Object.entries(this.rawSFX).map(async ([url, ab]) => {
       try {
         this.sfxBuffers[url] = await this.ctx!.decodeAudioData(ab.slice(0));
-      } catch (e) { console.warn(`[Audio] SFX decode error ${url}`, e); }
+      } catch { /* format refusé par le navigateur : on ignore ce SFX */ }
     }));
-    console.log('[Audio] decodeSFX — done, buffers:', Object.keys(this.sfxBuffers).length);
   }
 
   // Must be called inside a user gesture handler (tap/click)
   init() {
-    if (this.isInitialized) return;
+    // Sans prime() préalable (donc hors intro) on ne crée aucun AudioContext.
+    if (this.isInitialized || !this.isPrimed) return;
     this.createContext();          // create context IN the gesture
     this.ctx!.resume();            // resume synchronously IN the gesture chain (iOS requirement)
-    console.log('[Audio] init — ctx state:', this.ctx!.state, 'sampleRate:', this.ctx!.sampleRate);
     const bufferSize = this.ctx!.sampleRate * 2;
     const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
     const data = buffer.getChannelData(0);
@@ -92,6 +103,7 @@ class AudioEngine {
   setupBGM(url: string) {
     this.bgmElement = new Audio(url);
     this.bgmElement.loop = true;
+    this.bgmElement.preload = 'none'; // la piste ne part qu'au premier geste, pas au chargement
     this.bgmElement.crossOrigin = 'anonymous';
   }
 
@@ -100,7 +112,7 @@ class AudioEngine {
     try {
       this.bgmSourceNode = this.ctx.createMediaElementSource(this.bgmElement);
       this.bgmSourceNode.connect(this.bgmGain!);
-    } catch {}
+    } catch { /* source déjà rattachée à ce contexte */ }
   }
 
   wakeUp() {
@@ -206,13 +218,10 @@ class AudioEngine {
   }
 
   playIntro() {
-    console.log('[Audio] playIntro — init:', this.isInitialized, 'ctx:', this.ctx?.state, 'muted:', this.isGlobalMuted, 'buf:', !!this.staticBuffer);
-    if (!this.isInitialized || !this.ctx || this.isGlobalMuted) return;
-    if (!this.staticBuffer) { console.warn('[Audio] playIntro — staticBuffer null'); return; }
+    if (!this.isInitialized || !this.ctx || this.isGlobalMuted || !this.staticBuffer) return;
     const doPlay = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
-      console.log('[Audio] playIntro doPlay — ctx state:', this.ctx.state, 't:', t);
       const noise = this.ctx.createBufferSource();
       noise.buffer = this.staticBuffer;
       const filter = this.ctx.createBiquadFilter();
@@ -272,22 +281,25 @@ class AudioEngine {
 
 function createAudioStore() {
   if (!browser) {
-    return { subscribe: writable({ isMuted: false }).subscribe, engine: null as unknown as AudioEngine };
+    // Même forme qu'au client (toggleMute inclus) pour que le type soit unique :
+    // sinon chaque appel doit être gardé contre `undefined`.
+    return {
+      subscribe: writable({ isMuted: false }).subscribe,
+      engine: null as unknown as AudioEngine,
+      toggleMute: () => {}
+    };
   }
+  // Aucun média n'est demandé ici : c'est IntroScene qui appelle engine.prime().
   const engine = new AudioEngine();
-  engine.setupBGM(BGM_URL);
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  // isBGMSuppressed removed — startBGM is called synchronously inside the user gesture, iOS accepts it
 
   const { subscribe, update } = writable({ isMuted: false });
-
-  // Only fetch raw bytes here — NO AudioContext created (iOS requires context inside gesture)
-  engine.loadSFX([...SFX_CLICKS, SFX_SUCCESS, SFX_BACK]);
 
   return {
     subscribe,
     engine,
     toggleMute() {
+      // init() et wakeUp() sont no-op tant que prime() n'a pas eu lieu,
+      // donc le bouton reste utilisable hors intro sans rien charger.
       engine.init();
       engine.wakeUp();
       engine.isGlobalMuted = !engine.isGlobalMuted;

@@ -28,6 +28,20 @@ déclenche automatiquement le déploiement Netlify (et chaque PR génère une pr
 - `npm run check` — svelte-check (types + a11y)
 - `npm run test:e2e` — tests Playwright
 
+## Invariants à ne pas casser
+
+- **Audio** : `audioStore` ne charge rien au niveau module. Seul `IntroScene`
+  appelle `engine.prime()`. Les autres pages n'émettent aucun son et ne doivent
+  télécharger aucun MP3 (`tests/perf.test.ts` le vérifie).
+- **Vidéos** : jamais d'`autoplay`. Utiliser `preload="none"` + `use:playInView`
+  sur les cartes, et la lecture pilotée par `carIndex` dans la case study.
+- **Contraste** : plancher à `text-white/50` pour tout texte sur `#020205`.
+  Pour un accent violet sur fond sombre, utiliser `#a8a5ff`, pas `#706bfe` dilué.
+  `tests/a11y.test.ts` passe axe-core sur quatre gabarits.
+- **Icônes** : `name` est typé par l'union `IconName`. Une icône non dessinée
+  fait échouer `npm run check` au lieu de rendre un `<svg>` vide.
+- **Responsive** : vérifié à 390, 820 et 1440 px, aucun débordement horizontal.
+
 ## Repères
 
 - Pages : `src/routes/` — `/` (intro WebGL), `/home`, `/projects`, `/projects/[slug]`
@@ -36,3 +50,13 @@ déclenche automatiquement le déploiement Netlify (et chaque PR génère une pr
 - Sitemap généré depuis les données : `src/routes/sitemap.xml/+server.ts`
 - Police DM Sans **auto-hébergée** (`@fontsource-variable/dm-sans`) — ne pas réintroduire Google Fonts
 - Image OG sociale : `static/assets/og-cover.jpg` (1200×630, **JPG** — pas de WebP pour l'OG)
+- Posters vidéo : champ `videoPoster` (hero) et `poster` (media) dans `projects.ts`.
+  Les fichiers ne sont pas encore produits — voir « Reste à faire » ci-dessous.
+
+## Reste à faire
+
+- **Posters vidéo** : générer `poster-ofelia.webp`, `poster-ofelia-2.webp`,
+  `poster-ofelia-3.webp` (première frame) et les renseigner dans `projects.ts`.
+  Sans eux, une vidéo en `preload="none"` laisse un cadre vide avant lecture.
+- **Ré-encoder `ofelia-3.mp4`** : 8 Mo pour 18 s en 1112×1080, soit ~3,5 Mb/s.
+  Une capture d'interface tient largement sous 1,5 Mo.

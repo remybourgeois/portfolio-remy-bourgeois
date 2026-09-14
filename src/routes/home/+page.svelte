@@ -4,19 +4,18 @@
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
   import Icon from '$lib/components/Icons.svelte';
-  import { PROJECTS } from '$lib/data/projects';
+  import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
   import { TESTIMONIALS } from '$lib/data/testimonials';
   import { EXPERTISES } from '$lib/data/expertises';
   import { CLIENT_LOGOS } from '$lib/data/clients';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL } from '$lib/data/site';
-  import { md } from '$lib/utils/text';
+  import { md, jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
+  import { playInView } from '$lib/actions/playInView';
 
-  const homeProjectIds = [8, 1, 3, 4];
-  const homeProjects = homeProjectIds
-    .map(id => PROJECTS.find(p => p.id === id))
-    .filter((p): p is NonNullable<typeof p> => p != null);
+  const homeProjects = FEATURED_PROJECTS;
+  // Liste dupliquée pour que le défilement boucle sans couture.
   const marqueeItems = [...CLIENT_LOGOS, ...CLIENT_LOGOS];
 
   let expandedTestimonial = $state<number | null>(null);
@@ -64,7 +63,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
   <meta name="twitter:url" content="{SITE_URL}/home" />
-  {@html `<script type="application/ld+json">${JSON.stringify({
+  {@html `<script type="application/ld+json">${jsonLd({
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Rémy Bourgeois",
@@ -92,11 +91,22 @@
       class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-white/60 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
     >
       <Icon name="RefreshCw" size={11} />
-      <span class="whitespace-nowrap">Recommencer l'expérience</span>
+      <span class="whitespace-nowrap hidden sm:inline">Recommencer l'expérience</span>
+      <span class="whitespace-nowrap sm:hidden">Recommencer</span>
     </a>
-    <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-3 sm:px-4 py-2 rounded-full">
-      <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shadow-[0_0_8px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
-      <span class="whitespace-nowrap text-white/60 text-[11px] sm:text-xs font-mono uppercase tracking-wider">Lien établi</span>
+    <div class="flex items-center gap-2">
+      <a
+        href="/projects"
+        use:sfx
+        class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-white/70 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+      >
+        <span class="whitespace-nowrap">Projets</span>
+        <Icon name="ArrowRight" size={11} />
+      </a>
+      <div class="pointer-events-auto hidden lg:flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
+        <div class="w-2 h-2 rounded-full shadow-[0_0_8px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
+        <span class="whitespace-nowrap text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
+      </div>
     </div>
   </div>
 
@@ -163,14 +173,20 @@
     </RevealOnScroll>
 
     <!-- Client marquee -->
-    <div class="w-full mb-20" aria-label="Clients et partenaires">
+    <div class="w-full mb-20" role="region" aria-label="Clients et partenaires">
       <div class="w-full overflow-hidden py-6 relative">
         <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#020205] to-transparent z-10 pointer-events-none"></div>
         <div class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#020205] to-transparent z-10 pointer-events-none"></div>
         <div class="flex w-max animate-marquee items-center marquee-track" aria-hidden="true">
           {#each marqueeItems as logo, i (i)}
             <div class="mx-5 sm:mx-8 md:mx-10 flex items-center justify-center">
-              <img src={logo} alt="" class="h-6 w-auto object-contain opacity-60" loading="eager" decoding="async" />
+              <img
+                src={logo}
+                alt=""
+                class="h-6 w-auto object-contain opacity-70"
+                loading={i < CLIENT_LOGOS.length ? 'eager' : 'lazy'}
+                decoding="async"
+              />
             </div>
           {/each}
         </div>
@@ -200,7 +216,7 @@
                   <img src={t.logo} alt={t.company} class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
                 </div>
               </div>
-              <p id="testimonial-{t.id}" class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id ? '' : 'line-clamp-4'}">{t.text}</p>
+              <p id="testimonial-{t.id}" lang={t.lang} class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id ? '' : 'line-clamp-4'}">{t.text}</p>
               <button
                 onclick={() => expandedTestimonial = expandedTestimonial === t.id ? null : t.id}
                 aria-expanded={expandedTestimonial === t.id}
@@ -271,15 +287,35 @@
                   <a
                     href="/projects/{project.slug}"
                     use:sfx
-                    aria-label="Voir le projet {project.title}"
-                    class="relative z-10 w-full h-full absolute inset-0 focus-visible:ring-4 focus-visible:ring-[#706bfe] focus:outline-none"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="absolute inset-0 z-10 w-full h-full focus:outline-none"
                   >
                     {#if project.video}
-                      <video src={project.video} autoplay loop muted playsinline aria-hidden="true" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl"></video>
+                      <video
+                        src={project.video}
+                        poster={project.videoPoster}
+                        use:playInView
+                        preload="none"
+                        loop muted playsinline
+                        aria-hidden="true"
+                        width={heroSize(project).width}
+                        height={heroSize(project).height}
+                        class="w-full h-full object-contain shadow-2xl"
+                      ></video>
                     {:else if project.image || project.media?.length}
-                      <img src={project.image || project.media![0].src} srcset={projectSrcset(project.image || project.media![0].src)} sizes="(min-width: 1024px) 50vw, 100vw" alt="" width="1920" height="1080" class="w-full h-full object-contain shadow-2xl" loading="lazy" />
+                      <img
+                        src={project.image || project.media![0].src}
+                        srcset={projectSrcset(project.image || project.media![0].src)}
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        alt=""
+                        width={heroSize(project).width}
+                        height={heroSize(project).height}
+                        class="w-full h-full object-contain shadow-2xl"
+                        loading="lazy"
+                      />
                     {:else}
-                      <span class="text-xs uppercase tracking-[0.3em] text-white/20 font-medium">Bientôt</span>
+                      <span class="text-xs uppercase tracking-[0.3em] text-white/50 font-medium">Bientôt</span>
                     {/if}
                   </a>
                 </div>
@@ -340,7 +376,7 @@
           </div>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:remy.bourgeois@gmail.com" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#706bfe] text-white font-medium hover:bg-[#5a55e0] transition-all focus-visible:ring-2 focus-visible:ring-white">
+              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white">
               <Icon name="Mail" size={16} /> remy.bourgeois@gmail.com
             </a>
             <a href="https://www.linkedin.com/in/remy-bourgeois/" target="_blank" rel="noopener noreferrer" use:sfx
@@ -350,8 +386,8 @@
           </div>
         </div>
         <div class="mt-16 text-center">
-          <p class="text-white/30 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>
-          <p class="text-white/20 text-xs">© 2026 Rémy Bourgeois</p>
+          <p class="text-white/55 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>
+          <p class="text-white/50 text-xs">© 2026 Rémy Bourgeois</p>
         </div>
       </div>
     </RevealOnScroll>

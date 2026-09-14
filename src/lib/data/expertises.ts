@@ -1,8 +1,10 @@
 // src/lib/data/expertises.ts
+import type { IconName } from '$lib/components/Icons.svelte';
+
 export interface Expertise {
   id: number;
   title: string;
-  icon: string;
+  icon: IconName;
   desc: string;
 }
 

@@ -12,25 +12,50 @@ test('shows Senior Product Designer heading', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Senior Product Designer/ })).toBeVisible();
 });
 
-test('shows impact counters section', async ({ page }) => {
+test('impact counters settle on their final value', async ({ page }) => {
   await expect(page.getByText(/Années d'expérience/)).toBeVisible();
-  // Scroll to counters to trigger IntersectionObserver, then wait for animation
-  await page.evaluate(() => document.querySelector('[aria-label^="0+"]')?.scrollIntoView());
-  await expect(page.locator('[aria-label="13+"]')).toBeVisible({ timeout: 10000 });
+  await page.getByText(/Années d'expérience/).scrollIntoViewIfNeeded();
+  // On vise la valeur finale, pas une étape intermédiaire de l'easing :
+  // l'ancienne assertion sur "13+" ne passait que par accident de timing.
+  await expect(page.getByText('14+', { exact: true }).first()).toBeVisible({ timeout: 10000 });
 });
 
 test('shows contact section with email link', async ({ page }) => {
   await expect(page.getByRole('link', { name: /remy.bourgeois@gmail.com/ })).toBeVisible();
 });
 
-test('shows featured projects with links to case studies', async ({ page }) => {
-  // 4 projets vedettes, chacun lié depuis l'image + le titre = 8 liens
-  await expect(page.locator('main a[href^="/projects/"]')).toHaveCount(8);
+test('featured projects expose one accessible link each', async ({ page }) => {
+  // Chaque carte porte deux liens vers la même cible (image + titre), mais
+  // l'image est aria-hidden : un lecteur d'écran ne doit en annoncer qu'un.
+  const named = page.getByRole('link', { name: /Ofelia|iPify|Aldebaran|Crédit Agricole/ });
+  await expect(named).toHaveCount(4);
+});
+
+test('projects are reachable from the top bar', async ({ page }) => {
+  const link = page.getByRole('link', { name: 'Projets', exact: true });
+  await expect(link).toBeVisible();
+  await link.click();
+  await page.waitForURL(/\/projects$/);
 });
 
 test('scroll-to-top button appears after scrolling', async ({ page }) => {
-  await page.evaluate(() => window.scrollTo(0, 500));
-  await expect(page.getByRole('button', { name: /Remonter en haut/ })).toBeVisible();
+  const btn = page.getByRole('button', { name: /Remonter en haut/ });
+  await expect(btn).toBeHidden();
+
+  // Le bouton dépend d'un IntersectionObserver enregistré dans onMount, alors
+  // que `goto` rend la main dès `load` — SvelteKit hydratant via un import()
+  // dynamique, qui ne bloque pas cet événement. Un scroll émis avant
+  // l'enregistrement de l'observer ne déclenchait donc rien, ce qui rendait le
+  // test instable (constaté en CI). On réémet le scroll jusqu'à ce que
+  // l'observer réponde : l'assertion reste la même, elle n'est plus une course.
+  await expect(async () => {
+    await page.evaluate(() => window.scrollTo(0, 800));
+    await expect(btn).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
+
+  // Et il disparaît en revenant en haut.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(btn).toBeHidden();
 });
 
 test('testimonial expand/collapse works', async ({ page }) => {
