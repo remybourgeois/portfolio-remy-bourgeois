@@ -39,8 +39,23 @@ test('projects are reachable from the top bar', async ({ page }) => {
 });
 
 test('scroll-to-top button appears after scrolling', async ({ page }) => {
-  await page.evaluate(() => window.scrollTo(0, 500));
-  await expect(page.getByRole('button', { name: /Remonter en haut/ })).toBeVisible();
+  const btn = page.getByRole('button', { name: /Remonter en haut/ });
+  await expect(btn).toBeHidden();
+
+  // Le bouton dépend d'un IntersectionObserver enregistré dans onMount, alors
+  // que `goto` rend la main dès `load` — SvelteKit hydratant via un import()
+  // dynamique, qui ne bloque pas cet événement. Un scroll émis avant
+  // l'enregistrement de l'observer ne déclenchait donc rien, ce qui rendait le
+  // test instable (constaté en CI). On réémet le scroll jusqu'à ce que
+  // l'observer réponde : l'assertion reste la même, elle n'est plus une course.
+  await expect(async () => {
+    await page.evaluate(() => window.scrollTo(0, 800));
+    await expect(btn).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
+
+  // Et il disparaît en revenant en haut.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(btn).toBeHidden();
 });
 
 test('testimonial expand/collapse works', async ({ page }) => {
