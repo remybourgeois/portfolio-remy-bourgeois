@@ -50,25 +50,25 @@
 </script>
 
 <svelte:head>
-  <title>Rémy Bourgeois — Senior Product Designer & Expert IA à Lyon</title>
-  <meta name="description" content="Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B — 14 ans d'expérience." />
+  <title>Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon</title>
+  <meta name="description" content="Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="Rémy Bourgeois — Senior Product Designer & Expert IA à Lyon" />
+  <meta property="og:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
   <meta property="og:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rémy Bourgeois — Senior Product Designer & Expert IA à Lyon" />
+  <meta name="twitter:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
   <meta name="twitter:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta name="twitter:image" content={OG_IMAGE} />
-  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/" />
 
   {@html `<script type="application/ld+json">${jsonLd({
@@ -79,8 +79,8 @@
         "@type": "ProfilePage",
         "@id": SITE_URL + "/#profilepage",
         "url": SITE_URL + "/",
-        "name": "Rémy Bourgeois — Senior Product Designer & Expert IA à Lyon",
-        "description": "Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B — 14 ans d'expérience.",
+        "name": "Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon",
+        "description": "Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience.",
         "isPartOf": { "@id": websiteNode["@id"] },
         "about": { "@id": personNode["@id"] },
         "mainEntity": { "@id": personNode["@id"] },
@@ -113,13 +113,6 @@
       <span class="whitespace-nowrap sm:hidden">Expérience</span>
     </a>
     <div class="flex items-center gap-2">
-      <a
-        href="/services"
-        use:sfx
-        class="pointer-events-auto hidden sm:flex items-center gap-1.5 sm:gap-2 text-white/70 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-      >
-        <span class="whitespace-nowrap">Prestations</span>
-      </a>
       <a
         href="/projects"
         use:sfx
@@ -262,10 +255,6 @@
         <h2 class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4">
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Expertises <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
         </h2>
-        <p class="text-center text-white/65 text-sm mb-10 -mt-10">
-          Le détail de chaque prestation, les livrables et une FAQ sont sur la page
-          <a href="/services" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] rounded">prestations</a>.
-        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
           {#each EXPERTISES as exp}
             <div class="group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-expert hover:translate-y-[-4px] transition-all duration-300">
@@ -384,12 +373,17 @@
     <!-- Contact -->
     <RevealOnScroll>
       <div class="w-full py-20 relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center max-w-2xl mx-auto">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
+        <!--
+          La carte occupe toute la largeur de la section, comme Recommandations,
+          Expertises, Impact et Projets. Seul le paragraphe reste plafonné :
+          une ligne de texte sur 952 px serait pénible à lire.
+        -->
+        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
           <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
-          <p class="body-text text-white/60 text-base leading-relaxed mb-8">
+          <p class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-2xl mx-auto">
             Je vous accompagne sur vos projets d'<strong>IA</strong>, de <strong>design system</strong>,
-            d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong> —
+            d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong>,
             que vous soyez une startup, une scale-up, une PME ou une grande entreprise.
           </p>
           <div class="flex flex-wrap justify-center gap-3 mb-8">
@@ -406,19 +400,13 @@
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:remy.bourgeois@gmail.com" use:sfx
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white">
-              <Icon name="Mail" size={16} /> remy.bourgeois@gmail.com
+              <Icon name="Mail" size={16} className="flex-shrink-0" /> remy.bourgeois@gmail.com
             </a>
             <a href="https://www.linkedin.com/in/remy-bourgeois/" target="_blank" rel="noopener noreferrer" use:sfx
               class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
-              <Icon name="Linkedin" size={16} /> LinkedIn
+              <Icon name="Linkedin" size={16} className="flex-shrink-0" /> LinkedIn
             </a>
           </div>
-          <p class="text-white/60 text-sm mt-8">
-            Avant d'écrire :
-            <a href="/services" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] rounded">les prestations en détail</a>
-            ou
-            <a href="/a-propos" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] rounded">le parcours complet</a>.
-          </p>
         </div>
         <div class="mt-16 text-center">
           <p class="text-white/55 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>

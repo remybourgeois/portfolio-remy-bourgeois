@@ -43,6 +43,6 @@ export const EXPERTISES: Expertise[] = [
     id: 6,
     title: 'Interaction H-M',
     icon: 'Cpu',
-    desc: "Créer la symbiose entre l'humain et la machine — héritée de 7 ans en robotique humanoïde."
+    desc: "Créer la symbiose entre l'humain et la machine, héritée de 7 ans en robotique humanoïde."
   }
 ];

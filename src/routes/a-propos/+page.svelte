@@ -18,28 +18,28 @@
   const TIMELINE = [
     {
       period: '2013 – 2020',
-      title: 'Designer d’interaction — Aldebaran Robotics',
+      title: 'Designer d’interaction, Aldebaran Robotics',
       body:
-        'Sept ans à concevoir les comportements et les interactions de NAO et Pepper, les robots humanoïdes les plus déployés au monde. Applications embarquées sur des milliers de robots dans plus de 70 pays, en retail, en gare et en aéroport. Design conversationnel, scénarisation vocale et sound design — dix ans avant l’arrivée des LLM.',
+        'Sept ans à concevoir les comportements et les interactions de NAO et Pepper, les robots humanoïdes les plus déployés au monde. Applications embarquées sur des milliers de robots dans plus de 70 pays, en retail, en gare et en aéroport. Design conversationnel, scénarisation vocale et sound design, dix ans avant l’arrivée des LLM.',
       slug: 'aldebaran'
     },
     {
       period: '2021 – 2024',
-      title: 'Lead UI & Référent Design System — Crédit Agricole',
+      title: 'Lead UI & Référent Design System, Crédit Agricole',
       body:
         'Trois ans sur l’un des plus vastes écosystèmes digitaux d’Europe : site institutionnel, application « Ma Banque » et outils conseillers. Architecture de design tokens pour gérer la déclinaison multi-marques des caisses régionales. Design system adopté par plus de 15 équipes produit, application utilisée par plus de 30 millions de personnes chaque mois.',
       slug: 'credit-agricole'
     },
     {
       period: '2023 – 2024',
-      title: 'Senior Product Designer — iPify & Highlight',
+      title: 'Senior Product Designer, iPify & Highlight',
       body:
         'Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
       slug: 'ipify'
     },
     {
       period: '2025 – 2026',
-      title: 'Founding Designer — Ofelia (Bonitasoft)',
+      title: 'Founding Designer, Ofelia (Bonitasoft)',
       body:
         'Seul designer d’une suite d’orchestration IA gouvernée, construite à partir d’une page blanche. Le produit, un assistant agentique, s’intègre directement dans Slack et Teams. C’est sur ce projet que le rôle a basculé vers le design engineering : plus de maquette statique, des Pull Requests ouvertes directement dans le dépôt et revues par un développeur front.',
       slug: 'ofelia'
@@ -48,7 +48,7 @@
 </script>
 
 <svelte:head>
-  <title>À propos — Rémy Bourgeois, Product Design Engineer à Lyon</title>
+  <title>À propos | Rémy Bourgeois, Product Design Engineer à Lyon</title>
   <meta
     name="description"
     content="Le parcours de Rémy Bourgeois : 7 ans en robotique humanoïde chez Aldebaran, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA. 14 ans de design produit."
@@ -57,21 +57,21 @@
   <meta property="og:type" content="profile" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="À propos — Rémy Bourgeois, Product Design Engineer" />
+  <meta property="og:title" content="À propos | Rémy Bourgeois, Product Design Engineer" />
   <meta property="og:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA. 14 ans de design produit." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/a-propos" />
   <meta property="profile:first_name" content="Rémy" />
   <meta property="profile:last_name" content="Bourgeois" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="À propos — Rémy Bourgeois, Product Design Engineer" />
+  <meta name="twitter:title" content="À propos | Rémy Bourgeois, Product Design Engineer" />
   <meta name="twitter:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA." />
   <meta name="twitter:image" content={OG_IMAGE} />
-  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/a-propos" />
 
   {@html `<script type="application/ld+json">${jsonLd({
@@ -85,7 +85,7 @@
         "@type": "AboutPage",
         "@id": SITE_URL + "/a-propos#webpage",
         "url": SITE_URL + "/a-propos",
-        "name": "À propos — Rémy Bourgeois, Product Design Engineer à Lyon",
+        "name": "À propos | Rémy Bourgeois, Product Design Engineer à Lyon",
         "inLanguage": "fr-FR",
         "isPartOf": { "@id": WEBSITE_ID },
         "about": { "@id": PERSON_ID },
@@ -143,9 +143,9 @@
           l'espace, dans une gare bruyante, oblige à penser l'interaction avant l'interface.
         </p>
         <p>
-          Ce terrain a laissé deux héritages. Le premier est le <strong>design conversationnel</strong> —
+          Ce terrain a laissé deux héritages. Le premier est le <strong>design conversationnel</strong> :
           les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se
-          trompe — pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
+          trompe. Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
           <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est
           resté une pratique personnelle, sous le même nom, en musique.
         </p>
@@ -201,7 +201,7 @@
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ailleurs sur le web
       </h2>
       <p class="text-white/65 text-sm leading-[1.85] mb-6">
-        Plusieurs personnes portent ce nom. Les profils ci-dessous sont les miens — y compris le
+        Plusieurs personnes portent ce nom. Les profils ci-dessous sont les miens, y compris le
         versant musique et sound design, qui vient directement des années passées en robotique.
       </p>
       <ul class="flex flex-wrap gap-3">
@@ -238,14 +238,14 @@
           use:sfx
           class="inline-flex items-center gap-3 px-7 py-4 rounded-full bg-[#5a55e0] hover:bg-[#4a45d0] text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-white"
         >
-          <Icon name="Mail" size={16} /> {EMAIL}
+          <Icon name="Mail" size={16} className="flex-shrink-0" /> {EMAIL}
         </a>
         <a
-          href="/services"
+          href="/projects"
           use:sfx
           class="inline-flex items-center gap-3 px-7 py-4 rounded-full border border-white/20 hover:border-white/40 text-white/70 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
-          Voir les prestations <Icon name="ArrowRight" size={14} />
+          Voir les projets <Icon name="ArrowRight" size={14} />
         </a>
       </div>
     </section>

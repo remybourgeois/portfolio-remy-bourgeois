@@ -11,7 +11,6 @@ export const prerender = true;
  */
 const PATHS = [
   '/',
-  '/services',
   '/a-propos',
   '/projects',
   ...PROJECTS.map((p) => `/projects/${p.slug}`)

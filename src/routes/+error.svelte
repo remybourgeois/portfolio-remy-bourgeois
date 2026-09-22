@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-  <title>{isNotFound ? 'Page introuvable' : 'Erreur'} — Rémy Bourgeois</title>
+  <title>{isNotFound ? 'Page introuvable' : 'Erreur'} | Rémy Bourgeois</title>
   <meta name="robots" content="noindex, follow" />
 </svelte:head>
 

@@ -43,6 +43,12 @@ déclenche automatiquement le déploiement Netlify (et chaque PR génère une pr
 - **Icônes** : `name` est typé par l'union `IconName`. Une icône non dessinée
   fait échouer `npm run check` au lieu de rendre un `<svg>` vide.
 - **Responsive** : vérifié à 390, 820 et 1440 px, aucun débordement horizontal.
+- **Rédaction** : pas de tiret cadratin (`—`) dans le contenu visible — il donne
+  un ton « écrit par une IA ». Utiliser deux-points, virgule, point ou `|` selon
+  le cas. Les commentaires de code ne sont pas concernés.
+- **Largeur des sections de la home** : `<main>` est en `flex items-center`, donc
+  une section sans `w-full` se dimensionne sur son contenu. `RevealOnScroll`
+  porte `w-full` pour que toutes les sections s'alignent sur `max-w-6xl`.
 - **SEO/GEO** : `/` est la page indexable principale — ne jamais y remettre de
   `noindex`, et ne pas réintroduire de page `/home`. Une seule entité `Person`
   est déclarée, dans `src/lib/data/person.ts`, et toutes les pages la
@@ -54,14 +60,13 @@ déclenche automatiquement le déploiement Netlify (et chaque PR génère une pr
 ## Repères
 
 - Pages : `src/routes/` — `/` (portfolio, page indexable principale), `/intro`
-  (intro WebGL, `noindex`), `/services`, `/a-propos`, `/projects`,
-  `/projects/[slug]`. `/home` est redirigé en 301 vers `/` (`netlify.toml`).
+  (intro WebGL, `noindex`), `/a-propos`, `/projects`, `/projects/[slug]`.
+  `/home` est redirigé en 301 vers `/` (`netlify.toml`).
 - Contenu : `src/lib/data/` · Médias : `static/assets/` (images **WebP**, audio **MP3**)
 - Images projet : variantes responsives 768/1280/1920 via `src/lib/utils/img.ts` (`projectSrcset`)
 - Sitemap généré depuis les données : `src/routes/sitemap.xml/+server.ts`
 - `llms.txt` généré lui aussi depuis les données : `src/routes/llms.txt/+server.ts`
 - Entité et JSON-LD partagés : `src/lib/data/person.ts` · constantes : `src/lib/data/site.ts`
-- Prestations et FAQ : `src/lib/data/services.ts`
 - Police DM Sans **auto-hébergée** (`@fontsource-variable/dm-sans`) — ne pas réintroduire Google Fonts
 - Image OG sociale : `static/assets/og-cover.jpg` (1200×630, **JPG** — pas de WebP pour l'OG)
 - Posters vidéo : champ `videoPoster` (hero) et `poster` (media) dans `projects.ts`.
