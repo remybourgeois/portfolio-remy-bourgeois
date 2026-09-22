@@ -29,7 +29,7 @@ export default {
     },
 
     prerender: {
-      entries: ['/', '/home', '/projects', '/sitemap.xml'],
+      entries: ['/', '/intro', '/services', '/a-propos', '/projects', '/sitemap.xml', '/llms.txt'],
       handleMissingId: 'ignore'
       // Plus de handleHttpError permissif : l'exception sur /assets/ laissait
       // partir en production toute image ou vidéo référencée mais absente.

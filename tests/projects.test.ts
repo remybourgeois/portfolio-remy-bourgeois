@@ -6,9 +6,9 @@ test('shows projects grid', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Voir le projet/ }).first()).toBeVisible();
 });
 
-test('back link goes to /home', async ({ page }) => {
+test('back link goes to the home page', async ({ page }) => {
   await page.goto('/projects');
-  await expect(page.getByRole('link', { name: /Retour/ })).toHaveAttribute('href', '/home');
+  await expect(page.getByRole('link', { name: /Retour/ })).toHaveAttribute('href', '/');
 });
 
 test('project card navigates to case study', async ({ page }) => {

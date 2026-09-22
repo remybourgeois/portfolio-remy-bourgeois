@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
  * Audit automatisé sur les quatre gabarits. Cible la famille de régressions
  * trouvée en revue manuelle : huit valeurs de texte sous le seuil WCAG AA.
  */
-const ROUTES = ['/home', '/projects', '/projects/ofelia', '/projects/aldebaran'];
+const ROUTES = ['/', '/services', '/a-propos', '/projects', '/projects/ofelia', '/projects/aldebaran'];
 
 /**
  * Fait défiler toute la page par pas d'un écran pour déclencher chaque
@@ -44,7 +44,7 @@ for (const route of ROUTES) {
 test('revealed sections actually reach full opacity', async ({ page }) => {
   // Garde-fou sur le motif de révélation : un contenu qui resterait bloqué à
   // opacity-0 serait invisible tout en passant les assertions de visibilité.
-  await page.goto('/home');
+  await page.goto('/');
   await revealAll(page);
   const faded = await page.evaluate(() =>
     [...document.querySelectorAll('main *')].filter(

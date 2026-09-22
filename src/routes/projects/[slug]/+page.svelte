@@ -3,8 +3,9 @@
   import type { PageData } from './$types';
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL } from '$lib/data/site';
-  import { md } from '$lib/utils/text';
+  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
+  import { breadcrumb } from '$lib/data/person';
+  import { md, jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
   import { heroSize } from '$lib/data/projects';
 
@@ -128,20 +129,57 @@
 }} />
 
 <svelte:head>
-  <title>{project.title} — Rémy Bourgeois</title>
-  <meta name="description" content={project.description.replace(/\*\*/g, '').slice(0, 160)} />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
+  <title>{project.title} — {project.role} | Rémy Bourgeois</title>
+  <meta name="description" content={project.seoDescription} />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content={SITE_LOCALE} />
+  <meta property="og:site_name" content={SITE_NAME} />
   <meta property="og:title" content="{project.title} — Rémy Bourgeois" />
-  <meta property="og:description" content={project.description.replace(/\*\*/g, '').slice(0, 160)} />
-  <meta property="og:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta property="og:description" content={project.seoDescription} />
+  <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/projects/{project.slug}" />
+  <meta property="article:author" content="Rémy Bourgeois" />
+  <meta property="article:modified_time" content={CONTENT_UPDATED} />
+
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta name="twitter:title" content="{project.title} — Rémy Bourgeois" />
+  <meta name="twitter:description" content={project.seoDescription} />
+  <meta name="twitter:image" content={OG_IMAGE} />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/projects/{project.slug}" />
+
+  {@html `<script type="application/ld+json">${jsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumb([
+        { name: 'Accueil',  path: '/' },
+        { name: 'Projets',  path: '/projects' },
+        { name: project.title, path: `/projects/${project.slug}` }
+      ]),
+      {
+        "@type": "CreativeWork",
+        "@id": `${SITE_URL}/projects/${project.slug}#work`,
+        "url": `${SITE_URL}/projects/${project.slug}`,
+        "name": project.title,
+        "headline": `${project.title} — ${project.role}`,
+        "description": project.seoDescription,
+        "inLanguage": "fr-FR",
+        "isPartOf": { "@id": WEBSITE_ID },
+        "creator": { "@id": PERSON_ID },
+        "author": { "@id": PERSON_ID },
+        "keywords": project.tags,
+        "about": project.tags,
+        "temporalCoverage": project.year,
+        "dateModified": CONTENT_UPDATED,
+        "sourceOrganization": { "@type": "Organization", "name": project.client },
+        "image": project.image ? SITE_URL + project.image : OG_IMAGE
+      }
+    ]
+  })}</script>`}
 </svelte:head>
 
 <!-- ─── Lightbox ─────────────────────────────────────────────────────────── -->
@@ -198,7 +236,7 @@
                   flex items-center justify-center p-6">
         {#if lbSlide.type === 'video'}
           <!-- svelte-ignore a11y_media_has_caption -->
-          <video src={lbSlide.src} controls autoplay
+          <video src={lbSlide.src} poster={lbSlide.poster} controls autoplay
                  width={lbSlide.width} height={lbSlide.height}
                  class="max-w-full max-h-[78vh] object-contain rounded-xl">
             <track kind="captions" src="" label="Captions" />
@@ -415,7 +453,7 @@
 
       <!-- Description principale -->
       <div class="pl-5 border-l border-white/[0.1]">
-        <p class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">Contexte</p>
+        <h2 class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">Contexte</h2>
         <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
           {@html md(project.description)}
         </p>
@@ -435,7 +473,7 @@
       <!-- Challenge -->
       {#if project.challenge}
         <div class="pl-5 border-l-2 border-[#706bfe]/50">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">Challenge</p>
+          <h2 class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">Challenge</h2>
           <p class="project-text text-white/60 text-base leading-[1.85]">{@html md(project.challenge)}</p>
         </div>
       {/if}
@@ -443,7 +481,7 @@
       <!-- Résultat -->
       {#if project.outcome}
         <div class="pl-5 border-l-2 border-emerald-400/50">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-emerald-400/70 font-semibold mb-4">Résultat</p>
+          <h2 class="text-[9px] uppercase tracking-[0.25em] text-emerald-400/70 font-semibold mb-4">Résultat</h2>
           <p class="project-text text-white/60 text-base leading-[1.85]">{@html md(project.outcome)}</p>
         </div>
       {/if}

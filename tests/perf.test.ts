@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
  * audio était un singleton de module chargé par le layout racine, donc les
  * 2,5 Mo de MP3 partaient sur chaque page, y compris celles sans aucun son.
  */
-for (const route of ['/home', '/projects', '/projects/ofelia']) {
+for (const route of ['/', '/services', '/a-propos', '/projects', '/projects/ofelia']) {
   test(`no audio is fetched on ${route}`, async ({ page }) => {
     const audio: string[] = [];
     page.on('request', (r) => {

@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
+# Crawlers des moteurs génératifs. Le « User-agent: * » ci-dessus les couvre
+# déjà, mais les nommer lève toute ambiguïté d'interprétation.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+Allow: /
+
 Sitemap: https://remybourgeois.com/sitemap.xml

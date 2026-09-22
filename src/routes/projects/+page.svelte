@@ -3,32 +3,72 @@
   import { PROJECTS, heroSize } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL } from '$lib/data/site';
+  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
+  import { breadcrumb } from '$lib/data/person';
+  import { jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
   import { playInView } from '$lib/actions/playInView';
 </script>
 
 <svelte:head>
-  <title>Projets — Rémy Bourgeois</title>
-  <meta name="description" content="Portfolio de projets : Design System, IA conversationnelle, SaaS B2B, robotique humanoïde." />
+  <title>Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois</title>
+  <meta name="description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Rémy Bourgeois — Portfolio" />
-  <meta property="og:title" content="Projets — Rémy Bourgeois" />
-  <meta property="og:description" content="Design System, IA conversationnelle, interfaces complexes — 14 ans de travail condensé." />
-  <meta property="og:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta property="og:locale" content={SITE_LOCALE} />
+  <meta property="og:site_name" content={SITE_NAME} />
+  <meta property="og:title" content="Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
+  <meta property="og:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+  <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/projects" />
+
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="{SITE_URL}/assets/og-cover.jpg" />
+  <meta name="twitter:title" content="Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
+  <meta name="twitter:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+  <meta name="twitter:image" content={OG_IMAGE} />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta name="twitter:url" content="{SITE_URL}/projects" />
+
+  {@html `<script type="application/ld+json">${jsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumb([
+        { name: 'Accueil', path: '/' },
+        { name: 'Projets', path: '/projects' }
+      ]),
+      {
+        "@type": "CollectionPage",
+        "@id": SITE_URL + "/projects#collection",
+        "url": SITE_URL + "/projects",
+        "name": "Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois",
+        "description": "Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés.",
+        "inLanguage": "fr-FR",
+        "isPartOf": { "@id": WEBSITE_ID },
+        "about": { "@id": PERSON_ID },
+        "dateModified": CONTENT_UPDATED,
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": PROJECTS.length,
+          "itemListElement": PROJECTS.map((p, i) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "url": `${SITE_URL}/projects/${p.slug}`,
+            "name": p.title
+          }))
+        }
+      }
+    ]
+  })}</script>`}
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
 
     <header class="mb-16">
-      <a href="/home" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
+      <a href="/" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
         <Icon name="ArrowLeft" size={14} /> Retour
       </a>
       <h1 class="text-4xl md:text-6xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
