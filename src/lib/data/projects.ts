@@ -18,6 +18,12 @@ export interface Project {
   title: string;
   tags: string[];
   description: string;
+  /**
+   * Meta description rédigée à la main. Auparavant dérivée de `description`
+   * par un slice(0, 160), qui coupait en plein milieu d'un mot : la SERP
+   * affichait « …une suite logicielle d ».
+   */
+  seoDescription: string;
   image?: string;
   video?: string;
   /** Dimensions du média d'ouverture quand c'est une vidéo (elles ne sont pas en 16:9). */
@@ -29,7 +35,7 @@ export interface Project {
    */
   videoPoster?: string;
   media?: ProjectMedia[];
-  /** Mis en avant sur /home. Évite de piloter la sélection par des identifiants. */
+  /** Mis en avant sur la home (/). Évite de piloter la sélection par des identifiants. */
   featured?: boolean;
   challenge?: string;
   outcome?: string;
@@ -43,6 +49,8 @@ export const PROJECTS: Project[] = [
     id: 8,
     featured: true,
     slug: 'ofelia',
+    seoDescription:
+      'Founding Designer d\'Ofelia (Bonitasoft) : design system et UX d\'un assistant IA agentique intégré à Slack et Teams, conçu directement dans le code.',
     client: 'Ofelia',
     logo: '/assets/ofelia.svg',
     title: 'Ofelia',
@@ -56,9 +64,10 @@ export const PROJECTS: Project[] = [
     video: '/assets/ofelia.mp4',
     videoWidth: 2026,
     videoHeight: 1034,
+    videoPoster: '/assets/poster-ofelia.webp',
     media: [
-      { type: 'video', src: '/assets/ofelia-2.mp4', width: 1112, height: 1080 },
-      { type: 'video', src: '/assets/ofelia-3.mp4', width: 1112, height: 1080 }
+      { type: 'video', src: '/assets/ofelia-2.mp4', poster: '/assets/poster-ofelia-2.webp', width: 1112, height: 1080 },
+      { type: 'video', src: '/assets/ofelia-3.mp4', poster: '/assets/poster-ofelia-3.webp', width: 1112, height: 1080 }
     ],
     role: 'Product Design Engineer (Founding Designer)',
     year: '2025 – 2026'
@@ -67,6 +76,8 @@ export const PROJECTS: Project[] = [
     id: 1,
     featured: true,
     slug: 'ipify',
+    seoDescription:
+      'Refonte du design system et conception des briques IA d\'iPify, plateforme SaaS B2B LegalTech de gestion internationale de portefeuilles de brevets.',
     client: 'iPify',
     logo: '/assets/ipify.png',
     title: 'iPify',
@@ -88,6 +99,8 @@ export const PROJECTS: Project[] = [
     id: 3,
     featured: true,
     slug: 'aldebaran',
+    seoDescription:
+      '7 ans de design d\'interaction homme-robot chez Aldebaran sur NAO et Pepper : UX embarquée, design conversationnel et sound design, dans 70+ pays.',
     client: 'Aldebaran',
     logo: '/assets/aldebaran.svg',
     title: 'Aldebaran Robotics',
@@ -106,6 +119,8 @@ export const PROJECTS: Project[] = [
     id: 4,
     featured: true,
     slug: 'credit-agricole',
+    seoDescription:
+      'Lead UI et référent Design System au Crédit Agricole : design tokens multi-marques et app Ma Banque, utilisée par plus de 30 millions de personnes.',
     client: 'Crédit Agricole',
     logo: '/assets/ca.png',
     title: 'Crédit Agricole',
@@ -127,6 +142,8 @@ export const PROJECTS: Project[] = [
   {
     id: 7,
     slug: 'highlight',
+    seoDescription:
+      'Design system multi-thème pour Highlight, SaaS B2B en marque blanche : une architecture de tokens qui ramène l\'intégration d\'une marque à quelques jours.',
     client: 'Highlight',
     logo: '/assets/highlight.png',
     title: 'Highlight',
@@ -155,5 +172,5 @@ export function heroSize(p: Project): { width: number; height: number } {
   return { width: first?.width ?? 1920, height: first?.height ?? 1080 };
 }
 
-/** Projets mis en avant sur /home, dans l'ordre de déclaration. */
+/** Projets mis en avant sur la home (/), dans l'ordre de déclaration. */
 export const FEATURED_PROJECTS: Project[] = PROJECTS.filter((p) => p.featured);

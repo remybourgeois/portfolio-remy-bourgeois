@@ -28,8 +28,8 @@
 
   // View Transitions API + BGM shutdown when leaving the intro
   onNavigate((navigation) => {
-    // Cut BGM as soon as we leave the intro page
-    if (navigation.from?.url.pathname === '/') {
+    // Cut BGM as soon as we leave the intro page (/intro)
+    if (navigation.from?.url.pathname === '/intro') {
       audioStore.engine?.disableBGM();
     }
 
@@ -53,12 +53,12 @@
 
 <!-- Skip link : sur l'intro (pas de #main-content) on saute directement au portfolio -->
 <a
-  href={$page.url.pathname === '/' ? '/home' : '#main-content'}
+  href={$page.url.pathname === '/intro' ? '/' : '#main-content'}
   class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999]
          focus:px-4 focus:py-2 focus:rounded-full focus:bg-[#706bfe] focus:text-white
          focus:text-sm focus:font-medium focus:outline-none"
 >
-  {$page.url.pathname === '/' ? 'Accéder au portfolio' : 'Passer au contenu'}
+  {$page.url.pathname === '/intro' ? 'Accéder au portfolio' : 'Passer au contenu'}
 </a>
 <Nav />
 <slot />

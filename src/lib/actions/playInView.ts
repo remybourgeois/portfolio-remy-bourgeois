@@ -4,7 +4,7 @@
  * Ne charge et ne lit une vidéo que lorsqu'elle approche du viewport.
  *
  * Combiné à `preload="none"` sur l'élément, une vidéo hors écran ne coûte
- * rien : la carte Ofelia de /home et /projects téléchargeait 2,4 Mo au
+ * rien : la carte Ofelia de / et /projects téléchargeait 2,4 Mo au
  * chargement de la page alors qu'elle est sous la ligne de flottaison.
  *
  * Respecte `prefers-reduced-motion` : dans ce cas on affiche une image fixe

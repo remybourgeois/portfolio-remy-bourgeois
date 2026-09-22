@@ -33,7 +33,7 @@
 
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center pt-2">
       <a
-        href="/home"
+        href="/"
         class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#5a55e0] text-white font-medium
                hover:bg-[#4a45d0] transition-colors focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
       >

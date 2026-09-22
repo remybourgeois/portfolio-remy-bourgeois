@@ -538,7 +538,7 @@
     if (next === 10) {
       stepTimers.push(setTimeout(() => { if (!isMuted) audioStore.engine?.fadeOutBGM(); }, ANIM_DURATION));
       stepTimers.push(setTimeout(() => { flood = 0.1; }, ANIM_DURATION));
-      stepTimers.push(setTimeout(() => { goto('/home'); }, ANIM_DURATION + TRANSITION_DELAY));
+      stepTimers.push(setTimeout(() => { goto('/'); }, ANIM_DURATION + TRANSITION_DELAY));
     }
   }
 </script>
@@ -587,7 +587,7 @@
       un visiteur pressé.
     -->
     <a
-      href="/home"
+      href="/"
       class="w-full md:w-auto text-center px-5 py-2.5 rounded-xl text-[10px] uppercase tracking-widest
              font-medium text-white/60 hover:text-white border border-transparent hover:border-white/10
              transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] focus:outline-none"

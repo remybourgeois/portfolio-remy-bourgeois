@@ -8,7 +8,7 @@
   let menuOpen = $state(false);
   let isMuted = $derived($audioStore.isMuted);
   let currentPath = $derived($page.url.pathname);
-  let visible = $derived(currentPath !== '/' && currentPath !== '/home');
+  let visible = $derived(currentPath !== '/' && currentPath !== '/intro');
 </script>
 
 <nav
@@ -20,22 +20,34 @@
          {visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}"
 >
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/home" use:sfx class="text-white/70 hover:text-white text-xs uppercase tracking-wider transition-colors">
+    <a href="/" use:sfx class="text-white/70 hover:text-white text-xs uppercase tracking-wider transition-colors">
       Rémy Bourgeois
     </a>
 
     <div class="hidden md:flex items-center gap-6">
-      <a href="/home"
+      <a href="/"
          use:sfx
          class="text-xs uppercase tracking-wider transition-colors py-3 px-1
-                {currentPath === '/home' ? 'text-white' : 'text-white/60 hover:text-white'}">
+                {currentPath === '/' ? 'text-white' : 'text-white/60 hover:text-white'}">
         Home
+      </a>
+      <a href="/services"
+         use:sfx
+         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
+                {currentPath === '/services' ? 'text-white' : 'text-white/60 hover:text-white'}">
+        Prestations
       </a>
       <a href="/projects"
          use:sfx
          class="text-xs uppercase tracking-wider transition-colors py-3 px-1
                 {currentPath.startsWith('/projects') ? 'text-white' : 'text-white/60 hover:text-white'}">
         Projets
+      </a>
+      <a href="/a-propos"
+         use:sfx
+         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
+                {currentPath === '/a-propos' ? 'text-white' : 'text-white/60 hover:text-white'}">
+        À propos
       </a>
       <button
         onclick={audioStore.toggleMute}
@@ -61,10 +73,14 @@
 
   {#if menuOpen}
     <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95">
-      <a href="/home" use:sfx onclick={() => menuOpen = false}
+      <a href="/" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Home</a>
+      <a href="/services" use:sfx onclick={() => menuOpen = false}
+         class="text-sm text-white/70 hover:text-white transition-colors py-2">Prestations</a>
       <a href="/projects" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Projets</a>
+      <a href="/a-propos" use:sfx onclick={() => menuOpen = false}
+         class="text-sm text-white/70 hover:text-white transition-colors py-2">À propos</a>
       <button onclick={audioStore.toggleMute}
         aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
         aria-pressed={!isMuted}

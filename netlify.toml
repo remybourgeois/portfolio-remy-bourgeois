@@ -5,6 +5,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# L'ancienne page de contenu vivait sur /home, la racine n'étant qu'une intro
+# WebGL en noindex : tous les backlinks externes atterrissaient donc sur une
+# page non indexable. « / » sert maintenant le contenu, et /home est redirigé
+# de façon permanente pour ne pas perdre l'historique d'indexation.
+[[redirects]]
+  from   = "/home"
+  to     = "/"
+  status = 301
+  force  = true
+
 # Toutes les routes réelles sont prérendues en fichiers statiques : rien n'a
 # besoin d'un fallback SPA. Servir 404.html avec un statut 200 produisait des
 # soft 404 — Google indexait des URLs inexistantes sans pouvoir les nettoyer.
