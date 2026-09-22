@@ -11,25 +11,25 @@
 </script>
 
 <svelte:head>
-  <title>Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois</title>
+  <title>Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois</title>
   <meta name="description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
+  <meta property="og:title" content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
   <meta property="og:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/projects" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
+  <meta name="twitter:title" content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
   <meta name="twitter:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
   <meta name="twitter:image" content={OG_IMAGE} />
-  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/projects" />
 
   {@html `<script type="application/ld+json">${jsonLd({
@@ -43,7 +43,7 @@
         "@type": "CollectionPage",
         "@id": SITE_URL + "/projects#collection",
         "url": SITE_URL + "/projects",
-        "name": "Projets — études de cas Design System, IA et SaaS B2B | Rémy Bourgeois",
+        "name": "Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois",
         "description": "Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés.",
         "inLanguage": "fr-FR",
         "isPartOf": { "@id": WEBSITE_ID },

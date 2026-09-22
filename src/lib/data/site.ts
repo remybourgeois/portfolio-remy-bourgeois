@@ -1,6 +1,6 @@
 // src/lib/data/site.ts
 export const SITE_URL = 'https://remybourgeois.com';
-export const SITE_NAME = 'Rémy Bourgeois — Portfolio';
+export const SITE_NAME = 'Portfolio de Rémy Bourgeois';
 export const SITE_LOCALE = 'fr_FR';
 export const OG_IMAGE = `${SITE_URL}/assets/og-cover.jpg`;
 export const EMAIL = 'remy.bourgeois@gmail.com';

@@ -15,6 +15,15 @@
   status = 301
   force  = true
 
+# /services a été publiée puis retirée. Une 301 plutôt qu'un 404 : la page a
+# été en ligne assez longtemps pour être découverte, et un visiteur qui suit
+# un ancien lien doit arriver quelque part d'utile.
+[[redirects]]
+  from   = "/services"
+  to     = "/"
+  status = 301
+  force  = true
+
 # Toutes les routes réelles sont prérendues en fichiers statiques : rien n'a
 # besoin d'un fallback SPA. Servir 404.html avec un statut 200 produisait des
 # soft 404 — Google indexait des URLs inexistantes sans pouvoir les nettoyer.

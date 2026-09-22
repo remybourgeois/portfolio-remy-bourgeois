@@ -62,7 +62,7 @@ test('case studies expose a heading structure and a hand-written description', a
 });
 
 test('structured data links every page back to the same person', async ({ request }) => {
-  for (const route of ['/projects', '/projects/ofelia', '/services', '/a-propos']) {
+  for (const route of ['/projects', '/projects/ofelia', '/a-propos']) {
     const html = await (await request.get(route)).text();
     expect(html, `pas de JSON-LD sur ${route}`).toContain('application/ld+json');
     expect(html, `${route} ne référence pas l'entité`).toContain('remybourgeois.com/#remy-bourgeois');
@@ -70,21 +70,9 @@ test('structured data links every page back to the same person', async ({ reques
   }
 });
 
-test('the FAQ answers exist in the HTML, not only once expanded', async ({ request }) => {
-  const html = await (await request.get('/services')).text();
-  expect(html).toContain('FAQPage');
-  // Une FAQPage qui déclare des réponses absentes du DOM est du balisage
-  // trompeur au sens des règles Google : les panneaux repliés utilisent donc
-  // `hidden`, pas un {#if} qui les retirerait du HTML prérendu.
-  const marker = 'ouvre ses propres Pull Requests';
-  expect(html.split(marker).length - 1, `« ${marker} » attendu dans le JSON-LD ET dans le DOM`)
-    .toBeGreaterThanOrEqual(2);
-});
-
-test('sitemap lists the new pages, dates them, and drops the old home', async ({ request }) => {
+test('sitemap lists the indexable pages, dates them, and drops the old home', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   expect(xml).toContain('<loc>https://remybourgeois.com/</loc>');
-  expect(xml).toContain('<loc>https://remybourgeois.com/services</loc>');
   expect(xml).toContain('<loc>https://remybourgeois.com/a-propos</loc>');
   expect(xml).not.toContain('/home');
   // /intro est en noindex : la déclarer serait contradictoire.
@@ -98,7 +86,9 @@ test('llms.txt is served and describes the entity', async ({ request }) => {
   const body = await res.text();
   expect(body).toContain('# Rémy Bourgeois');
   expect(body).toContain('/projects/ofelia');
-  expect(body).toContain('Questions fréquentes');
+  expect(body).toContain('Chiffres');
+  // L'entité doit être levée dès le fichier : c'est son seul rôle ici.
+  expect(body).toContain('acteur');
 });
 
 test('robots.txt allows generative crawlers and points to the sitemap', async ({ request }) => {

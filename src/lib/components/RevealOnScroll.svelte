@@ -30,9 +30,16 @@
   });
 </script>
 
+<!--
+  `w-full` : le conteneur parent de la home est en `flex items-center`, donc un
+  enfant sans largeur explicite se dimensionne sur son contenu. Les sections
+  Impact, Projets et Contact étaient de ce fait plus étroites que Recommandations
+  et Expertises, dont les grilles remplissaient déjà la largeur disponible.
+  Le wrapper d'animation ne doit pas décider de la largeur de la section.
+-->
 <div
   bind:this={el}
-  class="{animate ? 'transition-all duration-1000 transform' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
+  class="w-full {animate ? 'transition-all duration-1000 transform' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
 >
   {@render children()}
 </div>

@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
  * Audit automatisé sur les quatre gabarits. Cible la famille de régressions
  * trouvée en revue manuelle : huit valeurs de texte sous le seuil WCAG AA.
  */
-const ROUTES = ['/', '/services', '/a-propos', '/projects', '/projects/ofelia', '/projects/aldebaran'];
+const ROUTES = ['/', '/a-propos', '/projects', '/projects/ofelia', '/projects/aldebaran'];
 
 /**
  * Fait défiler toute la page par pas d'un écran pour déclencher chaque

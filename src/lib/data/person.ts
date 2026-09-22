@@ -17,7 +17,7 @@ export const personNode = {
   // Champ prévu par Schema.org pour lever une homonymie. Plusieurs personnes
   // partagent ce nom : on dit explicitement laquelle est décrite ici.
   disambiguatingDescription:
-    "Product Design Engineer freelance à Lyon, spécialisé en Design Systems, IA conversationnelle et SaaS B2B. Également directeur artistique, musicien et sound designer — ce versant sonore vient de ses 7 ans en robotique humanoïde chez Aldebaran. À ne pas confondre avec l'acteur français homonyme.",
+    "Product Design Engineer freelance à Lyon, spécialisé en Design Systems, IA conversationnelle et SaaS B2B. Également directeur artistique, musicien et sound designer, ce versant sonore venant de ses 7 ans en robotique humanoïde chez Aldebaran. À ne pas confondre avec l'acteur français homonyme.",
   url: `${SITE_URL}/`,
   mainEntityOfPage: { '@id': `${SITE_URL}/#profilepage` },
   image: {

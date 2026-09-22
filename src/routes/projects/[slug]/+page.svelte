@@ -129,27 +129,27 @@
 }} />
 
 <svelte:head>
-  <title>{project.title} — {project.role} | Rémy Bourgeois</title>
+  <title>{project.title}, {project.role} | Rémy Bourgeois</title>
   <meta name="description" content={project.seoDescription} />
 
   <meta property="og:type" content="article" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="{project.title} — Rémy Bourgeois" />
+  <meta property="og:title" content="{project.title} | Rémy Bourgeois" />
   <meta property="og:description" content={project.seoDescription} />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta property="og:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta property="og:url" content="{SITE_URL}/projects/{project.slug}" />
   <meta property="article:author" content="Rémy Bourgeois" />
   <meta property="article:modified_time" content={CONTENT_UPDATED} />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="{project.title} — Rémy Bourgeois" />
+  <meta name="twitter:title" content="{project.title} | Rémy Bourgeois" />
   <meta name="twitter:description" content={project.seoDescription} />
   <meta name="twitter:image" content={OG_IMAGE} />
-  <meta name="twitter:image:alt" content="Rémy Bourgeois — Designing Intentions" />
+  <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/projects/{project.slug}" />
 
   {@html `<script type="application/ld+json">${jsonLd({
@@ -165,7 +165,7 @@
         "@id": `${SITE_URL}/projects/${project.slug}#work`,
         "url": `${SITE_URL}/projects/${project.slug}`,
         "name": project.title,
-        "headline": `${project.title} — ${project.role}`,
+        "headline": `${project.title}, ${project.role}`,
         "description": project.seoDescription,
         "inLanguage": "fr-FR",
         "isPartOf": { "@id": WEBSITE_ID },

@@ -31,12 +31,6 @@
                 {currentPath === '/' ? 'text-white' : 'text-white/60 hover:text-white'}">
         Home
       </a>
-      <a href="/services"
-         use:sfx
-         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
-                {currentPath === '/services' ? 'text-white' : 'text-white/60 hover:text-white'}">
-        Prestations
-      </a>
       <a href="/projects"
          use:sfx
          class="text-xs uppercase tracking-wider transition-colors py-3 px-1
@@ -75,8 +69,6 @@
     <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95">
       <a href="/" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Home</a>
-      <a href="/services" use:sfx onclick={() => menuOpen = false}
-         class="text-sm text-white/70 hover:text-white transition-colors py-2">Prestations</a>
       <a href="/projects" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Projets</a>
       <a href="/a-propos" use:sfx onclick={() => menuOpen = false}
