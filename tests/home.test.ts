@@ -63,3 +63,13 @@ test('testimonial expand/collapse works', async ({ page }) => {
   await expandBtn.click();
   await expect(page.getByRole('button', { name: /Réduire/ }).first()).toBeVisible();
 });
+
+test('a tall section reveals as soon as it enters the viewport on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  // La section Projets fait ~4 000 px sur mobile : avec un seuil de 10 %,
+  // elle restait invisible alors que son haut occupait déjà la moitié de l'écran.
+  const wrapper = page.locator('main > div.w-full', { has: page.getByRole('heading', { name: 'Projets', level: 2 }) });
+  await wrapper.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 844 + 200));
+  await expect(wrapper).toHaveClass(/opacity-100/, { timeout: 1000 });
+});

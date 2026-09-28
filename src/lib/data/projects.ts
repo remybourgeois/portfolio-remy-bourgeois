@@ -37,6 +37,17 @@ export interface Project {
   media?: ProjectMedia[];
   /** Mis en avant sur la home (/). Évite de piloter la sélection par des identifiants. */
   featured?: boolean;
+  /**
+   * Encadré « En bref » en tête d'étude de cas. Les moteurs génératifs citent
+   * en priorité des blocs courts et structurés ; le résultat était jusque-là
+   * noyé en fin de paragraphe. Ne reprendre que des faits déjà présents dans
+   * `description`, `challenge` et `outcome` : aucun chiffre nouveau ici.
+   */
+  summary: {
+    context: string;
+    stack: string[];
+    impact: string;
+  };
   challenge?: string;
   outcome?: string;
   role?: string;
@@ -49,6 +60,11 @@ export const PROJECTS: Project[] = [
     id: 8,
     featured: true,
     slug: 'ofelia',
+    summary: {
+      context: 'Bonitasoft, éditeur BPA depuis 15 ans, lance Ofelia, une suite d\'orchestration IA gouvernée. Seul designer, à partir d\'une page blanche.',
+      stack: ['Design System', 'Storybook', 'Claude Code', 'Git', 'Slack', 'Microsoft Teams'],
+      impact: 'Rythme d\'exécution 10x plus rapide. Plus de hand-off : le designer ouvre ses propres Pull Requests, revues par un dev front avant la mise en production.'
+    },
     seoDescription:
       'Founding Designer d\'Ofelia (Bonitasoft) : design system et UX d\'un assistant IA agentique intégré à Slack et Teams, conçu directement dans le code.',
     client: 'Ofelia',
@@ -76,6 +92,11 @@ export const PROJECTS: Project[] = [
     id: 1,
     featured: true,
     slug: 'ipify',
+    summary: {
+      context: 'Plateforme SaaS B2B LegalTech de gestion internationale de portefeuilles de brevets, utilisée par des juristes et des avocats.',
+      stack: ['Design System', 'Design Tokens', 'IA conversationnelle (Natural Language Query)', 'IA générative'],
+      impact: 'Recherche en langage naturel sur toute la base de brevets, rédaction et traduction assistées, interface rendue prédictible et scalable par les tokens.'
+    },
     seoDescription:
       'Refonte du design system et conception des briques IA d\'iPify, plateforme SaaS B2B LegalTech de gestion internationale de portefeuilles de brevets.',
     client: 'iPify',
@@ -99,6 +120,11 @@ export const PROJECTS: Project[] = [
     id: 3,
     featured: true,
     slug: 'aldebaran',
+    summary: {
+      context: 'Robotique humanoïde chez Aldebaran (NAO, Pepper) : interactions déployées en magasins, gares, aéroports et événements.',
+      stack: ['Human-Robot Interaction', 'UX embarquée', 'VUI', 'Design conversationnel', 'Sound design'],
+      impact: 'Applications embarquées sur des milliers de robots dans plus de 70 pays, utilisées par plusieurs millions de personnes chaque mois.'
+    },
     seoDescription:
       '7 ans de design d\'interaction homme-robot chez Aldebaran sur NAO et Pepper : UX embarquée, design conversationnel et sound design, dans 70+ pays.',
     client: 'Aldebaran',
@@ -119,6 +145,11 @@ export const PROJECTS: Project[] = [
     id: 4,
     featured: true,
     slug: 'credit-agricole',
+    summary: {
+      context: 'Trois ans sur l\'écosystème digital du Crédit Agricole : site institutionnel, app Ma Banque et outils conseillers, déclinés pour de multiples caisses régionales.',
+      stack: ['Design System', 'Design Tokens multi-marques', 'Prototypage', 'QA'],
+      impact: 'Design System adopté par plus de 15 équipes produit, app Ma Banque unifiée pour plus de 30 millions d\'utilisateurs mensuels.'
+    },
     seoDescription:
       'Lead UI et référent Design System au Crédit Agricole : design tokens multi-marques et app Ma Banque, utilisée par plus de 30 millions de personnes.',
     client: 'Crédit Agricole',
@@ -142,6 +173,11 @@ export const PROJECTS: Project[] = [
   {
     id: 7,
     slug: 'highlight',
+    summary: {
+      context: 'SaaS B2B distribué exclusivement en marque blanche : Design System conçu de A à Z, de l\'idéation à l\'architecture technique.',
+      stack: ['Figma (variables et modes)', 'Design Tokens', 'CSS', 'JSON'],
+      impact: 'Déploiement d\'une nouvelle marque blanche ramené de plusieurs semaines d\'intégration à quelques jours.'
+    },
     seoDescription:
       'Design system multi-thème pour Highlight, SaaS B2B en marque blanche : une architecture de tokens qui ramène l\'intégration d\'une marque à quelques jours.',
     client: 'Highlight',
