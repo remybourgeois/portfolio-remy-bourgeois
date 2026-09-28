@@ -22,9 +22,12 @@
 
     animate = true;
     visible = false;
+    // Seuil en pixels, pas en proportion : avec `threshold: 0.1`, la section
+    // Projets (≈4 000 px de haut sur mobile) attendait 400 px à l'écran avant
+    // d'apparaître, soit une demi-hauteur d'écran restée noire au scroll.
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { visible = true; obs.disconnect(); }
-    }, { threshold: 0.1 });
+    }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
     obs.observe(el);
     return () => obs.disconnect();
   });
@@ -39,7 +42,7 @@
 -->
 <div
   bind:this={el}
-  class="w-full {animate ? 'transition-all duration-1000 transform' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
+  class="w-full {animate ? 'transition-[opacity,transform] duration-700 ease-out' : ''} {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}"
 >
   {@render children()}
 </div>
