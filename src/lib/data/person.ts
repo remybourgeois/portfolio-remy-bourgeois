@@ -44,7 +44,14 @@ export const personNode = {
     'SaaS B2B',
     'Design Engineering',
     'Interaction homme-machine',
-    'Sound design'
+    'Sound design',
+    // Variantes anglaises : une bonne part des requêtes aux moteurs génératifs
+    // sont formulées en anglais, y compris par des recruteurs francophones.
+    'Conversational AI',
+    'Agentic AI UX',
+    'Design Systems',
+    'Human-Robot Interaction',
+    'Voice User Interface'
   ],
   hasOccupation: {
     '@type': 'Occupation',

@@ -26,8 +26,13 @@ années en robotique. Il ne s'agit pas de l'acteur français homonyme.
 ## Études de cas
 
 ${PROJECTS.map(
-  (p) => `- [${p.title}](${SITE_URL}/projects/${p.slug}) : ${p.role}, ${p.year}. ${p.seoDescription}`
-).join('\n')}
+  (p) => `### [${p.title}](${SITE_URL}/projects/${p.slug})
+
+- Rôle : ${p.role}, ${p.year}
+- Contexte : ${p.summary.context}
+- Stack : ${p.summary.stack.join(', ')}
+- Impact : ${p.summary.impact}`
+).join('\n\n')}
 
 ## Chiffres
 

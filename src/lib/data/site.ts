@@ -25,6 +25,8 @@ export const PROFILES = [
   'https://www.malt.fr/profile/remybourgeois',
   'https://www.collective.work/profile/remy-bourgeois',
   'https://www.groupeonepoint.com/fr/profils/remy-bourgeois/',
+  // Appuie le positionnement « design engineer » : le travail est dans le code.
+  'https://github.com/remybourgeois',
   'https://remybourgeois.bandcamp.com/',
   'https://soundcloud.com/remybourgeois'
 ];
@@ -34,4 +36,4 @@ export const PROFILES = [
  * calculée depuis la date de build : un redéploiement sans changement de
  * contenu ne doit pas se présenter comme une mise à jour.
  */
-export const CONTENT_UPDATED = '2026-09-22';
+export const CONTENT_UPDATED = '2026-09-28';

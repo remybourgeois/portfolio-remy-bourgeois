@@ -167,6 +167,7 @@
         "name": project.title,
         "headline": `${project.title}, ${project.role}`,
         "description": project.seoDescription,
+        "abstract": `${project.summary.context} Impact : ${project.summary.impact}`,
         "inLanguage": "fr-FR",
         "isPartOf": { "@id": WEBSITE_ID },
         "creator": { "@id": PERSON_ID },
@@ -336,6 +337,33 @@
         </div>
       {/if}
     </header>
+
+    <!-- ── En bref ─────────────────────────────────────────────────────────── -->
+    <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
+    <section aria-labelledby="en-bref-title"
+             class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6">
+      <h2 id="en-bref-title" class="text-[11px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-5">En bref</h2>
+      <dl class="grid gap-5 md:grid-cols-3 md:gap-8">
+        <div>
+          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Contexte</dt>
+          <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
+        </div>
+        <div>
+          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Stack &amp; méthodes</dt>
+          <dd>
+            <ul class="flex flex-wrap gap-1.5">
+              {#each project.summary.stack as item}
+                <li class="px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-white/70 text-xs">{item}</li>
+              {/each}
+            </ul>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[11px] uppercase tracking-[0.2em] text-[#a8a5ff] mb-2">Impact</dt>
+          <dd class="text-sm text-white/85 leading-relaxed font-medium">{project.summary.impact}</dd>
+        </div>
+      </dl>
+    </section>
 
     <!-- ── Carousel ──────────────────────────────────────────────────────── -->
     {#if slides.length > 0}

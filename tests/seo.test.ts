@@ -61,6 +61,20 @@ test('case studies expose a heading structure and a hand-written description', a
   expect(desc.trim()).toMatch(/[.!?]$/);
 });
 
+test('case studies open with an extractable summary', async ({ request }) => {
+  for (const slug of ['ofelia', 'credit-agricole']) {
+    const html = await (await request.get(`/projects/${slug}`)).text();
+    // Le résultat chiffré était enfoui en fin de paragraphe : il doit
+    // figurer dans un bloc court, présent dès le HTML prérendu.
+    expect(html).toMatch(/<h2[^>]*>En bref<\/h2>/);
+    for (const label of ['Contexte', 'Stack &amp; méthodes', 'Impact']) {
+      expect(html, `${label} absent de l'encadré sur ${slug}`).toMatch(new RegExp(`<dt[^>]*>${label}</dt>`));
+    }
+  }
+  const llms = await (await request.get('/llms.txt')).text();
+  expect(llms).toContain('- Impact : ');
+});
+
 test('structured data links every page back to the same person', async ({ request }) => {
   for (const route of ['/projects', '/projects/ofelia', '/a-propos']) {
     const html = await (await request.get(route)).text();
