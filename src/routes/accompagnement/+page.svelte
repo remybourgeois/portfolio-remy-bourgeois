@@ -1,10 +1,10 @@
 <!-- src/routes/accompagnement/+page.svelte -->
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
-  import Icon from '$lib/components/Icons.svelte';
+  import PageHeader from '$lib/components/PageHeader.svelte';
   import Tag from '$lib/components/Tag.svelte';
-  import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED, EMAIL } from '$lib/data/site';
+  import PageCta from '$lib/components/PageCta.svelte';
+  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
 
@@ -141,19 +141,12 @@
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
-    <RevealOnScroll>
-      <header class="w-full mb-16 text-center">
-        <a href="/" use:sfx
-          class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-8 min-h-[44px]">
-          <Icon name="ArrowLeft" size={14} /> Retour
-        </a>
-        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6">Accompagnement</h1>
-        <p class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
-          Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique,
-          et la façon dont l'équipe s'en sert.
-        </p>
-      </header>
-    </RevealOnScroll>
+    <PageHeader title="Accompagnement">
+      {#snippet lede()}
+        Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique,
+        et la façon dont l'équipe s'en sert.
+      {/snippet}
+    </PageHeader>
 
     <RevealOnScroll>
       <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20 items-start">
@@ -207,8 +200,11 @@
 
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center justify-center gap-4">
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
+        <!-- Même motif que les titres de section d'À propos : un seul filet,
+             à gauche. Le motif centré à deux filets reste celui de l'accueil,
+             qui est une vitrine et non un document. -->
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center gap-4">
+          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {#each CONVICTIONS as conviction}
@@ -217,7 +213,7 @@
             </p>
           {/each}
         </div>
-        <p class="text-white/60 text-sm leading-relaxed mt-8 text-center max-w-3xl mx-auto">
+        <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
           J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit Agricole,
           une refonte chez iPify, une création de zéro chez Ofelia.
         </p>
@@ -225,31 +221,16 @@
     </RevealOnScroll>
 
     <RevealOnScroll>
-      <div class="w-full relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
-          <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
-          <p class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-2xl mx-auto">
-            Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
-            Disponible pour de nouvelles missions à partir de <strong>novembre 2026</strong>.
-          </p>
-          <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
-            <Tag icon="Wifi">Full remote préféré</Tag>
-            <Tag icon="MapPin">Basé à Lyon</Tag>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:{EMAIL}" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white">
-              <Icon name="Mail" size={16} className="flex-shrink-0" /> {EMAIL}
-            </a>
-            <a href="/projects" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
-              Voir les études de cas <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
-            </a>
-          </div>
-        </div>
-      </div>
+      <PageCta
+        title="Démarrons un projet"
+        secondaryHref="/projects"
+        secondaryLabel="Voir les études de cas"
+        secondaryIcon="ArrowRight"
+      >
+        {#snippet lede()}
+          Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
+        {/snippet}
+      </PageCta>
     </RevealOnScroll>
 
   </div>

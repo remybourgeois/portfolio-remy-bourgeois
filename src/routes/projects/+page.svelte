@@ -1,7 +1,8 @@
 <!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
   import { PROJECTS, heroSize } from '$lib/data/projects';
-  import Icon from '$lib/components/Icons.svelte';
+  import PageHeader from '$lib/components/PageHeader.svelte';
+  import PageCta from '$lib/components/PageCta.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
@@ -66,16 +67,14 @@
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
+  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
-    <header class="mb-16">
-      <a href="/" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
-        <Icon name="ArrowLeft" size={14} /> Retour
-      </a>
-      <h1 class="text-4xl md:text-6xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-        Projets
-      </h1>
-    </header>
+    <PageHeader title="Projets">
+      {#snippet lede()}
+        Cinq études de cas détaillées : design systems multi-marques, assistants IA
+        conversationnels, SaaS B2B et robotique humanoïde.
+      {/snippet}
+    </PageHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#each PROJECTS as project}
@@ -143,6 +142,19 @@
           </div>
         </a>
       {/each}
+    </div>
+
+    <div class="mt-20">
+      <PageCta
+        title="Un projet qui ressemble à ceux-là ?"
+        secondaryHref="/accompagnement"
+        secondaryLabel="Voir comment je travaille"
+        secondaryIcon="ArrowRight"
+      >
+        {#snippet lede()}
+          Design systems, assistants IA et interfaces complexes. Dites-moi le vôtre.
+        {/snippet}
+      </PageCta>
     </div>
 
   </div>

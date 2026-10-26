@@ -84,13 +84,13 @@ body {
    détouré par le parent arrondi : pas de masque CSS, une seule propriété
    composée (transform). 300 px suffisent à couvrir la pilule dans toutes
    ses rotations, y compris au libellé long. */
+/* Rayon volontairement court : la pilule vit dans la barre fixe, et un halo
+   large débordait sous la bordure en laissant une tache au-dessus du contenu. */
 @keyframes cta-halo {
-  0%, 100% { box-shadow: 0 0 20px 0 rgba(112,107,254,0.18); }
-  50%      { box-shadow: 0 0 38px 6px rgba(112,107,254,0.36); }
+  0%, 100% { box-shadow: 0 0 10px 0 rgba(112,107,254,0.28); }
+  50%      { box-shadow: 0 0 18px 1px rgba(112,107,254,0.5); }
 }
-@keyframes cta-breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-
-.cta-beam {
+.cta-beam, .cta-beam2 {
   position: absolute; top: 50%; left: 50%;
   width: 300px; height: 300px; margin: -150px 0 0 -150px;
   background: conic-gradient(
@@ -102,15 +102,70 @@ body {
   animation: spin 3.6s linear infinite;
 }
 .cta-halo      { animation: cta-halo 3.2s ease-in-out infinite; }
-.cta-breathe   { animation: cta-breathe 3.2s ease-in-out infinite; }
 .cta-orbit     { transform-origin: 12px 12px; animation: spin 6s linear infinite; }
 .cta-orbit-rev { transform-origin: 12px 12px; animation: spin 9s linear infinite reverse; }
 
+.cta-pill {
+  background: #07060f;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Le second faisceau tourne depuis toujours, invisible, à la MÊME durée que le
+   premier : il est donc déjà en phase, et le survol ne fait que le révéler.
+   Accélérer en changeant `animation-duration` obligeait le navigateur à
+   recalculer la position de chaque animation, ce qui produisait un saut.
+   `focus-within` donne au clavier exactement le même retour qu'à la souris. */
+.cta-beam2 {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg, transparent 170deg,
+    rgba(255,255,255,0.9) 262deg, #38bdf8 300deg,
+    transparent 350deg
+  );
+}
+.cta-shell:hover .cta-beam2,
+.cta-shell:focus-within .cta-beam2 { opacity: 1; }
+
+.cta-shell:hover .cta-pill,
+.cta-shell:focus-within .cta-pill {
+  background: #120e24;
+  transform: translateY(-1px);
+}
+
+/* ── Portrait du hero ──
+   Au repos la photo est désaturée et assombrie, au survol elle reprend ses
+   couleurs et avance lentement. Le fond clair du studio reste tenu par le
+   dégradé, qui s'allège sans disparaître. */
+.hero-photo img {
+  filter: grayscale(0.75) brightness(0.82) contrast(1.05);
+  transform: scale(1.01);
+  transition: filter 0.7s ease, transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hero-photo .hero-tint,
+.hero-photo .hero-scrim { transition: opacity 0.7s ease; }
+
+.hero-photo:hover img,
+.hero-photo:focus-within img {
+  filter: grayscale(0) brightness(1) contrast(1);
+  transform: scale(1.07);
+}
+.hero-photo:hover .hero-tint,
+.hero-photo:focus-within .hero-tint { opacity: 0; }
+.hero-photo:hover .hero-scrim,
+.hero-photo:focus-within .hero-scrim { opacity: 0.55; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
-  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev {
+  .cta-beam,.cta-beam2,.cta-halo,.cta-orbit,.cta-orbit-rev,.cta-pill,
+  .hero-photo img,.hero-photo .hero-tint,.hero-photo .hero-scrim {
     animation: none !important; transition: none !important;
   }
+  /* Le survol reste perceptible, il devient simplement instantané et sans
+     déplacement : c'est le mouvement qu'on retire, pas le retour visuel. */
+  .cta-shell:hover .cta-pill,
+  .cta-shell:focus-within .cta-pill { transform: none; }
   /* Sans rotation, le faisceau figé masquerait la bordure : on la rend pleine. */
   .cta-beam { background: rgba(168,165,255,0.45); }
 }
