@@ -24,9 +24,6 @@
   let showTopBtn = $state(false);
   let topSentinel: HTMLDivElement;
 
-  // Photo micro-interaction: glow + scale
-  let photoHovered = $state(false);
-
   const impacts = [
     { value: 14, suffix: '+',  label: "Années d'expérience" },
     { value: 80, suffix: '+',  label: 'Projets livrés' },
@@ -99,132 +96,87 @@
   <!-- Sentinelle pour le bouton back-to-top (≈400px du haut) -->
   <div bind:this={topSentinel} class="absolute top-[400px] left-0 w-px h-px pointer-events-none" aria-hidden="true"></div>
 
-  <!--
-    Barre top. Le lien vers l'intro WebGL est ici une invitation, pas un péage :
-    « / » sert désormais le contenu directement, et l'expérience vit sur /intro.
-  -->
-  <div class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex items-start justify-between gap-2 pointer-events-none">
-    <!--
-      Le CTA ne doit pas se lire comme un lien de nav de plus. Trois signaux
-      l'en sortent, sans rien coûter au réseau : un faisceau qui tourne dans la
-      bordure, un halo qui respire, et une pastille de particules en orbite qui
-      annonce la nature WebGL de /intro. La sous-ligne dit le reste.
-      La couche du faisceau est un frère de <a>, pas son parent : un parent en
-      `overflow-hidden` rognerait l'anneau de focus.
-    -->
-    <div class="cta-shell pointer-events-auto flex flex-col items-center gap-1.5">
-      <span class="cta-halo relative inline-block rounded-full bg-[#706bfe]/35 p-[1.5px]">
-        <span class="absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
-          <span class="cta-beam"></span>
-        </span>
-        <a
-          href="/intro"
-          use:sfx
-          class="cta-pill relative flex items-center gap-2 text-white text-[11px] sm:text-xs font-semibold uppercase tracking-wider px-3 sm:px-4 py-3 rounded-full focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-        >
-          <!--
-            Icône inline plutôt que <Icon> : elle anime deux groupes à des
-            vitesses différentes, ce que le composant ne sait pas exprimer.
-          -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="flex-shrink-0">
-            <circle cx="12" cy="12" r="9" stroke="rgba(168,165,255,0.28)" stroke-width="1" />
-            <circle cx="12" cy="12" r="2.4" fill="#a8a5ff" />
-            <g class="cta-orbit">
-              <circle cx="21" cy="12" r="1.7" fill="#38bdf8" />
-              <circle cx="3" cy="12" r="1.2" fill="#a8a5ff" />
-            </g>
-            <g class="cta-orbit-rev">
-              <circle cx="12" cy="4" r="1.4" fill="#ffffff" />
-            </g>
-          </svg>
-          <span class="whitespace-nowrap hidden sm:inline">Vivre l'expérience</span>
-          <span class="whitespace-nowrap sm:hidden">Expérience</span>
-        </a>
-      </span>
-      <span class="cta-breathe cta-sub text-white/70 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em]">
-        <span class="hidden sm:inline">3D interactive · son · 40 s</span>
-        <span class="sm:hidden">3D · son · 40 s</span>
-      </span>
-    </div>
-    <div class="flex items-center gap-2">
-      <a
-        href="/projects"
-        use:sfx
-        class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-white/70 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-white/10 hover:border-white/30 px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-      >
-        <span class="whitespace-nowrap">Projets</span>
-        <Icon name="ArrowRight" size={11} />
-      </a>
-      <!--
-        Témoin d'état, pas une commande : il suit la grammaire des tags.
-        Le `hidden` est porté par un conteneur et non par le tag : deux
-        utilitaires `display` sur un même élément se départagent par l'ordre
-        du CSS généré, pas par celui de l'attribut class.
-      -->
-      <div class="pointer-events-auto hidden lg:block">
-        <Tag dot="violet" pulse solid class="whitespace-nowrap">Lien établi</Tag>
-      </div>
-    </div>
-  </div>
-
   <main id="main-content" class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40">
 
-    <!-- Hero -->
+    <!--
+      Hero en deux colonnes alignées en HAUT, pas au centre : c'est la première
+      ligne du H1 qui ancre la composition. L'ancienne version centrait le
+      groupe portrait + titre comme une unité pendant que l'accroche vivait
+      dans son propre conteneur centré : les deux blocs ne partageaient aucun
+      bord, et le décalage atteignait 130 px à 1280.
+    -->
     <RevealOnScroll>
-      <div class="w-full flex flex-col md:flex-row gap-8 items-center justify-center mb-12">
-        <div
-          class="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden flex-shrink-0 transition-shadow duration-300 ease-out"
-          style="box-shadow: {photoHovered
-            ? '0 0 24px 6px rgba(112,107,254,0.35), 0 0 60px 16px rgba(112,107,254,0.12), 0 20px 40px rgba(0,0,0,0.5)'
-            : '0 20px 40px rgba(0,0,0,0.4)'};"
-          onmouseenter={() => photoHovered = true}
-          onmouseleave={() => photoHovered = false}
-          role="img"
-          aria-label="Portrait de Rémy Bourgeois"
-        >
-          <img
-            src="/assets/remy-bourgeois.webp"
-            alt=""
-            width="500"
-            height="500"
-            class="w-full h-full object-cover transition-transform duration-300 ease-out"
-            style="transform: scale({photoHovered ? 1.03 : 1});"
-            loading="eager"
-          />
+      <div class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)] gap-10 lg:gap-14 items-start mb-20">
+
+        <div class="relative w-full max-w-[380px] mx-auto md:mx-0">
+          <!-- Le halo évite que le fond clair du studio ne découpe un
+               rectangle dans la page. -->
+          <span
+            class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none
+                   bg-[radial-gradient(60%_50%_at_50%_35%,rgba(112,107,254,0.3),transparent_70%)]"
+            aria-hidden="true"
+          ></span>
+          <div class="relative aspect-[4/3] md:aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.6)]">
+            <img
+              src="/assets/remy-bourgeois.webp"
+              alt="Portrait de Rémy Bourgeois"
+              width="500"
+              height="500"
+              class="w-full h-full object-cover object-[50%_20%]"
+              loading="eager"
+            />
+            <span
+              class="absolute inset-0 bg-gradient-to-b from-transparent via-[#020205]/55 to-[#020205]/95 pointer-events-none"
+              aria-hidden="true"
+            ></span>
+            <span
+              class="absolute inset-0 bg-[linear-gradient(200deg,rgba(112,107,254,0.16),transparent_55%)] pointer-events-none"
+              aria-hidden="true"
+            ></span>
+            <span class="absolute left-5 right-5 bottom-4 flex items-center gap-2.5">
+              <span class="w-[7px] h-[7px] rounded-full bg-emerald-400 flex-shrink-0 animate-pulse" aria-hidden="true"></span>
+              <span class="text-white/85 text-xs font-medium">Disponible</span>
+            </span>
+          </div>
         </div>
+
         <div class="text-center md:text-left">
-          <h1 class="mb-6 leading-tight">
-            <span class="block text-xs font-semibold text-[#706bfe] uppercase tracking-[0.12em] mb-1">Rémy Bourgeois</span>
-            <span class="block text-3xl md:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1]">Lead Design System et Senior Product Designer</span>
+          <h1 class="leading-tight mb-6">
+            <span class="block text-xs font-semibold text-[#a8a5ff] uppercase tracking-[0.16em] mb-2.5">Rémy Bourgeois</span>
+            <span class="block text-3xl md:text-[2.9rem] font-bold text-white tracking-tight leading-[1.06]">Lead Design System &amp; Senior Product Designer</span>
           </h1>
-          <ul class="flex flex-wrap justify-center md:justify-start gap-2 list-none p-0 m-0">
+
+          <ul class="flex flex-wrap justify-center md:justify-start gap-2 list-none p-0 m-0 mb-8">
             <Tag as="li" icon="LayoutIcon">Design system</Tag>
             <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
             <Tag as="li" icon="Award">14 ans d'expérience</Tag>
           </ul>
-        </div>
-      </div>
-    </RevealOnScroll>
 
-    <!-- Bio -->
-    <RevealOnScroll>
-      <div class="body-text w-full mb-12 flex flex-col gap-6 max-w-3xl mx-auto">
-        <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          <strong>Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.</strong>
-        </p>
-        <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>.
-          Je conçois des design systems et des produits IA <strong>directement dans le code</strong>,
-          avec les équipes qui vont les faire vivre. Un développeur senior relit chacune de mes Pull Requests.
-        </p>
-        <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une bibliothèque
-          alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus qu'une
-          <strong>seule source de vérité</strong>.
-        </p>
-        <p class="text-white font-medium leading-relaxed text-lg md:text-xl text-left">
-          Le jour où je pars, rien ne s'arrête.
-        </p>
+          <!--
+            Les mises en avant sont en blanc et non en violet : quatre accents
+            violets dans trois paragraphes concurrençaient le H1. Le violet ne
+            sert plus qu'à l'eyebrow. D'où des <span> explicites plutôt que des
+            <strong> dans `.body-text`, dont la règle globale est violette.
+          -->
+          <div class="flex flex-col gap-5 max-w-[42rem] mx-auto md:mx-0 text-left">
+            <p class="text-white text-lg md:text-xl leading-relaxed">
+              Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.
+            </p>
+            <p class="text-white/65 font-light leading-relaxed text-base">
+              14 ans de design produit, dont <span class="text-white/95 font-medium">7 ans en robotique humanoïde</span>.
+              Je conçois des design systems et des produits IA <span class="text-white/95 font-medium">directement dans le code</span>,
+              avec les équipes qui vont les faire vivre. Un développeur senior relit chacune de mes Pull Requests.
+            </p>
+            <p class="text-white/65 font-light leading-relaxed text-base">
+              Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une bibliothèque
+              alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus qu'une
+              <span class="text-white/95 font-medium">seule source de vérité</span>.
+            </p>
+            <p class="border-t border-white/12 pt-5 text-white font-medium text-xl md:text-[1.4rem] leading-snug">
+              Le jour où je pars, rien ne s'arrête.
+            </p>
+          </div>
+        </div>
       </div>
     </RevealOnScroll>
 

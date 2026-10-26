@@ -84,9 +84,11 @@ body {
    détouré par le parent arrondi : pas de masque CSS, une seule propriété
    composée (transform). 300 px suffisent à couvrir la pilule dans toutes
    ses rotations, y compris au libellé long. */
+/* Rayon volontairement court : la pilule vit dans la barre fixe, et un halo
+   large débordait sous la bordure en laissant une tache au-dessus du contenu. */
 @keyframes cta-halo {
-  0%, 100% { box-shadow: 0 0 20px 0 rgba(112,107,254,0.18); }
-  50%      { box-shadow: 0 0 38px 6px rgba(112,107,254,0.36); }
+  0%, 100% { box-shadow: 0 0 14px 0 rgba(112,107,254,0.2); }
+  50%      { box-shadow: 0 0 26px 3px rgba(112,107,254,0.4); }
 }
 @keyframes cta-breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
