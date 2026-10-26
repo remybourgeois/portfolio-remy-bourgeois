@@ -2,6 +2,7 @@
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import Icon from '$lib/components/Icons.svelte';
+  import PageHeader from '$lib/components/PageHeader.svelte';
   import { sfx } from '$lib/actions/sfx';
   import {
     SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE,
@@ -99,38 +100,30 @@
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
-    <!-- Retour : même position sur toutes les pages, premier élément du
-         conteneur, jamais centré. -->
-    <a href="/" use:sfx
-      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]">
-      <Icon name="ArrowLeft" size={14} /> Retour
-    </a>
-
-    <header class="mb-16 max-w-4xl">
-
-      <div class="flex flex-col md:flex-row gap-8 md:items-center">
+    <!--
+      Le portrait passe à DROITE du bloc de titre : devant, il décalait le H1
+      et cette page était la seule dont le titre ne démarrait pas au bord du
+      conteneur. L'accroche est raccourcie pour tenir dans la même hauteur
+      d'en-tête que les deux autres pages ; la nuance sur la relecture des PR
+      rejoint le fil conducteur, où elle était de toute façon déjà à moitié.
+    -->
+    <PageHeader title="À propos">
+      {#snippet lede()}
+        <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer
+        freelance, basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces
+        pour des produits complexes, et les implémente lui-même dans le dépôt.
+      {/snippet}
+      {#snippet media()}
         <img
           src="/assets/remy-bourgeois.webp"
           alt="Portrait de Rémy Bourgeois"
           width="500"
           height="500"
-          class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover flex-shrink-0 shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+          class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
           loading="eager"
         />
-        <div>
-          <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-            À propos
-          </h1>
-          <p class="text-white/70 text-lg leading-relaxed">
-            <strong class="text-white">Rémy Bourgeois</strong> est Lead Design System et Senior
-            Product Designer freelance, basé à <strong class="text-white">Lyon</strong>. Il conçoit
-            depuis 14 ans des interfaces pour des produits complexes, et les implémente lui-même dans
-            le dépôt. Il ne se présente pas pour autant comme développeur : chacune de ses Pull Requests
-            est relue par un développeur senior.
-          </p>
-        </div>
-      </div>
-    </header>
+      {/snippet}
+    </PageHeader>
 
     <!-- ── Le fil ───────────────────────────────────────────────────────── -->
     <section class="mb-20" aria-labelledby="fil-title">
@@ -162,7 +155,8 @@
           C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants
           sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le designer
           et revues par un développeur front. Il n'y a plus de traduction entre l'intention et
-          l'implémentation, donc plus de perte. Ce mode de travail ne convient pas à toutes les
+          l'implémentation, donc plus de perte. Je ne me présente pas pour autant comme
+          développeur : chacune de mes Pull Requests est relue avant la mise en production. Ce mode de travail ne convient pas à toutes les
           équipes : il suppose un dépôt, une revue, et quelqu'un qui accepte de relire.
         </p>
       </div>

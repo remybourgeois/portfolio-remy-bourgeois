@@ -2,6 +2,7 @@
 <script lang="ts">
   import { PROJECTS, heroSize } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
+  import PageHeader from '$lib/components/PageHeader.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
@@ -68,18 +69,12 @@
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
-    <!-- Retour : même position sur toutes les pages, premier élément du
-         conteneur, jamais centré. -->
-    <a href="/" use:sfx
-      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]">
-      <Icon name="ArrowLeft" size={14} /> Retour
-    </a>
-
-    <header class="mb-16">
-      <h1 class="text-4xl md:text-6xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-        Projets
-      </h1>
-    </header>
+    <PageHeader title="Projets">
+      {#snippet lede()}
+        Cinq études de cas détaillées : design systems multi-marques, assistants IA
+        conversationnels, SaaS B2B et robotique humanoïde.
+      {/snippet}
+    </PageHeader>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#each PROJECTS as project}
