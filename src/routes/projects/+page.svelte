@@ -1,8 +1,8 @@
 <!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
   import { PROJECTS, heroSize } from '$lib/data/projects';
-  import Icon from '$lib/components/Icons.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
+  import PageCta from '$lib/components/PageCta.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
@@ -142,6 +142,19 @@
           </div>
         </a>
       {/each}
+    </div>
+
+    <div class="mt-20">
+      <PageCta
+        title="Un projet qui ressemble à ceux-là ?"
+        secondaryHref="/accompagnement"
+        secondaryLabel="Voir comment je travaille"
+        secondaryIcon="ArrowRight"
+      >
+        {#snippet lede()}
+          Design systems, assistants IA et interfaces complexes. Dites-moi le vôtre.
+        {/snippet}
+      </PageCta>
     </div>
 
   </div>

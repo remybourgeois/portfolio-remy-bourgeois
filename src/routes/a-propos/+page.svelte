@@ -3,6 +3,7 @@
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import Icon from '$lib/components/Icons.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
+  import PageCta from '$lib/components/PageCta.svelte';
   import { sfx } from '$lib/actions/sfx';
   import {
     SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE,
@@ -222,30 +223,16 @@
     </section>
 
     <!-- ── Contact ──────────────────────────────────────────────────────── -->
-    <section class="text-center" aria-labelledby="contact-title">
-      <h2 id="contact-title" class="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-        Parlons-en
-      </h2>
-      <p class="text-white/70 mb-8 max-w-xl mx-auto leading-relaxed">
+    <PageCta
+      title="Parlons-en"
+      secondaryHref="/projects"
+      secondaryLabel="Voir les projets"
+      secondaryIcon="ArrowRight"
+    >
+      {#snippet lede()}
         Un projet, une question, ou juste l'envie d'échanger sur le design d'interfaces IA.
-      </p>
-      <div class="flex flex-wrap justify-center gap-3">
-        <a
-          href="mailto:{EMAIL}"
-          use:sfx
-          class="inline-flex items-center gap-3 px-7 py-4 rounded-full bg-[#5a55e0] hover:bg-[#4a45d0] text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-white"
-        >
-          <Icon name="Mail" size={16} className="flex-shrink-0" /> {EMAIL}
-        </a>
-        <a
-          href="/projects"
-          use:sfx
-          class="inline-flex items-center gap-3 px-7 py-4 rounded-full border border-white/20 hover:border-white/40 text-white/70 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-        >
-          Voir les projets <Icon name="ArrowRight" size={14} />
-        </a>
-      </div>
-    </section>
+      {/snippet}
+    </PageCta>
 
   </div>
 </main>

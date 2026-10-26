@@ -42,7 +42,13 @@
 <header class="mb-14 pb-10 border-b border-white/10">
   <div class="flex flex-col md:flex-row md:items-start gap-8 md:min-h-[180px]">
     <div class="flex-1 min-w-0">
-      <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+      <!--
+        `leading-[1.2]` n'est pas cosmétique : avec `bg-clip-text`, le dégradé
+        n'est peint que dans la boîte de la ligne. En `line-height: 1`, cette
+        boîte s'arrête sous la ligne de base et les jambages descendants, le
+        « g » d'Accompagnement en tête, n'étaient tout simplement pas peints.
+      -->
+      <h1 class="text-[clamp(1.9rem,7.5vw,3rem)] font-semibold tracking-tight leading-[1.2] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
         {title}
       </h1>
       {#if lede}

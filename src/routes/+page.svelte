@@ -5,6 +5,7 @@
   import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
   import Icon from '$lib/components/Icons.svelte';
   import Tag from '$lib/components/Tag.svelte';
+  import PageCta from '$lib/components/PageCta.svelte';
   import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
   import { TESTIMONIALS } from '$lib/data/testimonials';
   import { EXPERTISES } from '$lib/data/expertises';
@@ -356,41 +357,25 @@
     <!-- Contact -->
     <RevealOnScroll>
       <div class="w-full py-20 relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <!--
-          La carte occupe toute la largeur de la section, comme Recommandations,
-          Expertises, Impact et Projets. Seul le paragraphe reste plafonné :
-          une ligne de texte sur 952 px serait pénible à lire.
-        -->
-        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
-          <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
-          <p class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-2xl mx-auto">
+        <PageCta
+          title="Démarrons un projet"
+          secondaryHref="https://www.linkedin.com/in/remy-bourgeois/"
+          secondaryLabel="LinkedIn"
+          secondaryIcon="Linkedin"
+          secondaryExternal
+        >
+          {#snippet lede()}
             Je vous accompagne sur vos projets d'<strong>IA</strong>, de <strong>design system</strong>,
             d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong>,
             que vous soyez une startup, une scale-up, une PME ou une grande entreprise.
-            Disponible pour de nouvelles missions à partir de <strong>novembre 2026</strong>.
-          </p>
-          <p class="text-white/60 text-sm mb-8">
+          {/snippet}
+          {#snippet extra()}
             <a href="/accompagnement" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors">
               Voir les trois façons de travailler ensemble
             </a>
-          </p>
-          <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
-            <Tag icon="Wifi">Full remote préféré</Tag>
-            <Tag icon="MapPin">Basé à Lyon</Tag>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:remy.bourgeois@gmail.com" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white">
-              <Icon name="Mail" size={16} className="flex-shrink-0" /> remy.bourgeois@gmail.com
-            </a>
-            <a href="https://www.linkedin.com/in/remy-bourgeois/" target="_blank" rel="noopener noreferrer" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
-              <Icon name="Linkedin" size={16} className="flex-shrink-0" /> LinkedIn
-            </a>
-          </div>
-        </div>
+          {/snippet}
+        </PageCta>
+
         <div class="mt-16 text-center">
           <p class="text-white/55 text-xs mb-1">Ce site a été entièrement vibe codé et crafté avec intention 💙</p>
           <p class="text-white/50 text-xs">© 2026 Rémy Bourgeois</p>

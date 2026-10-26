@@ -454,14 +454,25 @@
 
       <!-- Dots -->
       {#if slides.length > 1}
-        <div class="flex justify-center items-center gap-1.5 pt-4 mb-14">
+        <!--
+          La pastille reste fine, mais le bouton qui la porte fait 24 px de
+          haut : une cible de 5 px est invisable au doigt. La barre est un
+          <span> décoratif, la zone sensible est le <button> autour.
+        -->
+        <div class="flex justify-center items-center gap-1 pt-2 mb-14">
           {#each slides as _, i}
             <button
-              class="h-[5px] rounded-full border-none p-0 cursor-pointer transition-all duration-300
-                     {i === carIndex ? 'w-[22px] bg-[#706bfe]' : 'w-[5px] bg-white/[0.18] hover:bg-white/30'}"
+              class="h-6 px-1 flex items-center border-none bg-transparent p-0 cursor-pointer"
               onclick={() => carGo(i)}
               aria-label="Aller au visuel {i + 1}"
-            ></button>
+              aria-current={i === carIndex ? 'true' : undefined}
+            >
+              <span
+                class="block h-[5px] rounded-full transition-all duration-300
+                       {i === carIndex ? 'w-[22px] bg-[#706bfe]' : 'w-[5px] bg-white/[0.18]'}"
+                aria-hidden="true"
+              ></span>
+            </button>
           {/each}
         </div>
       {:else}

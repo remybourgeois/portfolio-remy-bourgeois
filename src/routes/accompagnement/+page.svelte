@@ -1,11 +1,10 @@
 <!-- src/routes/accompagnement/+page.svelte -->
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
-  import Icon from '$lib/components/Icons.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
   import Tag from '$lib/components/Tag.svelte';
-  import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED, EMAIL } from '$lib/data/site';
+  import PageCta from '$lib/components/PageCta.svelte';
+  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
 
@@ -222,31 +221,16 @@
     </RevealOnScroll>
 
     <RevealOnScroll>
-      <div class="w-full relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
-          <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">Démarrons un projet</h2>
-          <p class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-2xl mx-auto">
-            Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
-            Disponible pour de nouvelles missions à partir de <strong>novembre 2026</strong>.
-          </p>
-          <div class="flex flex-wrap justify-center gap-2 mb-8">
-            <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
-            <Tag icon="Wifi">Full remote préféré</Tag>
-            <Tag icon="MapPin">Basé à Lyon</Tag>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:{EMAIL}" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white">
-              <Icon name="Mail" size={16} className="flex-shrink-0" /> {EMAIL}
-            </a>
-            <a href="/projects" use:sfx
-              class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]">
-              Voir les études de cas <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
-            </a>
-          </div>
-        </div>
-      </div>
+      <PageCta
+        title="Démarrons un projet"
+        secondaryHref="/projects"
+        secondaryLabel="Voir les études de cas"
+        secondaryIcon="ArrowRight"
+      >
+        {#snippet lede()}
+          Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
+        {/snippet}
+      </PageCta>
     </RevealOnScroll>
 
   </div>
