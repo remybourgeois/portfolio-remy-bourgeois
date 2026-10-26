@@ -106,11 +106,44 @@ body {
 .cta-orbit     { transform-origin: 12px 12px; animation: spin 6s linear infinite; }
 .cta-orbit-rev { transform-origin: 12px 12px; animation: spin 9s linear infinite reverse; }
 
+.cta-pill {
+  background: #07060f;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Au survol, la scène s'emballe : le faisceau accélère, le halo force, les
+   particules tournent plus vite. On promet une expérience en mouvement, donc
+   l'objet réagit au lieu de changer de couleur. `focus-within` donne au clavier
+   exactement le même retour qu'à la souris. */
+.cta-shell:hover .cta-beam,
+.cta-shell:focus-within .cta-beam       { animation-duration: 1.4s; }
+.cta-shell:hover .cta-halo,
+.cta-shell:focus-within .cta-halo       { animation-duration: 1.6s; }
+.cta-shell:hover .cta-orbit,
+.cta-shell:focus-within .cta-orbit      { animation-duration: 2.4s; }
+.cta-shell:hover .cta-orbit-rev,
+.cta-shell:focus-within .cta-orbit-rev  { animation-duration: 3.6s; }
+.cta-shell:hover .cta-breathe,
+.cta-shell:focus-within .cta-breathe    { animation-duration: 1.6s; }
+
+.cta-shell:hover .cta-pill,
+.cta-shell:focus-within .cta-pill {
+  background: #120e24;
+  transform: translateY(-1px);
+}
+
+.cta-shell:hover .cta-sub,
+.cta-shell:focus-within .cta-sub { color: rgba(255, 255, 255, 0.95); }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
-  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev {
+  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev,.cta-pill {
     animation: none !important; transition: none !important;
   }
+  /* Le survol reste perceptible, il devient simplement instantané et sans
+     déplacement : c'est le mouvement qu'on retire, pas le retour visuel. */
+  .cta-shell:hover .cta-pill,
+  .cta-shell:focus-within .cta-pill { transform: none; }
   /* Sans rotation, le faisceau figé masquerait la bordure : on la rend pleine. */
   .cta-beam { background: rgba(168,165,255,0.45); }
 }

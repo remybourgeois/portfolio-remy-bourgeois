@@ -112,7 +112,7 @@
       La couche du faisceau est un frère de <a>, pas son parent : un parent en
       `overflow-hidden` rognerait l'anneau de focus.
     -->
-    <div class="pointer-events-auto flex flex-col items-center gap-1.5">
+    <div class="cta-shell pointer-events-auto flex flex-col items-center gap-1.5">
       <span class="cta-halo relative inline-block rounded-full bg-[#706bfe]/35 p-[1.5px]">
         <span class="absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
           <span class="cta-beam"></span>
@@ -120,7 +120,7 @@
         <a
           href="/intro"
           use:sfx
-          class="relative flex items-center gap-2 text-white text-[11px] sm:text-xs font-semibold uppercase tracking-wider px-3 sm:px-4 py-3 rounded-full bg-[#07060f] focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+          class="cta-pill relative flex items-center gap-2 text-white text-[11px] sm:text-xs font-semibold uppercase tracking-wider px-3 sm:px-4 py-3 rounded-full focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
           <!--
             Icône inline plutôt que <Icon> : elle anime deux groupes à des
@@ -141,7 +141,7 @@
           <span class="whitespace-nowrap sm:hidden">Expérience</span>
         </a>
       </span>
-      <span class="cta-breathe text-white/70 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em]">
+      <span class="cta-breathe cta-sub text-white/70 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em]">
         <span class="hidden sm:inline">3D interactive · son · 40 s</span>
         <span class="sm:hidden">3D · son · 40 s</span>
       </span>
