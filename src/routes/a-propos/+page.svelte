@@ -97,16 +97,16 @@
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-4xl mx-auto px-6 pt-32 pb-24">
+  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
-    <header class="mb-16">
-      <a
-        href="/"
-        use:sfx
-        class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]"
-      >
-        <Icon name="ArrowLeft" size={14} /> Retour
-      </a>
+    <!-- Retour : même position sur toutes les pages, premier élément du
+         conteneur, jamais centré. -->
+    <a href="/" use:sfx
+      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]">
+      <Icon name="ArrowLeft" size={14} /> Retour
+    </a>
+
+    <header class="mb-16 max-w-4xl">
 
       <div class="flex flex-col md:flex-row gap-8 md:items-center">
         <img
@@ -137,7 +137,7 @@
       <h2 id="fil-title" class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4">
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Le fil conducteur
       </h2>
-      <div class="body-text flex flex-col gap-5 text-white/70 text-base md:text-[1.05rem] leading-[1.85]">
+      <div class="body-text flex flex-col gap-5 max-w-4xl text-white/70 text-base md:text-[1.05rem] leading-[1.85]">
         <p>
           Le point de départ n'est pas un écran, c'est un <strong>robot</strong>. Pendant sept ans chez
           Aldebaran, la question n'était pas « où placer ce bouton » mais « comment une machine peut-elle
@@ -174,7 +174,7 @@
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Parcours
       </h2>
 
-      <ol class="flex flex-col gap-8">
+      <ol class="flex flex-col gap-8 max-w-4xl">
         {#each TIMELINE as step}
           <!-- RevealOnScroll rend un <div> : il doit vivre DANS le <li>, sinon
                l'<ol> a des enfants directs invalides (axe: list / listitem). -->

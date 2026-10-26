@@ -141,12 +141,15 @@
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
 
+    <!-- Retour : même position sur toutes les pages, premier élément du
+         conteneur, jamais centré. -->
+    <a href="/" use:sfx
+      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]">
+      <Icon name="ArrowLeft" size={14} /> Retour
+    </a>
+
     <RevealOnScroll>
       <header class="w-full mb-16 text-center">
-        <a href="/" use:sfx
-          class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-8 min-h-[44px]">
-          <Icon name="ArrowLeft" size={14} /> Retour
-        </a>
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-6">Accompagnement</h1>
         <p class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
           Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique,

@@ -116,7 +116,7 @@
                    bg-[radial-gradient(60%_50%_at_50%_35%,rgba(112,107,254,0.3),transparent_70%)]"
             aria-hidden="true"
           ></span>
-          <div class="relative aspect-[4/3] md:aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.6)]">
+          <div class="hero-photo relative aspect-[4/3] md:aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.6)]">
             <img
               src="/assets/remy-bourgeois.webp"
               alt="Portrait de Rémy Bourgeois"
@@ -126,11 +126,11 @@
               loading="eager"
             />
             <span
-              class="absolute inset-0 bg-gradient-to-b from-transparent via-[#020205]/55 to-[#020205]/95 pointer-events-none"
+              class="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#020205]/55 to-[#020205]/95 pointer-events-none"
               aria-hidden="true"
             ></span>
             <span
-              class="absolute inset-0 bg-[linear-gradient(200deg,rgba(112,107,254,0.16),transparent_55%)] pointer-events-none"
+              class="hero-tint absolute inset-0 bg-[linear-gradient(200deg,rgba(112,107,254,0.16),transparent_55%)] pointer-events-none"
               aria-hidden="true"
             ></span>
             <span class="absolute left-5 right-5 bottom-4 flex items-center gap-2.5">
@@ -152,28 +152,21 @@
             <Tag as="li" icon="Award">14 ans d'expérience</Tag>
           </ul>
 
-          <!--
-            Les mises en avant sont en blanc et non en violet : quatre accents
-            violets dans trois paragraphes concurrençaient le H1. Le violet ne
-            sert plus qu'à l'eyebrow. D'où des <span> explicites plutôt que des
-            <strong> dans `.body-text`, dont la règle globale est violette.
-          -->
-          <div class="flex flex-col gap-5 max-w-[42rem] mx-auto md:mx-0 text-left">
-            <p class="text-white text-lg md:text-xl leading-relaxed">
-              Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.
+          <!-- `.body-text` porte la règle globale des termes mis en avant :
+               le violet #a8a5ff, comme sur le reste du site. -->
+          <div class="body-text flex flex-col gap-5 max-w-[42rem] mx-auto md:mx-0 text-left">
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+              <strong>Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.</strong>
             </p>
-            <p class="text-white/65 font-light leading-relaxed text-base">
-              14 ans de design produit, dont <span class="text-white/95 font-medium">7 ans en robotique humanoïde</span>.
-              Je conçois des design systems et des produits IA <span class="text-white/95 font-medium">directement dans le code</span>,
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+              14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>.
+              Je conçois des design systems et des produits IA <strong>directement dans le code</strong>,
               avec les équipes qui vont les faire vivre. Un développeur senior relit chacune de mes Pull Requests.
             </p>
-            <p class="text-white/65 font-light leading-relaxed text-base">
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
               Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une bibliothèque
               alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus qu'une
-              <span class="text-white/95 font-medium">seule source de vérité</span>.
-            </p>
-            <p class="border-t border-white/12 pt-5 text-white font-medium text-xl md:text-[1.4rem] leading-snug">
-              Le jour où je pars, rien ne s'arrête.
+              <strong>seule source de vérité</strong>.
             </p>
           </div>
         </div>

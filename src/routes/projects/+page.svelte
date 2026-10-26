@@ -66,12 +66,16 @@
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-6xl mx-auto px-6 pt-32 pb-20">
+  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
+
+    <!-- Retour : même position sur toutes les pages, premier élément du
+         conteneur, jamais centré. -->
+    <a href="/" use:sfx
+      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]">
+      <Icon name="ArrowLeft" size={14} /> Retour
+    </a>
 
     <header class="mb-16">
-      <a href="/" use:sfx class="inline-flex items-center gap-2 text-white/50 hover:text-white text-xs uppercase tracking-wider mb-8 transition-colors min-h-[44px]">
-        <Icon name="ArrowLeft" size={14} /> Retour
-      </a>
       <h1 class="text-4xl md:text-6xl font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
         Projets
       </h1>

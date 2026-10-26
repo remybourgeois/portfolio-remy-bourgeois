@@ -39,9 +39,12 @@
          {visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}"
 >
   <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
-    <a href="/" use:sfx class="text-white/70 hover:text-white text-xs uppercase tracking-wider transition-colors whitespace-nowrap">
-      Rémy Bourgeois
-    </a>
+    <!--
+      Le nom renvoyait à l'accueil, exactement comme le lien « Home » deux
+      centimètres plus loin. La place revient au CTA, seule destination que la
+      barre ne proposait pas deux fois.
+    -->
+    <IntroCta />
 
     <!--
       Les liens passent au menu déroulant sous 1024 px et non sous 768 : entre
@@ -62,8 +65,6 @@
       <div class="hidden xl:block">
         <Tag dot="violet" pulse solid class="whitespace-nowrap">Lien établi</Tag>
       </div>
-
-      <IntroCta />
 
       <button
         onclick={audioStore.toggleMute}

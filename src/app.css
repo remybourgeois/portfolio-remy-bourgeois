@@ -87,8 +87,8 @@ body {
 /* Rayon volontairement court : la pilule vit dans la barre fixe, et un halo
    large débordait sous la bordure en laissant une tache au-dessus du contenu. */
 @keyframes cta-halo {
-  0%, 100% { box-shadow: 0 0 14px 0 rgba(112,107,254,0.2); }
-  50%      { box-shadow: 0 0 26px 3px rgba(112,107,254,0.4); }
+  0%, 100% { box-shadow: 0 0 10px 0 rgba(112,107,254,0.28); }
+  50%      { box-shadow: 0 0 18px 1px rgba(112,107,254,0.5); }
 }
 @keyframes cta-breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
@@ -137,9 +137,32 @@ body {
 .cta-shell:hover .cta-sub,
 .cta-shell:focus-within .cta-sub { color: rgba(255, 255, 255, 0.95); }
 
+/* ── Portrait du hero ──
+   Au repos la photo est désaturée et assombrie, au survol elle reprend ses
+   couleurs et avance lentement. Le fond clair du studio reste tenu par le
+   dégradé, qui s'allège sans disparaître. */
+.hero-photo img {
+  filter: grayscale(0.75) brightness(0.82) contrast(1.05);
+  transform: scale(1.01);
+  transition: filter 0.7s ease, transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hero-photo .hero-tint,
+.hero-photo .hero-scrim { transition: opacity 0.7s ease; }
+
+.hero-photo:hover img,
+.hero-photo:focus-within img {
+  filter: grayscale(0) brightness(1) contrast(1);
+  transform: scale(1.07);
+}
+.hero-photo:hover .hero-tint,
+.hero-photo:focus-within .hero-tint { opacity: 0; }
+.hero-photo:hover .hero-scrim,
+.hero-photo:focus-within .hero-scrim { opacity: 0.55; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
-  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev,.cta-pill {
+  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev,.cta-pill,
+  .hero-photo img,.hero-photo .hero-tint,.hero-photo .hero-scrim {
     animation: none !important; transition: none !important;
   }
   /* Le survol reste perceptible, il devient simplement instantané et sans
