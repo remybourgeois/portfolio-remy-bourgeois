@@ -5,8 +5,9 @@
   /**
    * Invitation vers /intro. Elle ne doit pas se lire comme un lien de nav de
    * plus : un faisceau tourne dans la bordure, le halo respire, et une pastille
-   * de particules en orbite annonce la nature WebGL de la page visée. La
-   * sous-ligne dit le reste, pour qu'on sache avant de cliquer.
+   * de particules en orbite annonce la nature WebGL de la page visée. Ce que
+   * cache le lien (3D, son, 40 s) n'est plus écrit, mais reste dans le nom
+   * accessible, donc annoncé aux lecteurs d'écran.
    *
    * Tout est en CSS (app.css, section « CTA ») : aucun octet de réseau en plus,
    * et rien à monter côté client.
@@ -17,14 +18,22 @@
   La couche du faisceau est un frère du <a>, pas son parent : un parent en
   `overflow-hidden` rognerait l'anneau de focus clavier.
 -->
-<div class="cta-shell flex flex-col items-center gap-1">
+<div class="cta-shell inline-flex">
   <span class="cta-halo relative inline-block rounded-full bg-[#706bfe]/35 p-[1.5px]">
+    <!--
+      Deux faisceaux, même durée donc jamais déphasés. Le second est plus large
+      et plus blanc, et ne fait qu'apparaître au survol : rien n'accélère, donc
+      rien ne se repositionne. Changer `animation-duration` au survol forçait le
+      navigateur à recalculer la position, d'où le saut qu'on voyait.
+    -->
     <span class="absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
       <span class="cta-beam"></span>
+      <span class="cta-beam2"></span>
     </span>
     <a
       href="/intro"
       use:sfx
+      aria-label="Vivre l'expérience : intro 3D et sonore, 40 secondes"
       class="cta-pill relative flex items-center gap-2 text-white text-[11px] font-semibold uppercase tracking-wider px-3 lg:px-4 py-2.5 rounded-full focus-visible:ring-2 focus-visible:ring-[#706bfe]"
     >
       <!--
@@ -45,9 +54,5 @@
       <span class="whitespace-nowrap hidden lg:inline">Vivre l'expérience</span>
       <span class="whitespace-nowrap lg:hidden">Expérience</span>
     </a>
-  </span>
-  <span class="cta-breathe cta-sub text-white/70 text-[9px] font-medium uppercase tracking-[0.14em] whitespace-nowrap">
-    <span class="hidden lg:inline">3D interactive · son · 40 s</span>
-    <span class="lg:hidden">3D · son · 40 s</span>
   </span>
 </div>

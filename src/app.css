@@ -90,9 +90,7 @@ body {
   0%, 100% { box-shadow: 0 0 10px 0 rgba(112,107,254,0.28); }
   50%      { box-shadow: 0 0 18px 1px rgba(112,107,254,0.5); }
 }
-@keyframes cta-breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-
-.cta-beam {
+.cta-beam, .cta-beam2 {
   position: absolute; top: 50%; left: 50%;
   width: 300px; height: 300px; margin: -150px 0 0 -150px;
   background: conic-gradient(
@@ -104,7 +102,6 @@ body {
   animation: spin 3.6s linear infinite;
 }
 .cta-halo      { animation: cta-halo 3.2s ease-in-out infinite; }
-.cta-breathe   { animation: cta-breathe 3.2s ease-in-out infinite; }
 .cta-orbit     { transform-origin: 12px 12px; animation: spin 6s linear infinite; }
 .cta-orbit-rev { transform-origin: 12px 12px; animation: spin 9s linear infinite reverse; }
 
@@ -113,29 +110,29 @@ body {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Au survol, la scène s'emballe : le faisceau accélère, le halo force, les
-   particules tournent plus vite. On promet une expérience en mouvement, donc
-   l'objet réagit au lieu de changer de couleur. `focus-within` donne au clavier
-   exactement le même retour qu'à la souris. */
-.cta-shell:hover .cta-beam,
-.cta-shell:focus-within .cta-beam       { animation-duration: 1.4s; }
-.cta-shell:hover .cta-halo,
-.cta-shell:focus-within .cta-halo       { animation-duration: 1.6s; }
-.cta-shell:hover .cta-orbit,
-.cta-shell:focus-within .cta-orbit      { animation-duration: 2.4s; }
-.cta-shell:hover .cta-orbit-rev,
-.cta-shell:focus-within .cta-orbit-rev  { animation-duration: 3.6s; }
-.cta-shell:hover .cta-breathe,
-.cta-shell:focus-within .cta-breathe    { animation-duration: 1.6s; }
+/* Le second faisceau tourne depuis toujours, invisible, à la MÊME durée que le
+   premier : il est donc déjà en phase, et le survol ne fait que le révéler.
+   Accélérer en changeant `animation-duration` obligeait le navigateur à
+   recalculer la position de chaque animation, ce qui produisait un saut.
+   `focus-within` donne au clavier exactement le même retour qu'à la souris. */
+.cta-beam2 {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg, transparent 170deg,
+    rgba(255,255,255,0.9) 262deg, #38bdf8 300deg,
+    transparent 350deg
+  );
+}
+.cta-shell:hover .cta-beam2,
+.cta-shell:focus-within .cta-beam2 { opacity: 1; }
 
 .cta-shell:hover .cta-pill,
 .cta-shell:focus-within .cta-pill {
   background: #120e24;
   transform: translateY(-1px);
 }
-
-.cta-shell:hover .cta-sub,
-.cta-shell:focus-within .cta-sub { color: rgba(255, 255, 255, 0.95); }
 
 /* ── Portrait du hero ──
    Au repos la photo est désaturée et assombrie, au survol elle reprend ses
@@ -161,7 +158,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
-  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev,.cta-pill,
+  .cta-beam,.cta-beam2,.cta-halo,.cta-orbit,.cta-orbit-rev,.cta-pill,
   .hero-photo img,.hero-photo .hero-tint,.hero-photo .hero-scrim {
     animation: none !important; transition: none !important;
   }

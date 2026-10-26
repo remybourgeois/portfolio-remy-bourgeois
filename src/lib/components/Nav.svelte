@@ -38,7 +38,7 @@
          bg-[#020205]/90 backdrop-blur-md border-b border-white/5
          {visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}"
 >
-  <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
+  <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
     <!--
       Le nom renvoyait à l'accueil, exactement comme le lien « Home » deux
       centimètres plus loin. La place revient au CTA, seule destination que la
