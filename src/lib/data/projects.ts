@@ -61,22 +61,22 @@ export const PROJECTS: Project[] = [
     featured: true,
     slug: 'ofelia',
     summary: {
-      context: 'Bonitasoft, éditeur BPA depuis 15 ans, lance Ofelia, une suite d\'orchestration IA gouvernée. Seul designer, à partir d\'une page blanche.',
-      stack: ['Design System', 'Storybook', 'Claude Code', 'Git', 'Slack', 'Microsoft Teams'],
-      impact: 'Rythme d\'exécution 10x plus rapide. Plus de hand-off : le designer ouvre ses propres Pull Requests, revues par un dev front avant la mise en production.'
+      context: "Ofelia, éditeur de BPA depuis 15 ans, lance une suite d'orchestration IA gouvernée. Premier designer, à partir d'une page blanche. Design system créé de zéro dans le code et documenté dans Storybook.",
+      stack: ['Design system', 'Storybook', 'Check automatique à chaque PR', 'Lab de prototypage', 'Claude Code', 'Git', 'Slack', 'Microsoft Teams'],
+      impact: "Changer un composant passait de plusieurs semaines à quelques heures. Plus de hand-off : le designer ouvre ses propres Pull Requests, relues par un développeur front avant la mise en production."
     },
     seoDescription:
-      'Founding Designer d\'Ofelia (Bonitasoft) : design system et UX d\'un assistant IA agentique intégré à Slack et Teams, conçu directement dans le code.',
+      "Premier designer d'Ofelia : design system créé de zéro dans le code et UX d'un assistant IA agentique intégré à Slack et Teams.",
     client: 'Ofelia',
     logo: '/assets/ofelia.svg',
     title: 'Ofelia',
     tags: ['IA Conversationnelle', 'Design System', 'SaaS', 'Claude Code', 'Storybook'],
     description:
-      'Acteur historique du **BPA** (Business Process Automation) d\'entreprise depuis 15 ans, **Bonitasoft** avait une nouvelle ambition : créer **Ofelia**, une suite logicielle d\'orchestration IA gouvernée.\n\nJe suis intervenu sur ce projet en tant que **Founding Designer**, seul à bord pour tout construire à partir d\'une page blanche. Le cœur du produit, **Ofelia Agentic**, est un assistant IA conçu pour s\'intégrer directement dans **Slack et Teams**. L\'objectif ? Ne pas imposer un énième outil aux équipes, mais faire vivre l\'IA là où elles collaborent déjà au quotidien.',
+      "Éditeur historique du **BPA** (Business Process Automation) d'entreprise depuis 15 ans, **Ofelia** s'est donné une nouvelle ambition : une suite logicielle d'orchestration IA gouvernée.\n\nJe suis intervenu sur ce projet en tant que **premier designer**, seul à bord pour tout construire à partir d'une page blanche. Le cœur du produit, **Ofelia Agentic**, est un assistant IA conçu pour s'intégrer directement dans **Slack et Teams**. L'objectif ? Ne pas imposer un énième outil aux équipes, mais faire vivre l'IA là où elles collaborent déjà au quotidien.",
     challenge:
       'L\'enjeu UX dépassait la simple création d\'écrans. Il ne s\'agissait pas de dessiner un chatbot classique, mais d\'intégrer une véritable **collègue virtuelle** capable d\'**orchestrer des workflows complexes** à partir d\'une simple conversation.\n\nTrès vite, les limites de Figma sont apparues : les **interfaces statiques sont inadaptées** pour modéliser des **interactions agentiques** mouvantes. La tech avançait à toute vitesse, le design devait suivre le même tempo. Il fallait supprimer la friction entre la maquette et l\'ingénierie.',
     outcome:
-      'Après avoir posé les bases de l\'UX et du Design System, j\'ai pivoté vers un rôle pur de **Design Engineer** :\n\n• Zéro maquette morte : j\'ai totalement abandonné le **pixel-perfect statique** pour itérer directement dans le code de production.\n• **Workflow Engineering** : j\'utilise désormais **Claude Code** pour travailler directement sur Git et dans Storybook, en ouvrant mes propres Pull Requests.\n• Zéro perte d\'information : mes PR sont revues par un dev front avant la mise en prod. Le "hand-off" n\'existe plus.\n\nL\'impact ? Notre rythme d\'exécution est devenu **10x plus rapide**. Le produit a été co-construit, testé et validé en temps réel avec nos clients prospects, éliminant l\'effet tunnel specs/design/dev.',
+      "Après avoir posé les bases de l'UX, j'ai construit le **design system directement dans le code**, documenté dans **Storybook** :\n\n• **Des règles vérifiées, pas documentées** : un check automatique passe à chaque Pull Request sur les tokens, l'accessibilité et le respect du design system. Une documentation que personne ne relit ne protège rien.\n• **Un Lab** dans Storybook pour prototyper avec les vrais composants, au lieu de maquetter ce qui existe déjà.\n• **Zéro maquette morte** : j'ai abandonné le pixel-perfect statique pour itérer dans le code de production, avec **Claude Code**, sur Git et dans Storybook.\n• **Zéro perte d'information** : mes Pull Requests sont relues par un développeur front avant la mise en production. Le hand-off n'existe plus.\n\nLe résultat le plus net : **changer un composant passait de plusieurs semaines à quelques heures**. L'équipe estimait son rythme d'exécution environ dix fois plus rapide, un constat partagé et non une mesure. Le produit a été co-construit et validé en temps réel avec des clients prospects, ce qui a supprimé l'effet tunnel specs, design, dev.",
     video: '/assets/ofelia.mp4',
     videoWidth: 2026,
     videoHeight: 1034,
@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
       { type: 'video', src: '/assets/ofelia-2.mp4', poster: '/assets/poster-ofelia-2.webp', width: 1112, height: 1080 },
       { type: 'video', src: '/assets/ofelia-3.mp4', poster: '/assets/poster-ofelia-3.webp', width: 1112, height: 1080 }
     ],
-    role: 'Product Design Engineer (Founding Designer)',
+    role: 'Premier designer',
     year: '2025 – 2026'
   },
   {
@@ -109,8 +109,8 @@ export const PROJECTS: Project[] = [
       'Le défi était double : structurer l\'existant pour préparer la croissance, et **intégrer l\'IA de manière transparente** dans des workflows métiers très exigeants.\n\nDans un environnement SaaS B2B aussi dense, l\'interface ne pardonne pas. Il fallait rationaliser la production design et dev, tout en imaginant comment un **"agent IA"** pouvait assister les équipes juridiques sans créer de friction, ni ressembler à un gadget superflu.',
     outcome:
       'J\'ai mené de front l\'architecture de l\'interface et l\'innovation produit en me concentrant sur trois piliers :\n\n• **Scalabilité UI** (Design System & Tokens) : pilotage de la refonte complète du Design System. Mise en place de l\'architecture des **Design Tokens**, création des composants, rédaction de la documentation et instauration d\'une vraie gouvernance pour aligner le design et la tech.\n• **Recherche augmentée** (IA Conversationnelle) : conception d\'un agent IA intégré nativement au portail. Il permet désormais aux utilisateurs d\'interroger la totalité de leur base de brevets internationaux en **langage naturel** (Natural Language Query).\n• **Gains de productivité** (IA Générative) : design de features génératives visant à automatiser les tâches les plus chronophages des juristes : rédaction assistée et traduction de documents légaux complexes.\n\nL\'impact ? Une interface devenue prédictible et scalable grâce aux tokens, et un produit qui ne se contente plus de stocker des brevets, mais qui agit comme un véritable **assistant juridique automatisé**.',
-    role: 'Senior Product Designer',
-    year: '2023 – 2024',
+    role: 'Lead Design System',
+    year: '2024 – 2025',
     media: [
       { type: 'image', src: '/assets/portfolio-ipify-ai.webp', width: 1920, height: 1080, caption: 'IA Conversationnelle' },
       { type: 'image', src: '/assets/portfolio-ipify-interface.webp', width: 1920, height: 1080, caption: 'Portail & Design System' }
@@ -138,7 +138,7 @@ export const PROJECTS: Project[] = [
     outcome:
       'Pour rendre l\'expérience fluide et vivante, j\'ai dû sortir des grilles traditionnelles et orchestrer une **UX multimodale**, mêlant design d\'interface embarquée, comportements physiques, scénarisation voix (**VUI**) et sound design.\n\n• **Déploiement massif** : mes applications ont été embarquées sur des milliers de robots expédiés dans **plus de 70 pays**.\n• **Traction B2B2C** : des expériences utilisées par **plusieurs millions de personnes** chaque mois dans des contextes de Retail et d\'Hospitality de pointe.\n• **Pionnier de l\'IA** : ces 7 années passées à "humaniser" la logique d\'une machine ont posé les fondations de mon expertise actuelle. J\'y ai appris la mécanique profonde du **design conversationnel**, bien avant l\'ère des LLMs.',
     image: '/assets/portfolio-aldebaran.webp',
-    role: 'Designer d\'Interaction',
+    role: "Designer d'interaction",
     year: '2013 – 2020'
   },
   {
@@ -162,7 +162,7 @@ export const PROJECTS: Project[] = [
       'Le défi principal n\'était pas seulement esthétique, mais **systémique**. Il fallait maintenir une **cohérence visuelle absolue** sur un écosystème tentaculaire (Web, App, Back-office) opéré par des dizaines d\'équipes distribuées.\n\nLa complexité propre au Crédit Agricole (de multiples caisses régionales avec leurs spécificités) et les contraintes de sécurité bancaire exigeaient une **industrialisation parfaite** du design. Il fallait concevoir vite, bien, et sans jamais casser l\'existant.',
     outcome:
       'Pour soutenir cette échelle, j\'ai axé mon travail sur la gouvernance, la rigueur UI et l\'accompagnement des développeurs :\n\n• **Design System & Tokens** : pilotage de l\'amélioration continue du Design System groupe. L\'intégration poussée des **Design Tokens** a été la clé pour gérer la déclinaison **multi-marques** régionale et assurer des mises à jour globales sans friction.\n• **Design à grande échelle** : conception des maquettes interactives et des parcours de l\'application "Ma Banque", avec un niveau d\'exigence (accessibilité, performance) taillé pour le très grand public.\n• **Delivery & QA** : du prototypage jusqu\'à la mise en production, accompagnement des développeurs au quotidien et recettes fonctionnelles (QA) pour garantir une implémentation au pixel près.\n\nL\'impact ? Un Design System adopté par **plus de 15 équipes produit** et une application **"Ma Banque"** unifiée pour **plus de 30 millions d\'utilisateurs mensuels**.',
-    role: 'Lead UI & Référent Design System',
+    role: 'Lead UI et référent design system',
     year: '2021 – 2024',
     media: [
       { type: 'image', src: '/assets/portfolio-ca-portail-client.webp', width: 1920, height: 1080, caption: 'Portail client credit-agricole.fr' },
@@ -191,8 +191,8 @@ export const PROJECTS: Project[] = [
     outcome:
       'Pour résoudre cette équation de scalabilité, j\'ai construit une **architecture "multi-thème"** de dernière génération :\n\n• **Architecture orientée Tokens** : structuration de l\'intégralité de l\'UI autour de **Design Tokens** et de variables sémantiques (couleurs, typographies, espacements, effets/élévations).\n• **Scalabilité par les "Modes"** : exploitation de la pleine puissance des modes Figma pour créer un système où chaque marque cliente agit comme un **"calque" de personnalisation**. La structure reste identique, seul l\'habillage visuel bascule dynamiquement.\n• **Gouvernance & Implémentation** : alignement total avec l\'ingénierie pour s\'assurer que l\'architecture des tokens dans Figma reflète exactement l\'architecture du code (CSS/JSON).\n\nL\'impact ? Le **Time-to-Market** pour déployer une nouvelle marque blanche est passé de plusieurs semaines d\'intégration à **quelques jours seulement**.',
     image: '/assets/portfolio-highlight-design-system.webp',
-    role: 'Senior Product Designer & Architecte Design System',
-    year: '2024'
+    role: 'Architecte design system',
+    year: '2024 – 2025'
   }
 ];
 

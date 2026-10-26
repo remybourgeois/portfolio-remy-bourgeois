@@ -79,8 +79,38 @@ body {
 @media (min-width: 640px)  { .animate-marquee { animation-duration: 25s; } }
 @media (min-width: 1024px) { .animate-marquee { animation-duration: 40s; } }
 
+/* ── CTA « Vivre l'expérience » ──
+   Le faisceau est un carré en conic-gradient posé derrière la pilule et
+   détouré par le parent arrondi : pas de masque CSS, une seule propriété
+   composée (transform). 300 px suffisent à couvrir la pilule dans toutes
+   ses rotations, y compris au libellé long. */
+@keyframes cta-halo {
+  0%, 100% { box-shadow: 0 0 20px 0 rgba(112,107,254,0.18); }
+  50%      { box-shadow: 0 0 38px 6px rgba(112,107,254,0.36); }
+}
+@keyframes cta-breathe { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+.cta-beam {
+  position: absolute; top: 50%; left: 50%;
+  width: 300px; height: 300px; margin: -150px 0 0 -150px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg, transparent 212deg,
+    #a8a5ff 268deg, #38bdf8 292deg,
+    transparent 330deg
+  );
+  animation: spin 3.6s linear infinite;
+}
+.cta-halo      { animation: cta-halo 3.2s ease-in-out infinite; }
+.cta-breathe   { animation: cta-breathe 3.2s ease-in-out infinite; }
+.cta-orbit     { transform-origin: 12px 12px; animation: spin 6s linear infinite; }
+.cta-orbit-rev { transform-origin: 12px 12px; animation: spin 9s linear infinite reverse; }
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse {
+  .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
+  .cta-beam,.cta-halo,.cta-breathe,.cta-orbit,.cta-orbit-rev {
     animation: none !important; transition: none !important;
   }
+  /* Sans rotation, le faisceau figé masquerait la bordure : on la rend pleine. */
+  .cta-beam { background: rgba(168,165,255,0.45); }
 }

@@ -11,38 +11,38 @@ export interface Expertise {
 export const EXPERTISES: Expertise[] = [
   {
     id: 1,
-    title: 'Design System & Tokens',
+    title: 'Design systems et tokens',
     icon: 'LayoutIcon',
-    desc: 'Architecture scalable pour produits complexes.'
+    desc: "Une seule source de vérité : le code. Figma garde sa place, mais ne la définit plus."
   },
   {
     id: 2,
-    title: 'AI Assistants & Conversational UX',
+    title: 'Assistants et agents IA',
     icon: 'MessageSquare',
-    desc: 'Concevoir des assistants et interactions intelligentes pour des workflows métier.'
+    desc: "Ce qui se passe quand la machine se trompe, et comment l'humain reprend la main."
   },
   {
     id: 3,
-    title: 'SaaS B2B Complexe',
+    title: 'SaaS B2B complexe',
     icon: 'Activity',
-    desc: 'Simplifier les workflows denses et techniques.'
+    desc: 'Rendre lisibles des workflows denses, pour des métiers qui les connaissent mieux que moi.'
   },
   {
     id: 4,
-    title: 'Strategic Design',
+    title: 'Design stratégique',
     icon: 'Zap',
-    desc: 'Aligner vision produit, enjeux business et expérience utilisateur.'
+    desc: "Passer du « comment on construit » au « est-ce que ça vaut la peine »."
   },
   {
     id: 5,
-    title: 'Vibe Coding & Engineering',
+    title: 'Conception dans le code',
     icon: 'Code',
-    desc: 'Supprimer le hand-off et les maquettes mortes en itérant directement dans le code (Git, Claude Code, Storybook).'
+    desc: 'Git, Storybook, Claude Code. Des règles vérifiées à chaque PR plutôt qu\'une documentation que personne ne relit.'
   },
   {
     id: 6,
-    title: 'Interaction H-M',
+    title: 'Interaction homme-machine',
     icon: 'Cpu',
-    desc: "Créer la symbiose entre l'humain et la machine, héritée de 7 ans en robotique humanoïde."
+    desc: "Sept ans sur des robots qui devaient se rendre compréhensibles à des gens qui ne les avaient jamais vus."
   }
 ];

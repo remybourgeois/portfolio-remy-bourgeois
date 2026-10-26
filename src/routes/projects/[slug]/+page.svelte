@@ -2,6 +2,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import Icon from '$lib/components/Icons.svelte';
+  import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
@@ -309,9 +310,7 @@
         {#if project.tags.length > 0}
           <div class="flex flex-wrap gap-2">
             {#each project.tags as tag}
-              <span class="px-3 py-1 rounded-full bg-white/[0.05] text-white/65 text-[11px] font-medium border border-white/[0.1]">
-                {tag}
-              </span>
+              <Tag>{tag}</Tag>
             {/each}
           </div>
         {/if}
@@ -351,9 +350,9 @@
         <div>
           <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Stack &amp; méthodes</dt>
           <dd>
-            <ul class="flex flex-wrap gap-1.5">
+            <ul class="flex flex-wrap gap-2">
               {#each project.summary.stack as item}
-                <li class="px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-white/70 text-xs">{item}</li>
+                <Tag as="li">{item}</Tag>
               {/each}
             </ul>
           </dd>

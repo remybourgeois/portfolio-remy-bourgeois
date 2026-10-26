@@ -4,6 +4,7 @@
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
   import Icon from '$lib/components/Icons.svelte';
+  import Tag from '$lib/components/Tag.svelte';
   import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
   import { TESTIMONIALS } from '$lib/data/testimonials';
   import { EXPERTISES } from '$lib/data/expertises';
@@ -50,14 +51,14 @@
 </script>
 
 <svelte:head>
-  <title>Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon</title>
-  <meta name="description" content="Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience." />
+  <title>Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois</title>
+  <meta name="description" content="Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
-  <meta property="og:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
+  <meta property="og:title" content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois" />
+  <meta property="og:description" content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -65,8 +66,8 @@
   <meta property="og:url" content="{SITE_URL}/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
-  <meta name="twitter:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
+  <meta name="twitter:title" content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois" />
+  <meta name="twitter:description" content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/" />
@@ -79,8 +80,8 @@
         "@type": "ProfilePage",
         "@id": SITE_URL + "/#profilepage",
         "url": SITE_URL + "/",
-        "name": "Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon",
-        "description": "Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience.",
+        "name": "Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois",
+        "description": "Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon.",
         "isPartOf": { "@id": websiteNode["@id"] },
         "about": { "@id": personNode["@id"] },
         "mainEntity": { "@id": personNode["@id"] },
@@ -102,16 +103,49 @@
     Barre top. Le lien vers l'intro WebGL est ici une invitation, pas un péage :
     « / » sert désormais le contenu directement, et l'expérience vit sur /intro.
   -->
-  <div class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 pointer-events-none">
-    <a
-      href="/intro"
-      use:sfx
-      class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-white/70 hover:text-white text-[11px] sm:text-xs uppercase tracking-wider transition-colors border border-[#706bfe]/40 hover:border-[#706bfe] px-3 sm:px-4 py-3 rounded-full bg-[#020205]/80 backdrop-blur-md focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-    >
-      <Icon name="Disc" size={11} />
-      <span class="whitespace-nowrap hidden sm:inline">Vivre l'expérience</span>
-      <span class="whitespace-nowrap sm:hidden">Expérience</span>
-    </a>
+  <div class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4 flex items-start justify-between gap-2 pointer-events-none">
+    <!--
+      Le CTA ne doit pas se lire comme un lien de nav de plus. Trois signaux
+      l'en sortent, sans rien coûter au réseau : un faisceau qui tourne dans la
+      bordure, un halo qui respire, et une pastille de particules en orbite qui
+      annonce la nature WebGL de /intro. La sous-ligne dit le reste.
+      La couche du faisceau est un frère de <a>, pas son parent : un parent en
+      `overflow-hidden` rognerait l'anneau de focus.
+    -->
+    <div class="pointer-events-auto flex flex-col items-center gap-1.5">
+      <span class="cta-halo relative inline-block rounded-full bg-[#706bfe]/35 p-[1.5px]">
+        <span class="absolute inset-0 rounded-full overflow-hidden" aria-hidden="true">
+          <span class="cta-beam"></span>
+        </span>
+        <a
+          href="/intro"
+          use:sfx
+          class="relative flex items-center gap-2 text-white text-[11px] sm:text-xs font-semibold uppercase tracking-wider px-3 sm:px-4 py-3 rounded-full bg-[#07060f] focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+        >
+          <!--
+            Icône inline plutôt que <Icon> : elle anime deux groupes à des
+            vitesses différentes, ce que le composant ne sait pas exprimer.
+          -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="flex-shrink-0">
+            <circle cx="12" cy="12" r="9" stroke="rgba(168,165,255,0.28)" stroke-width="1" />
+            <circle cx="12" cy="12" r="2.4" fill="#a8a5ff" />
+            <g class="cta-orbit">
+              <circle cx="21" cy="12" r="1.7" fill="#38bdf8" />
+              <circle cx="3" cy="12" r="1.2" fill="#a8a5ff" />
+            </g>
+            <g class="cta-orbit-rev">
+              <circle cx="12" cy="4" r="1.4" fill="#ffffff" />
+            </g>
+          </svg>
+          <span class="whitespace-nowrap hidden sm:inline">Vivre l'expérience</span>
+          <span class="whitespace-nowrap sm:hidden">Expérience</span>
+        </a>
+      </span>
+      <span class="cta-breathe text-white/70 text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.14em]">
+        <span class="hidden sm:inline">3D interactive · son · 40 s</span>
+        <span class="sm:hidden">3D · son · 40 s</span>
+      </span>
+    </div>
     <div class="flex items-center gap-2">
       <a
         href="/projects"
@@ -121,9 +155,14 @@
         <span class="whitespace-nowrap">Projets</span>
         <Icon name="ArrowRight" size={11} />
       </a>
-      <div class="pointer-events-auto hidden lg:flex items-center gap-2 bg-[#020205]/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
-        <div class="w-2 h-2 rounded-full shadow-[0_0_8px_#706bfe] bg-[#706bfe] animate-pulse" aria-hidden="true"></div>
-        <span class="whitespace-nowrap text-white/60 text-xs font-mono uppercase tracking-wider">Lien établi</span>
+      <!--
+        Témoin d'état, pas une commande : il suit la grammaire des tags.
+        Le `hidden` est porté par un conteneur et non par le tag : deux
+        utilitaires `display` sur un même élément se départagent par l'ordre
+        du CSS généré, pas par celui de l'attribut class.
+      -->
+      <div class="pointer-events-auto hidden lg:block">
+        <Tag dot="violet" pulse solid class="whitespace-nowrap">Lien établi</Tag>
       </div>
     </div>
   </div>
@@ -156,18 +195,12 @@
         <div class="text-center md:text-left">
           <h1 class="mb-6 leading-tight">
             <span class="block text-xs font-semibold text-[#706bfe] uppercase tracking-[0.12em] mb-1">Rémy Bourgeois</span>
-            <span class="block text-4xl md:text-5xl font-bold text-white tracking-tight">Senior Product Designer</span>
+            <span class="block text-3xl md:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1]">Lead Design System et Senior Product Designer</span>
           </h1>
-          <ul class="flex flex-wrap justify-center md:justify-start gap-3 list-none p-0 m-0">
-            <li class="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-300 text-xs font-medium border border-amber-500/20 flex items-center gap-2">
-              <Icon name="BrainCircuit" size={12} /> IA Expert
-            </li>
-            <li class="px-3 py-1.5 rounded-full bg-[#a78bfa]/10 text-[#a78bfa] text-xs font-medium border border-[#a78bfa]/20 flex items-center gap-2">
-              <Icon name="Briefcase" size={12} /> Freelance
-            </li>
-            <li class="px-3 py-1.5 rounded-full bg-[#38bdf8]/10 text-[#38bdf8] text-xs font-medium border border-[#38bdf8]/20 flex items-center gap-2">
-              <Icon name="Award" size={12} /> +14 ans d'expérience
-            </li>
+          <ul class="flex flex-wrap justify-center md:justify-start gap-2 list-none p-0 m-0">
+            <Tag as="li" icon="LayoutIcon">Design system</Tag>
+            <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
+            <Tag as="li" icon="Award">14 ans d'expérience</Tag>
           </ul>
         </div>
       </div>
@@ -177,15 +210,20 @@
     <RevealOnScroll>
       <div class="body-text w-full mb-12 flex flex-col gap-6 max-w-3xl mx-auto">
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          <strong>Je conçois des expériences où l'humain et l'IA travaillent ensemble.</strong>
+          <strong>Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.</strong>
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          14+ ans d'expérience, dont <strong>7 ans en robotique humanoïde</strong>.
-          J'imagine des <strong>AI assistants</strong>, des Design Systems et des interfaces complexes
-          qui rendent les produits plus clairs, plus intelligents et plus humains.
+          14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>.
+          Je conçois des design systems et des produits IA <strong>directement dans le code</strong>,
+          avec les équipes qui vont les faire vivre. Un développeur senior relit chacune de mes Pull Requests.
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Je supprime le hand-off en <strong>itérant directement dans le code</strong>, pour accélérer la vélocité des équipes tech.
+          Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une bibliothèque
+          alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus qu'une
+          <strong>seule source de vérité</strong>.
+        </p>
+        <p class="text-white font-medium leading-relaxed text-lg md:text-xl text-left">
+          Le jour où je pars, rien ne s'arrête.
         </p>
       </div>
     </RevealOnScroll>
@@ -352,7 +390,7 @@
                   </h3>
                   <div class="flex flex-wrap gap-2 mb-6">
                     {#each project.tags as tag}
-                      <span class="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium border border-white/10">{tag}</span>
+                      <Tag>{tag}</Tag>
                     {/each}
                   </div>
                   <p class="project-text text-gray-400 text-base leading-relaxed max-w-lg">{@html md(project.description)}</p>
@@ -385,17 +423,17 @@
             Je vous accompagne sur vos projets d'<strong>IA</strong>, de <strong>design system</strong>,
             d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong>,
             que vous soyez une startup, une scale-up, une PME ou une grande entreprise.
+            Disponible pour de nouvelles missions à partir de <strong>novembre 2026</strong>.
           </p>
-          <div class="flex flex-wrap justify-center gap-3 mb-8">
-            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span> Disponible
-            </span>
-            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
-              <Icon name="Wifi" size={12} /> Full remote préféré
-            </span>
-            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-white/70 text-xs">
-              <Icon name="MapPin" size={12} /> Basé à Lyon
-            </span>
+          <p class="text-white/60 text-sm mb-8">
+            <a href="/accompagnement" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors">
+              Voir les trois façons de travailler ensemble
+            </a>
+          </p>
+          <div class="flex flex-wrap justify-center gap-2 mb-8">
+            <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
+            <Tag icon="Wifi">Full remote préféré</Tag>
+            <Tag icon="MapPin">Basé à Lyon</Tag>
           </div>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:remy.bourgeois@gmail.com" use:sfx

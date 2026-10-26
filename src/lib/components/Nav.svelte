@@ -37,6 +37,12 @@
                 {currentPath.startsWith('/projects') ? 'text-white' : 'text-white/60 hover:text-white'}">
         Projets
       </a>
+      <a href="/accompagnement"
+         use:sfx
+         class="text-xs uppercase tracking-wider transition-colors py-3 px-1
+                {currentPath === '/accompagnement' ? 'text-white' : 'text-white/60 hover:text-white'}">
+        Accompagnement
+      </a>
       <a href="/a-propos"
          use:sfx
          class="text-xs uppercase tracking-wider transition-colors py-3 px-1
@@ -71,6 +77,8 @@
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Home</a>
       <a href="/projects" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">Projets</a>
+      <a href="/accompagnement" use:sfx onclick={() => menuOpen = false}
+         class="text-sm text-white/70 hover:text-white transition-colors py-2">Accompagnement</a>
       <a href="/a-propos" use:sfx onclick={() => menuOpen = false}
          class="text-sm text-white/70 hover:text-white transition-colors py-2">À propos</a>
       <button onclick={audioStore.toggleMute}

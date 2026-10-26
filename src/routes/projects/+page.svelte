@@ -2,6 +2,7 @@
 <script lang="ts">
   import { PROJECTS, heroSize } from '$lib/data/projects';
   import Icon from '$lib/components/Icons.svelte';
+  import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
   import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
@@ -134,11 +135,9 @@
             <h2 class="text-lg font-semibold text-white mb-3 group-hover:text-[#706bfe] transition-colors">
               {project.title}
             </h2>
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap gap-2">
               {#each project.tags as tag}
-                <span class="px-2.5 py-0.5 rounded-full bg-white/10 text-white/70 text-[11px] font-medium border border-white/10">
-                  {tag}
-                </span>
+                <Tag>{tag}</Tag>
               {/each}
             </div>
           </div>
