@@ -46,7 +46,14 @@
         {title}
       </h1>
       {#if lede}
-        <p class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-2xl">
+        <!--
+          `text-wrap: pretty` répare les césures : l'accroche s'arrêtait en
+          plein milieu d'un groupe de mots, ce qui donnait l'impression qu'elle
+          butait sur un mur invisible. La mesure passe à 46rem, assez large
+          pour que l'arrêt de ligne paraisse voulu, assez courte pour rester
+          sous les 75 caractères.
+        -->
+        <p class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-[46rem] [text-wrap:pretty]">
           {@render lede()}
         </p>
       {/if}

@@ -201,8 +201,11 @@
 
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center justify-center gap-4">
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
+        <!-- Même motif que les titres de section d'À propos : un seul filet,
+             à gauche. Le motif centré à deux filets reste celui de l'accueil,
+             qui est une vitrine et non un document. -->
+        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center gap-4">
+          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {#each CONVICTIONS as conviction}
@@ -211,7 +214,7 @@
             </p>
           {/each}
         </div>
-        <p class="text-white/60 text-sm leading-relaxed mt-8 text-center max-w-3xl mx-auto">
+        <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
           J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit Agricole,
           une refonte chez iPify, une création de zéro chez Ofelia.
         </p>
