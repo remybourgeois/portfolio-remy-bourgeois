@@ -24,22 +24,22 @@
       slug: 'aldebaran'
     },
     {
-      period: '2021 – 2024',
-      title: 'Lead UI & Référent Design System, Crédit Agricole',
+      period: 'Déc. 2021 – nov. 2024',
+      title: 'Lead UI et référent design system, Crédit Agricole',
       body:
         'Trois ans sur l’un des plus vastes écosystèmes digitaux d’Europe : site institutionnel, application « Ma Banque » et outils conseillers. Architecture de design tokens pour gérer la déclinaison multi-marques des caisses régionales. Design system adopté par plus de 15 équipes produit, application utilisée par plus de 30 millions de personnes chaque mois.',
       slug: 'credit-agricole'
     },
     {
-      period: '2023 – 2024',
-      title: 'Senior Product Designer, iPify & Highlight',
+      period: 'Sept. 2024 – août 2025',
+      title: 'Lead Design System, iPify et Highlight',
       body:
-        'Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
+        'Deux missions menées en parallèle, quelques jours par semaine chacune. Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
       slug: 'ipify'
     },
     {
-      period: '2025 – 2026',
-      title: 'Founding Designer, Ofelia (Bonitasoft)',
+      period: 'Mars 2025 – oct. 2026',
+      title: 'Premier designer, Ofelia',
       body:
         'Seul designer d’une suite d’orchestration IA gouvernée, construite à partir d’une page blanche. Le produit, un assistant agentique, s’intègre directement dans Slack et Teams. C’est sur ce projet que le rôle a basculé vers le design engineering : plus de maquette statique, des Pull Requests ouvertes directement dans le dépôt et revues par un développeur front.',
       slug: 'ofelia'
@@ -48,17 +48,17 @@
 </script>
 
 <svelte:head>
-  <title>À propos | Rémy Bourgeois, Product Design Engineer à Lyon</title>
+  <title>À propos | Rémy Bourgeois, Lead Design System à Lyon</title>
   <meta
     name="description"
-    content="Le parcours de Rémy Bourgeois : 7 ans en robotique humanoïde chez Aldebaran, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA. 14 ans de design produit."
+    content="Le parcours de Rémy Bourgeois : 7 ans en robotique humanoïde chez Aldebaran, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit."
   />
 
   <meta property="og:type" content="profile" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="À propos | Rémy Bourgeois, Product Design Engineer" />
-  <meta property="og:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA. 14 ans de design produit." />
+  <meta property="og:title" content="À propos | Rémy Bourgeois, Lead Design System" />
+  <meta property="og:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -68,8 +68,8 @@
   <meta property="profile:last_name" content="Bourgeois" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="À propos | Rémy Bourgeois, Product Design Engineer" />
-  <meta name="twitter:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis Founding Designer d'un assistant IA." />
+  <meta name="twitter:title" content="À propos | Rémy Bourgeois, Lead Design System" />
+  <meta name="twitter:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA." />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/a-propos" />
@@ -85,7 +85,7 @@
         "@type": "AboutPage",
         "@id": SITE_URL + "/a-propos#webpage",
         "url": SITE_URL + "/a-propos",
-        "name": "À propos | Rémy Bourgeois, Product Design Engineer à Lyon",
+        "name": "À propos | Rémy Bourgeois, Lead Design System à Lyon",
         "inLanguage": "fr-FR",
         "isPartOf": { "@id": WEBSITE_ID },
         "about": { "@id": PERSON_ID },
@@ -122,9 +122,11 @@
             À propos
           </h1>
           <p class="text-white/70 text-lg leading-relaxed">
-            <strong class="text-white">Rémy Bourgeois</strong> est Product Designer et Design Engineer
-            freelance, basé à <strong class="text-white">Lyon</strong>. Il conçoit depuis 14 ans des
-            interfaces pour des produits complexes, et écrit lui-même le code qui les met en production.
+            <strong class="text-white">Rémy Bourgeois</strong> est Lead Design System et Senior
+            Product Designer freelance, basé à <strong class="text-white">Lyon</strong>. Il conçoit
+            depuis 14 ans des interfaces pour des produits complexes, et les implémente lui-même dans
+            le dépôt. Il ne se présente pas pour autant comme développeur : chacune de ses Pull Requests
+            est relue par un développeur senior.
           </p>
         </div>
       </div>
@@ -160,7 +162,8 @@
           C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants
           sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le designer
           et revues par un développeur front. Il n'y a plus de traduction entre l'intention et
-          l'implémentation, donc plus de perte.
+          l'implémentation, donc plus de perte. Ce mode de travail ne convient pas à toutes les
+          équipes : il suppose un dépôt, une revue, et quelqu'un qui accepte de relire.
         </p>
       </div>
     </section>

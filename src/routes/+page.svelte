@@ -51,14 +51,14 @@
 </script>
 
 <svelte:head>
-  <title>Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon</title>
-  <meta name="description" content="Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience." />
+  <title>Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois</title>
+  <meta name="description" content="Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon." />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
-  <meta property="og:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
+  <meta property="og:title" content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois" />
+  <meta property="og:description" content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -66,8 +66,8 @@
   <meta property="og:url" content="{SITE_URL}/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon" />
-  <meta name="twitter:description" content="Design Systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
+  <meta name="twitter:title" content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois" />
+  <meta name="twitter:description" content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon." />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/" />
@@ -80,8 +80,8 @@
         "@type": "ProfilePage",
         "@id": SITE_URL + "/#profilepage",
         "url": SITE_URL + "/",
-        "name": "Rémy Bourgeois, Senior Product Designer & Expert IA à Lyon",
-        "description": "Rémy Bourgeois, Senior Product Designer et Design Engineer freelance à Lyon. Design Systems, IA conversationnelle et interfaces SaaS B2B. 14 ans d'expérience.",
+        "name": "Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois",
+        "description": "Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon.",
         "isPartOf": { "@id": websiteNode["@id"] },
         "about": { "@id": personNode["@id"] },
         "mainEntity": { "@id": personNode["@id"] },
@@ -195,12 +195,12 @@
         <div class="text-center md:text-left">
           <h1 class="mb-6 leading-tight">
             <span class="block text-xs font-semibold text-[#706bfe] uppercase tracking-[0.12em] mb-1">Rémy Bourgeois</span>
-            <span class="block text-4xl md:text-5xl font-bold text-white tracking-tight">Senior Product Designer</span>
+            <span class="block text-3xl md:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1]">Lead Design System et Senior Product Designer</span>
           </h1>
           <ul class="flex flex-wrap justify-center md:justify-start gap-2 list-none p-0 m-0">
-            <Tag as="li" icon="BrainCircuit">IA Expert</Tag>
-            <Tag as="li" icon="Briefcase">Freelance</Tag>
-            <Tag as="li" icon="Award">+14 ans d'expérience</Tag>
+            <Tag as="li" icon="LayoutIcon">Design system</Tag>
+            <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
+            <Tag as="li" icon="Award">14 ans d'expérience</Tag>
           </ul>
         </div>
       </div>
@@ -210,15 +210,20 @@
     <RevealOnScroll>
       <div class="body-text w-full mb-12 flex flex-col gap-6 max-w-3xl mx-auto">
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          <strong>Je conçois des expériences où l'humain et l'IA travaillent ensemble.</strong>
+          <strong>Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir avec l'IA.</strong>
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          14+ ans d'expérience, dont <strong>7 ans en robotique humanoïde</strong>.
-          J'imagine des <strong>AI assistants</strong>, des Design Systems et des interfaces complexes
-          qui rendent les produits plus clairs, plus intelligents et plus humains.
+          14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>.
+          Je conçois des design systems et des produits IA <strong>directement dans le code</strong>,
+          avec les équipes qui vont les faire vivre. Un développeur senior relit chacune de mes Pull Requests.
         </p>
         <p class="text-white/70 font-light leading-relaxed text-base md:text-lg text-left">
-          Je supprime le hand-off en <strong>itérant directement dans le code</strong>, pour accélérer la vélocité des équipes tech.
+          Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une bibliothèque
+          alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus qu'une
+          <strong>seule source de vérité</strong>.
+        </p>
+        <p class="text-white font-medium leading-relaxed text-lg md:text-xl text-left">
+          Le jour où je pars, rien ne s'arrête.
         </p>
       </div>
     </RevealOnScroll>
@@ -418,6 +423,12 @@
             Je vous accompagne sur vos projets d'<strong>IA</strong>, de <strong>design system</strong>,
             d'<strong>interfaces complexes</strong> et de <strong>conseil stratégique</strong>,
             que vous soyez une startup, une scale-up, une PME ou une grande entreprise.
+            Disponible pour de nouvelles missions à partir de <strong>novembre 2026</strong>.
+          </p>
+          <p class="text-white/60 text-sm mb-8">
+            <a href="/accompagnement" use:sfx class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors">
+              Voir les trois façons de travailler ensemble
+            </a>
           </p>
           <div class="flex flex-wrap justify-center gap-2 mb-8">
             <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>

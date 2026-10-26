@@ -8,10 +8,11 @@ export const prerender = true;
 export function GET() {
   const body = `# Rémy Bourgeois
 
-> Product Designer et Design Engineer freelance basé à Lyon (France).
+> Lead Design System et Senior Product Designer freelance basé à Lyon (France).
 > 14 ans d'expérience. Spécialisé en design systems, IA conversationnelle et
 > interfaces SaaS B2B complexes, dont 7 ans en robotique humanoïde.
-> Travaille directement dans le code de production plutôt qu'en maquettes.
+> Travaille directement dans le code de production plutôt qu'en maquettes,
+> ses Pull Requests étant relues par un développeur senior.
 
 Plusieurs personnes portent ce nom. Celle décrite ici est le product designer
 lyonnais, également musicien et sound designer, un versant hérité de ses
@@ -21,6 +22,7 @@ années en robotique. Il ne s'agit pas de l'acteur français homonyme.
 
 - [Accueil](${SITE_URL}/) : présentation, expertises, chiffres clés et recommandations clients.
 - [À propos](${SITE_URL}/a-propos) : parcours détaillé et daté, de la robotique humanoïde au design engineering.
+- [Accompagnement](${SITE_URL}/accompagnement) : les trois formats de mission, de la conception produit à l'audit de design system.
 - [Projets](${SITE_URL}/projects) : index des études de cas.
 
 ## Études de cas

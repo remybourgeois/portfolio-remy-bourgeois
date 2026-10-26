@@ -88,6 +88,7 @@ test('sitemap lists the indexable pages, dates them, and drops the old home', as
   const xml = await (await request.get('/sitemap.xml')).text();
   expect(xml).toContain('<loc>https://remybourgeois.com/</loc>');
   expect(xml).toContain('<loc>https://remybourgeois.com/a-propos</loc>');
+  expect(xml).toContain('<loc>https://remybourgeois.com/accompagnement</loc>');
   expect(xml).not.toContain('/home');
   // /intro est en noindex : la déclarer serait contradictoire.
   expect(xml).not.toContain('/intro');
@@ -100,6 +101,7 @@ test('llms.txt is served and describes the entity', async ({ request }) => {
   const body = await res.text();
   expect(body).toContain('# Rémy Bourgeois');
   expect(body).toContain('/projects/ofelia');
+  expect(body).toContain('/accompagnement');
   expect(body).toContain('Chiffres');
   // L'entité doit être levée dès le fichier : c'est son seul rôle ici.
   expect(body).toContain('acteur');
