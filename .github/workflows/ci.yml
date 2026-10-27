@@ -18,7 +18,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Les règles de diff de scripts/checks.ts ont besoin du merge-base, et
           # .checks-ignore-revs doit pouvoir être résolu.
@@ -84,7 +84,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -106,7 +106,7 @@ jobs:
   actionlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Vérifier les workflows
         # Analyse statique des workflows, shellcheck compris sur chaque bloc run.
         uses: docker://rhysd/actionlint:1.7.7
