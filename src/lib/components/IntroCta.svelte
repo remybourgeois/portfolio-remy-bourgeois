@@ -31,7 +31,7 @@
     <a
       href="/intro"
       aria-label="Vivre l'expérience : intro 3D et sonore, 40 secondes"
-      class="cta-pill relative flex items-center gap-2 text-white text-xs font-semibold uppercase tracking-wider px-3 lg:px-4 py-2.5 rounded-full focus-visible:ring-2 focus-visible:ring-primary"
+      class="cta-pill relative flex items-center gap-2 text-white text-xs font-semibold uppercase tracking-wider px-3 lg:px-4 py-3 rounded-full focus-visible:ring-2 focus-visible:ring-primary"
     >
       <!--
         Icône inline plutôt que <Icon> : elle anime deux groupes à des vitesses

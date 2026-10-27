@@ -6,6 +6,35 @@ export const OG_IMAGE = `${SITE_URL}/assets/og-cover.jpg`;
 export const EMAIL = 'remy.bourgeois@gmail.com';
 
 /**
+ * Lien de prise de rendez-vous (Calendly, cal.com, Google Agenda). Tant qu'il
+ * est vide, les blocs de contact gardent « M'écrire » en bouton principal ;
+ * renseigné, il devient le premier bouton : un prospect qui arrive de LinkedIn
+ * veut un créneau de trente minutes, pas rédiger un courriel.
+ */
+export const BOOKING_URL = '';
+
+/**
+ * Mentions légales. Données du registre du commerce (RCS Lyon), telles que
+ * publiées : la page les affiche mot pour mot.
+ */
+export const LEGAL = {
+  company: 'WOO',
+  form: 'SARL au capital de 1 000 €',
+  siren: '939 432 209',
+  siret: '939 432 209 00012',
+  rcs: '939 432 209 R.C.S. Lyon',
+  vat: 'FR51939432209',
+  ape: '74.10Z, activités spécialisées de design',
+  address: 'Immeuble Le Brévent, 47 avenue Valioud, 69110 Sainte-Foy-lès-Lyon',
+  manager: 'Rémy Bourgeois, gérant',
+  host: {
+    name: 'Netlify, Inc.',
+    address: '512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis',
+    url: 'https://www.netlify.com'
+  }
+};
+
+/**
  * Identifiants stables de l'entité. Tout le JSON-LD du site référence la même
  * personne par `@id` au lieu de redéclarer un objet Person par page : sans ça,
  * chaque page décrit une entité distincte et rien ne se consolide.

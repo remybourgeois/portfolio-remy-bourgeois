@@ -852,7 +852,7 @@
     -->
     <a
       href="/"
-      class="w-full md:w-auto text-center px-5 py-2.5 rounded-xl text-xs uppercase tracking-widest
+      class="w-full md:w-auto text-center px-5 py-3 rounded-xl text-xs uppercase tracking-widest
              font-medium text-white/60 hover:text-white border border-transparent hover:border-white/10
              transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] focus:outline-none"
     >

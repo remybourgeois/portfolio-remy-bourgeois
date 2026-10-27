@@ -525,16 +525,16 @@
     <!-- Dots -->
     {#if slides.length > 1}
       <!--
-        La pastille reste fine, mais le bouton qui la porte fait 24 px de
-        haut : une cible de 5 px est invisable au doigt. La barre est un
+        La pastille reste fine, mais le bouton qui la porte fait 44 px de
+        côté : une cible de 5 px est introuvable au doigt. La barre est un
         <span> décoratif, la zone sensible est le <button> autour. Les
         pastilles inactives sont à 35 % de blanc : 18 % restait sous les 3:1
         du contraste non textuel (WCAG 1.4.11), qu'axe ne mesure pas.
       -->
-      <div class="flex justify-center items-center gap-1 pt-2 mb-14">
+      <div class="flex justify-center items-center pt-2 mb-14">
         {#each slides as _, i (i)}
           <button
-            class="h-6 px-1 flex items-center border-none bg-transparent p-0 cursor-pointer"
+            class="h-11 min-w-[44px] px-2 flex items-center justify-center border-none bg-transparent cursor-pointer"
             onclick={() => carGo(i)}
             aria-label="Aller au visuel {i + 1}"
             aria-current={i === carIndex ? 'true' : undefined}
