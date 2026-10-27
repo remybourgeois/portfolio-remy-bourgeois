@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Le CI bloque sur `npm audit --audit-level=high` : sans mises à jour
+    # régulières, il finit par rougir sans qu'aucune PR en soit la cause.
+    open-pull-requests-limit: 5
+    groups:
+      # Une PR par famille plutôt qu'une par paquet : les versions d'un même
+      # outil bougent ensemble et se testent ensemble.
+      playwright:
+        patterns: ['@playwright/*', 'playwright', '@axe-core/*', 'axe-core']
+      eslint:
+        patterns: ['eslint', 'eslint-*', '@eslint/*', 'typescript-eslint', 'globals']
+      prettier:
+        patterns: ['prettier', 'prettier-plugin-*']
+      svelte:
+        patterns: ['svelte', 'svelte-*', '@sveltejs/*']
+      commitlint:
+        patterns: ['@commitlint/*']
+    commit-message:
+      # commitlint vérifie chaque commit de la PR, y compris ceux du bot.
+      prefix: chore
+      include: scope
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci

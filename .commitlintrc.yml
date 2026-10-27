@@ -1,0 +1,16 @@
+# Conventional Commits. Ce fichier est lu par le hook commit-msg (en local) et
+# par le job « commits » du CI, qui rejoue le même hook sur chaque commit de la PR :
+# un message qui passe ici passe là-bas.
+extends:
+  - '@commitlint/config-conventional'
+rules:
+  # Le projet écrit déjà ses sujets en français, souvent avec des majuscules de
+  # noms propres (« Netlify », « Playwright ») : la casse du sujet n'est pas contrainte.
+  subject-case: [0]
+  header-max-length: [2, always, 100]
+  body-max-line-length: [2, always, 150]
+  scope-case: [2, always, lower-case]
+  type-enum:
+    - 2
+    - always
+    - [feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert]

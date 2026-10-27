@@ -67,6 +67,6 @@ export const TESTIMONIALS: Testimonial[] = [
     company: 'iPify',
     logo: '/assets/ipify.png',
     image: '/assets/daniil.webp',
-    text: "Rémy quickly grasped our complex business domain and delivered visually compelling prototypes for new features. He also led client-facing UX workshops and managed to gather an invaluable feedback. Self-directed and hardworking, he consistently produces outstanding results."
+    text: 'Rémy quickly grasped our complex business domain and delivered visually compelling prototypes for new features. He also led client-facing UX workshops and managed to gather an invaluable feedback. Self-directed and hardworking, he consistently produces outstanding results.'
   }
 ];

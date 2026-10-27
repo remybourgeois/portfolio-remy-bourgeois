@@ -45,7 +45,9 @@
 
     <!-- Mesure large et `text-wrap: pretty` : les accroches courtes tiennent
          alors sur une seule ligne au lieu de laisser un mot orphelin. -->
-    <p class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-3xl mx-auto [text-wrap:pretty]">
+    <p
+      class="body-text text-white/60 text-base leading-relaxed mb-8 max-w-3xl mx-auto [text-wrap:pretty]"
+    >
       {@render lede()}
     </p>
 

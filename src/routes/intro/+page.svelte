@@ -5,7 +5,10 @@
 
 <svelte:head>
   <title>L'expérience | Rémy Bourgeois</title>
-  <meta name="description" content="Intro interactive du portfolio de Rémy Bourgeois, Lead Design System et Senior Product Designer." />
+  <meta
+    name="description"
+    content="Intro interactive du portfolio de Rémy Bourgeois, Lead Design System et Senior Product Designer."
+  />
   <!--
     Volontairement hors index : cette page ne porte aucun contenu textuel, tout
     y est rendu en WebGL. C'est « / » qui porte le contenu et l'indexation.

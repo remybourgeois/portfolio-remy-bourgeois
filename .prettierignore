@@ -1,0 +1,14 @@
+# Produits du build et dépendances : jamais formatés.
+build/
+.svelte-kit/
+node_modules/
+test-results/
+playwright-report/
+package-lock.json
+
+# Médias et fichiers binaires.
+static/
+
+# Le CHANGELOG et les rapports générés n'ont pas de style à tenir.
+*.min.js
+*.min.css

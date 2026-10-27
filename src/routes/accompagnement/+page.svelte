@@ -4,7 +4,15 @@
   import PageHeader from '$lib/components/PageHeader.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
+  import {
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    OG_IMAGE,
+    PERSON_ID,
+    WEBSITE_ID,
+    CONTENT_UPDATED
+  } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
 
@@ -20,8 +28,7 @@
       id: 'conception',
       label: 'Format 1',
       title: 'Conception produit',
-      lede:
-        "UX, UI, parcours et écrans. Le métier de base : produire ce que les gens utilisent, pas seulement le système qui le rend possible.",
+      lede: 'UX, UI, parcours et écrans. Le métier de base : produire ce que les gens utilisent, pas seulement le système qui le rend possible.',
       listTitle: 'Ce que je produis',
       items: [
         'Le cadrage, la recherche et les parcours',
@@ -52,8 +59,7 @@
       id: 'mise-en-place',
       label: 'Format 3',
       title: 'Accompagnement à la mise en place',
-      lede:
-        "Deux jours par semaine, pour faire vivre le design system avec les équipes plutôt qu'à côté d'elles.",
+      lede: "Deux jours par semaine, pour faire vivre le design system avec les équipes plutôt qu'à côté d'elles.",
       listTitle: "Ce qu'on met en place",
       items: [
         'Un pilote sur un périmètre réel, pas une démo',
@@ -66,8 +72,15 @@
   ];
 
   const AXES = [
-    'Tokens', 'Composants', 'Documentation', 'Accessibilité',
-    'Alignement Figma et code', 'Outillage', 'Contribution', 'Gouvernance', 'Adoption'
+    'Tokens',
+    'Composants',
+    'Documentation',
+    'Accessibilité',
+    'Alignement Figma et code',
+    'Outillage',
+    'Contribution',
+    'Gouvernance',
+    'Adoption'
   ];
 
   const CONVICTIONS = [
@@ -81,8 +94,8 @@
 
   const TITLE = 'Accompagnement design system et conception produit | Rémy Bourgeois';
   const DESCRIPTION =
-    "Conception produit, audit de design system et accompagnement à la mise en place. " +
-    "Trois façons de travailler avec Rémy Bourgeois, Lead Design System à Lyon.";
+    'Conception produit, audit de design system et accompagnement à la mise en place. ' +
+    'Trois façons de travailler avec Rémy Bourgeois, Lead Design System à Lyon.';
 </script>
 
 <svelte:head>
@@ -108,43 +121,42 @@
   <meta name="twitter:url" content="{SITE_URL}/accompagnement" />
 
   {@html `<script type="application/ld+json">${jsonLd({
-    "@context": "https://schema.org",
-    "@graph": [
+    '@context': 'https://schema.org',
+    '@graph': [
       breadcrumb([
-        { name: 'Accueil',        path: '/' },
+        { name: 'Accueil', path: '/' },
         { name: 'Accompagnement', path: '/accompagnement' }
       ]),
       {
-        "@type": "WebPage",
-        "@id": SITE_URL + "/accompagnement#webpage",
-        "url": SITE_URL + "/accompagnement",
-        "name": TITLE,
-        "description": DESCRIPTION,
-        "inLanguage": "fr-FR",
-        "isPartOf": { "@id": WEBSITE_ID },
-        "about": { "@id": PERSON_ID },
-        "dateModified": CONTENT_UPDATED
+        '@type': 'WebPage',
+        '@id': SITE_URL + '/accompagnement#webpage',
+        url: SITE_URL + '/accompagnement',
+        name: TITLE,
+        description: DESCRIPTION,
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': WEBSITE_ID },
+        about: { '@id': PERSON_ID },
+        dateModified: CONTENT_UPDATED
       },
       ...FORMATS.map((f) => ({
-        "@type": "Service",
-        "@id": `${SITE_URL}/accompagnement#${f.id}`,
-        "name": f.title,
-        "description": f.lede,
-        "provider": { "@id": PERSON_ID },
-        "areaServed": "FR",
-        "serviceType": f.title
+        '@type': 'Service',
+        '@id': `${SITE_URL}/accompagnement#${f.id}`,
+        name: f.title,
+        description: f.lede,
+        provider: { '@id': PERSON_ID },
+        areaServed: 'FR',
+        serviceType: f.title
       }))
     ]
-  })}</script>`}
+  })}<\/script>`}
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
-
     <PageHeader title="Accompagnement">
       {#snippet lede()}
-        Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique,
-        et la façon dont l'équipe s'en sert.
+        Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique, et la
+        façon dont l'équipe s'en sert.
       {/snippet}
     </PageHeader>
 
@@ -158,12 +170,18 @@
               ? 'border-[#706bfe]/30 bg-[#706bfe]/[0.07]'
               : 'border-white/10 bg-white/5'}"
           >
-            <p class="text-[10px] uppercase tracking-[0.2em] text-[#a8a5ff] font-semibold mb-2">{format.label}</p>
-            <h2 id="{format.id}-title" class="text-xl font-semibold mb-3 leading-snug">{format.title}</h2>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-[#a8a5ff] font-semibold mb-2">
+              {format.label}
+            </p>
+            <h2 id="{format.id}-title" class="text-xl font-semibold mb-3 leading-snug">
+              {format.title}
+            </h2>
             <p class="text-white/70 text-sm leading-relaxed mb-6">{format.lede}</p>
 
             {#if format.id === 'audit'}
-              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">Méthode</p>
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">
+                Méthode
+              </p>
               <p class="text-white/70 text-sm leading-relaxed mb-4">
                 Une grille de maturité sur neuf axes. Chaque note est appuyée par une preuve :
                 inventaire Figma, lecture du code, entretiens avec les équipes.
@@ -175,20 +193,28 @@
               </ul>
             {/if}
 
-            <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-3">{format.listTitle}</p>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-3">
+              {format.listTitle}
+            </p>
             <ul class="flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
               {#each format.items as item}
                 <li class="flex gap-3 text-white/70 text-sm leading-relaxed">
-                  <span class="mt-2 w-1.5 h-1.5 rounded-full bg-[#a8a5ff] flex-shrink-0" aria-hidden="true"></span>
+                  <span
+                    class="mt-2 w-1.5 h-1.5 rounded-full bg-[#a8a5ff] flex-shrink-0"
+                    aria-hidden="true"
+                  ></span>
                   {item}
                 </li>
               {/each}
             </ul>
 
             {#if format.id === 'mise-en-place'}
-              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">Ce que vous gardez</p>
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">
+                Ce que vous gardez
+              </p>
               <p class="text-white/70 text-sm leading-relaxed mb-6">
-                Le jour où je pars, rien ne s'arrête. C'est le critère de réussite, et il est vérifiable.
+                Le jour où je pars, rien ne s'arrête. C'est le critère de réussite, et il est
+                vérifiable.
               </p>
             {/if}
 
@@ -203,19 +229,23 @@
         <!-- Même motif que les titres de section d'À propos : un seul filet,
              à gauche. Le motif centré à deux filets reste celui de l'accueil,
              qui est une vitrine et non un document. -->
-        <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center gap-4">
+        <h2
+          class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center gap-4"
+        >
           <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {#each CONVICTIONS as conviction}
-            <p class="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70 text-sm leading-relaxed">
+            <p
+              class="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70 text-sm leading-relaxed"
+            >
               {conviction}
             </p>
           {/each}
         </div>
         <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
-          J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit Agricole,
-          une refonte chez iPify, une création de zéro chez Ofelia.
+          J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit
+          Agricole, une refonte chez iPify, une création de zéro chez Ofelia.
         </p>
       </div>
     </RevealOnScroll>
@@ -232,6 +262,5 @@
         {/snippet}
       </PageCta>
     </RevealOnScroll>
-
   </div>
 </main>

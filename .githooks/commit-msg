@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Valide le message contre .commitlintrc.yml. Le CI rejoue ce même hook sur
+# chaque commit de la PR (.githooks/commit-msg-range) : un message qui passe
+# ici passe là-bas.
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+# Version minimale de Node, lue dans .node-version : un client git qui ne voit
+# pas les shims du gestionnaire de versions (un IDE, une interface graphique)
+# peut tomber sur un Node système plus ancien, sur lequel commitlint casse.
+if [ -f "$root/.node-version" ]; then
+  NODE_MIN=$(awk '{ sub(/#.*/, "") } NF { if (match($0, /[0-9]+/)) print substr($0, RSTART, RLENGTH); exit }' "$root/.node-version")
+else
+  echo "⚠ Pas de .node-version à la racine : Node 24 supposé."
+  NODE_MIN=24
+fi
+
+commitlint="$root/node_modules/.bin/commitlint"
+if [ ! -x "$commitlint" ] || ! node -e "process.exit(parseInt(process.versions.node) >= $NODE_MIN ? 0 : 1)" 2>/dev/null; then
+  if [ -n "${CI:-}" ]; then
+    echo "❌ commitlint ou Node $NODE_MIN+ introuvable : le CI ne peut pas valider le message."
+    exit 1
+  fi
+  echo "⚠ commitlint ou Node $NODE_MIN+ introuvable : message non validé en local (le CI le fera)."
+  exit 0
+fi
+
+msg="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+cd "$root"
+"$commitlint" --edit "$msg"

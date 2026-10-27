@@ -61,7 +61,7 @@ export const POETIC_PHRASES: PoeticPhrase[] = [
   },
   {
     id: 8,
-    text: 'Composer avec la logique et l\'émotion',
+    text: "Composer avec la logique et l'émotion",
     shape: 'heart',
     icon: 'Heart',
     anim: 'animate-pulse'

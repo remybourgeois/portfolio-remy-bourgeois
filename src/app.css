@@ -12,7 +12,12 @@
 body {
   margin: 0;
   background-color: var(--color-bg);
-  font-family: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-family:
+    'DM Sans Variable',
+    'DM Sans',
+    system-ui,
+    -apple-system,
+    sans-serif;
   touch-action: pan-y pinch-zoom;
 }
 
@@ -22,27 +27,47 @@ body {
   border-radius: 4px;
 }
 
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #020205; }
-::-webkit-scrollbar-thumb { background: #4a4a4a; border-radius: 4px; border: 2px solid #020205; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #020205;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+  border: 2px solid #020205;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
 
-.custom-cursor { cursor: crosshair; }
+.custom-cursor {
+  cursor: crosshair;
+}
 
 .sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0;
-  margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 .project-card-bg {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
   background-size: 100px 100px;
 }
 
 .mesh-gradient-bg {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   filter: blur(50px);
   opacity: 0.6;
   background:
@@ -54,8 +79,12 @@ body {
   pointer-events: none;
 }
 
-.shadow-image-modal { filter: drop-shadow(0 0 40px rgba(112,107,254,0.6)); }
-.shadow-expert { box-shadow: 0 0 50px rgba(112,107,254,0.05); }
+.shadow-image-modal {
+  filter: drop-shadow(0 0 40px rgba(112, 107, 254, 0.6));
+}
+.shadow-expert {
+  box-shadow: 0 0 50px rgba(112, 107, 254, 0.05);
+}
 
 /* Termes mis en avant — style unifié sur toute l'interface */
 .project-text strong,
@@ -64,20 +93,77 @@ body {
   font-weight: 500;
 }
 
-@keyframes slideUp    { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-@keyframes fadeIn     { from { opacity:0; } to { opacity:1; } }
-@keyframes marquee    { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
-@keyframes spin       { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-@keyframes pulse-scale { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
 
-.animate-marquee     { animation: marquee 15s linear infinite; }
-.marquee-track       { filter: brightness(0) invert(1); transform: translate3d(0,0,0); }
-.animate-spin-slow   { animation: spin 3s linear infinite; }
-.animate-pulse-scale { animation: pulse-scale 0.3s ease-out; }
-.animate-pulse-slow  { animation: pulse-scale 2s ease-in-out infinite; }
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}
+.marquee-track {
+  filter: brightness(0) invert(1);
+  transform: translate3d(0, 0, 0);
+}
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+.animate-pulse-scale {
+  animation: pulse-scale 0.3s ease-out;
+}
+.animate-pulse-slow {
+  animation: pulse-scale 2s ease-in-out infinite;
+}
 
-@media (min-width: 640px)  { .animate-marquee { animation-duration: 25s; } }
-@media (min-width: 1024px) { .animate-marquee { animation-duration: 40s; } }
+@media (min-width: 640px) {
+  .animate-marquee {
+    animation-duration: 25s;
+  }
+}
+@media (min-width: 1024px) {
+  .animate-marquee {
+    animation-duration: 40s;
+  }
+}
 
 /* ── CTA « Vivre l'expérience » ──
    Le faisceau est un carré en conic-gradient posé derrière la pilule et
@@ -87,27 +173,49 @@ body {
 /* Rayon volontairement court : la pilule vit dans la barre fixe, et un halo
    large débordait sous la bordure en laissant une tache au-dessus du contenu. */
 @keyframes cta-halo {
-  0%, 100% { box-shadow: 0 0 10px 0 rgba(112,107,254,0.28); }
-  50%      { box-shadow: 0 0 18px 1px rgba(112,107,254,0.5); }
+  0%,
+  100% {
+    box-shadow: 0 0 10px 0 rgba(112, 107, 254, 0.28);
+  }
+  50% {
+    box-shadow: 0 0 18px 1px rgba(112, 107, 254, 0.5);
+  }
 }
-.cta-beam, .cta-beam2 {
-  position: absolute; top: 50%; left: 50%;
-  width: 300px; height: 300px; margin: -150px 0 0 -150px;
+.cta-beam,
+.cta-beam2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  margin: -150px 0 0 -150px;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg, transparent 212deg,
-    #a8a5ff 268deg, #38bdf8 292deg,
+    transparent 0deg,
+    transparent 212deg,
+    #a8a5ff 268deg,
+    #38bdf8 292deg,
     transparent 330deg
   );
   animation: spin 3.6s linear infinite;
 }
-.cta-halo      { animation: cta-halo 3.2s ease-in-out infinite; }
-.cta-orbit     { transform-origin: 12px 12px; animation: spin 6s linear infinite; }
-.cta-orbit-rev { transform-origin: 12px 12px; animation: spin 9s linear infinite reverse; }
+.cta-halo {
+  animation: cta-halo 3.2s ease-in-out infinite;
+}
+.cta-orbit {
+  transform-origin: 12px 12px;
+  animation: spin 6s linear infinite;
+}
+.cta-orbit-rev {
+  transform-origin: 12px 12px;
+  animation: spin 9s linear infinite reverse;
+}
 
 .cta-pill {
   background: #07060f;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* Le second faisceau tourne depuis toujours, invisible, à la MÊME durée que le
@@ -120,13 +228,17 @@ body {
   transition: opacity 0.4s ease;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg, transparent 170deg,
-    rgba(255,255,255,0.9) 262deg, #38bdf8 300deg,
+    transparent 0deg,
+    transparent 170deg,
+    rgba(255, 255, 255, 0.9) 262deg,
+    #38bdf8 300deg,
     transparent 350deg
   );
 }
 .cta-shell:hover .cta-beam2,
-.cta-shell:focus-within .cta-beam2 { opacity: 1; }
+.cta-shell:focus-within .cta-beam2 {
+  opacity: 1;
+}
 
 .cta-shell:hover .cta-pill,
 .cta-shell:focus-within .cta-pill {
@@ -141,10 +253,14 @@ body {
 .hero-photo img {
   filter: grayscale(0.75) brightness(0.82) contrast(1.05);
   transform: scale(1.01);
-  transition: filter 0.7s ease, transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition:
+    filter 0.7s ease,
+    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .hero-photo .hero-tint,
-.hero-photo .hero-scrim { transition: opacity 0.7s ease; }
+.hero-photo .hero-scrim {
+  transition: opacity 0.7s ease;
+}
 
 .hero-photo:hover img,
 .hero-photo:focus-within img {
@@ -152,20 +268,40 @@ body {
   transform: scale(1.07);
 }
 .hero-photo:hover .hero-tint,
-.hero-photo:focus-within .hero-tint { opacity: 0; }
+.hero-photo:focus-within .hero-tint {
+  opacity: 0;
+}
 .hero-photo:hover .hero-scrim,
-.hero-photo:focus-within .hero-scrim { opacity: 0.55; }
+.hero-photo:focus-within .hero-scrim {
+  opacity: 0.55;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee,.animate-spin-slow,.animate-pulse-scale,.animate-pulse-slow,.animate-pulse,
-  .cta-beam,.cta-beam2,.cta-halo,.cta-orbit,.cta-orbit-rev,.cta-pill,
-  .hero-photo img,.hero-photo .hero-tint,.hero-photo .hero-scrim {
-    animation: none !important; transition: none !important;
+  .animate-marquee,
+  .animate-spin-slow,
+  .animate-pulse-scale,
+  .animate-pulse-slow,
+  .animate-pulse,
+  .cta-beam,
+  .cta-beam2,
+  .cta-halo,
+  .cta-orbit,
+  .cta-orbit-rev,
+  .cta-pill,
+  .hero-photo img,
+  .hero-photo .hero-tint,
+  .hero-photo .hero-scrim {
+    animation: none !important;
+    transition: none !important;
   }
   /* Le survol reste perceptible, il devient simplement instantané et sans
      déplacement : c'est le mouvement qu'on retire, pas le retour visuel. */
   .cta-shell:hover .cta-pill,
-  .cta-shell:focus-within .cta-pill { transform: none; }
+  .cta-shell:focus-within .cta-pill {
+    transform: none;
+  }
   /* Sans rotation, le faisceau figé masquerait la bordure : on la rend pleine. */
-  .cta-beam { background: rgba(168,165,255,0.45); }
+  .cta-beam {
+    background: rgba(168, 165, 255, 0.45);
+  }
 }

@@ -40,7 +40,14 @@
         Icône inline plutôt que <Icon> : elle anime deux groupes à des vitesses
         différentes, ce que le composant ne sait pas exprimer.
       -->
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="flex-shrink-0">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        class="flex-shrink-0"
+      >
         <circle cx="12" cy="12" r="9" stroke="rgba(168,165,255,0.28)" stroke-width="1" />
         <circle cx="12" cy="12" r="2.4" fill="#a8a5ff" />
         <g class="cta-orbit">

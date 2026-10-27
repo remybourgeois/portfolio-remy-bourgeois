@@ -14,7 +14,10 @@
     if (!browser) return;
     // Unlock AudioContext on first interaction — wakeUp() is now safe on non-intro pages
     // because it checks engine.bgmActive before attempting to resume BGM.
-    const unlock = () => { audioStore.engine?.init(); audioStore.engine?.wakeUp(); };
+    const unlock = () => {
+      audioStore.engine?.init();
+      audioStore.engine?.wakeUp();
+    };
     window.addEventListener('touchstart', unlock, { once: true });
     window.addEventListener('click', unlock, { once: true });
 
@@ -33,7 +36,7 @@
       audioStore.engine?.disableBGM();
     }
 
-    const conn = (navigator as any).connection;
+    const conn = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection;
     const slow = conn?.effectiveType === '2g';
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!document.startViewTransition || slow || reduced) return;

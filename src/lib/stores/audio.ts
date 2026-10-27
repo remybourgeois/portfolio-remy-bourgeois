@@ -4,9 +4,9 @@ import { browser } from '$app/environment';
 
 // MP3 is universally supported (Chrome, Firefox, Safari, iOS) — no detection needed
 const BGM_URL = '/assets/music-background.mp3';
-export const SFX_CLICKS = [1,2,3,4,5,6,7,8,9].map(n => `/assets/sfx-${n}.mp3`);
+export const SFX_CLICKS = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `/assets/sfx-${n}.mp3`);
 export const SFX_SUCCESS = '/assets/sfx-success.mp3';
-export const SFX_BACK    = '/assets/sfx-back.mp3';
+export const SFX_BACK = '/assets/sfx-back.mp3';
 
 class AudioEngine {
   ctx: AudioContext | null = null;
@@ -45,7 +45,9 @@ class AudioEngine {
 
   private createContext() {
     if (this.ctx) return;
-    const AC = window.AudioContext || (window as any).webkitAudioContext;
+    const AC =
+      window.AudioContext ||
+      (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     this.ctx = new AC();
     this.masterGain = this.ctx.createGain();
     this.masterGain.gain.value = this.isGlobalMuted ? 0 : 0.15;
@@ -57,31 +59,39 @@ class AudioEngine {
 
   // Phase 1 — called at startup, NO AudioContext needed
   async loadSFX(urls: string[]) {
-    await Promise.all(urls.map(async (url) => {
-      try {
-        const res = await fetch(url);
-        if (!res.ok) return;
-        this.rawSFX[url] = await res.arrayBuffer();
-      } catch { /* réseau indisponible : le SFX reste simplement muet */ }
-    }));
+    await Promise.all(
+      urls.map(async (url) => {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return;
+          this.rawSFX[url] = await res.arrayBuffer();
+        } catch {
+          /* réseau indisponible : le SFX reste simplement muet */
+        }
+      })
+    );
   }
 
   // Phase 2 — called from init() which runs inside a user gesture
   private async decodeSFX() {
     if (!this.ctx) return;
-    await Promise.all(Object.entries(this.rawSFX).map(async ([url, ab]) => {
-      try {
-        this.sfxBuffers[url] = await this.ctx!.decodeAudioData(ab.slice(0));
-      } catch { /* format refusé par le navigateur : on ignore ce SFX */ }
-    }));
+    await Promise.all(
+      Object.entries(this.rawSFX).map(async ([url, ab]) => {
+        try {
+          this.sfxBuffers[url] = await this.ctx!.decodeAudioData(ab.slice(0));
+        } catch {
+          /* format refusé par le navigateur : on ignore ce SFX */
+        }
+      })
+    );
   }
 
   // Must be called inside a user gesture handler (tap/click)
   init() {
     // Sans prime() préalable (donc hors intro) on ne crée aucun AudioContext.
     if (this.isInitialized || !this.isPrimed) return;
-    this.createContext();          // create context IN the gesture
-    this.ctx!.resume();            // resume synchronously IN the gesture chain (iOS requirement)
+    this.createContext(); // create context IN the gesture
+    this.ctx!.resume(); // resume synchronously IN the gesture chain (iOS requirement)
     const bufferSize = this.ctx!.sampleRate * 2;
     const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
     const data = buffer.getChannelData(0);
@@ -98,7 +108,9 @@ class AudioEngine {
     this.decodeSFX(); // async decode now that context exists — ready well before next click
   }
 
-  markBGMActive() { this.bgmActive = true; }
+  markBGMActive() {
+    this.bgmActive = true;
+  }
 
   setupBGM(url: string) {
     this.bgmElement = new Audio(url);
@@ -112,7 +124,9 @@ class AudioEngine {
     try {
       this.bgmSourceNode = this.ctx.createMediaElementSource(this.bgmElement);
       this.bgmSourceNode.connect(this.bgmGain!);
-    } catch { /* source déjà rattachée à ce contexte */ }
+    } catch {
+      /* source déjà rattachée à ce contexte */
+    }
   }
 
   wakeUp() {
@@ -180,7 +194,10 @@ class AudioEngine {
       src.start(0);
     };
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume().then(play).catch(() => {});
+      this.ctx
+        .resume()
+        .then(play)
+        .catch(() => {});
     } else {
       play();
     }
@@ -213,7 +230,11 @@ class AudioEngine {
       this.staticNode.start();
     }
     const now = this.ctx.currentTime;
-    this.staticGain!.gain.setTargetAtTime(Math.min(intensity * 0.4, 0.5) * this.sfxVolume, now, 0.05);
+    this.staticGain!.gain.setTargetAtTime(
+      Math.min(intensity * 0.4, 0.5) * this.sfxVolume,
+      now,
+      0.05
+    );
     this.staticFilter!.frequency.setTargetAtTime(200 + intensity * 2000, now, 0.05);
   }
 
@@ -233,41 +254,58 @@ class AudioEngine {
       noiseGain.gain.setValueAtTime(0, t);
       noiseGain.gain.linearRampToValueAtTime(0.4 * this.sfxVolume, t + 0.5);
       noiseGain.gain.linearRampToValueAtTime(0, t + 2.5);
-      noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(this.masterGain!);
-      noise.start(); noise.stop(t + 3);
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.masterGain!);
+      noise.start();
+      noise.stop(t + 3);
     };
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume().then(doPlay).catch(() => {});
+      this.ctx
+        .resume()
+        .then(doPlay)
+        .catch(() => {});
     } else {
       doPlay();
     }
   }
 
   playReset() {
-    if (this.sfxBuffers[SFX_BACK]) { this.playSound(SFX_BACK); return; }
+    if (this.sfxBuffers[SFX_BACK]) {
+      this.playSound(SFX_BACK);
+      return;
+    }
     if (!this.ctx || this.isGlobalMuted) return;
     const doPlay = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const g = this.ctx.createGain();
-      osc.connect(g); g.connect(this.masterGain!);
+      osc.connect(g);
+      g.connect(this.masterGain!);
       osc.type = 'sine';
       osc.frequency.setValueAtTime(440, t);
       osc.frequency.setValueAtTime(330, t + 0.1);
       osc.frequency.setValueAtTime(220, t + 0.2);
       g.gain.setValueAtTime(0.15 * this.sfxVolume, t);
       g.gain.linearRampToValueAtTime(0, t + 0.5);
-      osc.start(t); osc.stop(t + 0.5);
+      osc.start(t);
+      osc.stop(t + 0.5);
     };
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume().then(doPlay).catch(() => {});
+      this.ctx
+        .resume()
+        .then(doPlay)
+        .catch(() => {});
     } else {
       doPlay();
     }
   }
 
-  suspendForVisibility() { this.ctx?.suspend(); this.bgmElement?.pause(); }
+  suspendForVisibility() {
+    this.ctx?.suspend();
+    this.bgmElement?.pause();
+  }
 
   resumeFromVisibility() {
     this.ctx?.resume();
@@ -276,7 +314,9 @@ class AudioEngine {
     }
   }
 
-  destroy() { this.ctx?.close(); }
+  destroy() {
+    this.ctx?.close();
+  }
 }
 
 function createAudioStore() {

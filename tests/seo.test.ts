@@ -45,14 +45,14 @@ test('the person entity is declared once, with claimed profiles', async ({ reque
   expect(graph.some((n: { '@type': string }) => n['@type'] === 'Review')).toBe(true);
 });
 
-test('case studies expose a heading structure and a hand-written description', async ({ request }) => {
+test('case studies expose a heading structure and a hand-written description', async ({
+  request
+}) => {
   const html = await (await request.get('/projects/ofelia')).text();
 
   expect(html).toContain('<h1');
   for (const section of ['Contexte', 'Challenge', 'Résultat']) {
-    expect(html, `${section} n'est pas un <h2>`).toMatch(
-      new RegExp(`<h2[^>]*>${section}</h2>`)
-    );
+    expect(html, `${section} n'est pas un <h2>`).toMatch(new RegExp(`<h2[^>]*>${section}</h2>`));
   }
 
   const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
@@ -68,7 +68,9 @@ test('case studies open with an extractable summary', async ({ request }) => {
     // figurer dans un bloc court, présent dès le HTML prérendu.
     expect(html).toMatch(/<h2[^>]*>En bref<\/h2>/);
     for (const label of ['Contexte', 'Stack &amp; méthodes', 'Impact']) {
-      expect(html, `${label} absent de l'encadré sur ${slug}`).toMatch(new RegExp(`<dt[^>]*>${label}</dt>`));
+      expect(html, `${label} absent de l'encadré sur ${slug}`).toMatch(
+        new RegExp(`<dt[^>]*>${label}</dt>`)
+      );
     }
   }
   const llms = await (await request.get('/llms.txt')).text();
@@ -79,12 +81,16 @@ test('structured data links every page back to the same person', async ({ reques
   for (const route of ['/projects', '/projects/ofelia', '/a-propos']) {
     const html = await (await request.get(route)).text();
     expect(html, `pas de JSON-LD sur ${route}`).toContain('application/ld+json');
-    expect(html, `${route} ne référence pas l'entité`).toContain('remybourgeois.com/#remy-bourgeois');
+    expect(html, `${route} ne référence pas l'entité`).toContain(
+      'remybourgeois.com/#remy-bourgeois'
+    );
     expect(html, `pas de fil d'Ariane sur ${route}`).toContain('BreadcrumbList');
   }
 });
 
-test('sitemap lists the indexable pages, dates them, and drops the old home', async ({ request }) => {
+test('sitemap lists the indexable pages, dates them, and drops the old home', async ({
+  request
+}) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   expect(xml).toContain('<loc>https://remybourgeois.com/</loc>');
   expect(xml).toContain('<loc>https://remybourgeois.com/a-propos</loc>');
