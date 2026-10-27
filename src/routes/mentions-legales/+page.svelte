@@ -33,26 +33,30 @@
     <section aria-labelledby="editeur-title">
       <SectionTitle id="editeur-title" class="mb-6">Éditeur du site</SectionTitle>
       <dl class="grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 text-sm">
-        <dt class="text-white/60">Nom</dt>
-        <dd class="text-white/85">{LEGAL.publisher}</dd>
-        <dt class="text-white/60">Statut</dt>
-        <dd class="text-white/85">{LEGAL.status}</dd>
-        {#if LEGAL.siret}
-          <dt class="text-white/60">SIRET</dt>
-          <dd class="text-white/85 font-mono">{LEGAL.siret}</dd>
-        {/if}
-        {#if LEGAL.address}
-          <dt class="text-white/60">Adresse</dt>
-          <dd class="text-white/85">{LEGAL.address}</dd>
-        {/if}
+        <dt class="text-white/60">Dénomination</dt>
+        <dd class="text-white/85">{LEGAL.company}</dd>
+        <dt class="text-white/60">Forme juridique</dt>
+        <dd class="text-white/85">{LEGAL.form}</dd>
+        <dt class="text-white/60">Siège social</dt>
+        <dd class="text-white/85">{LEGAL.address}</dd>
+        <dt class="text-white/60">SIREN</dt>
+        <dd class="text-white/85 font-mono">{LEGAL.siren}</dd>
+        <dt class="text-white/60">SIRET</dt>
+        <dd class="text-white/85 font-mono">{LEGAL.siret}</dd>
+        <dt class="text-white/60">RCS</dt>
+        <dd class="text-white/85">{LEGAL.rcs}</dd>
+        <dt class="text-white/60">TVA intracommunautaire</dt>
+        <dd class="text-white/85 font-mono">{LEGAL.vat}</dd>
+        <dt class="text-white/60">Code APE</dt>
+        <dd class="text-white/85">{LEGAL.ape}</dd>
+        <dt class="text-white/60">Directeur de la publication</dt>
+        <dd class="text-white/85">{LEGAL.manager}</dd>
         <dt class="text-white/60">Contact</dt>
         <dd>
           <a href="mailto:{EMAIL}" class="text-accent hover:text-white underline underline-offset-4"
             >{EMAIL}</a
           >
         </dd>
-        <dt class="text-white/60">Directeur de la publication</dt>
-        <dd class="text-white/85">{LEGAL.publisher}</dd>
       </dl>
     </section>
 

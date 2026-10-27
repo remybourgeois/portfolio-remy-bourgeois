@@ -14,14 +14,19 @@ export const EMAIL = 'remy.bourgeois@gmail.com';
 export const BOOKING_URL = '';
 
 /**
- * Mentions légales. Le SIRET et l'adresse sont obligatoires pour un site
- * professionnel ; la page ne les affiche que renseignés, et le dit sinon.
+ * Mentions légales. Données du registre du commerce (RCS Lyon), telles que
+ * publiées : la page les affiche mot pour mot.
  */
 export const LEGAL = {
-  publisher: 'Rémy Bourgeois',
-  status: 'Entrepreneur individuel',
-  siret: '',
-  address: '',
+  company: 'WOO',
+  form: 'SARL au capital de 1 000 €',
+  siren: '939 432 209',
+  siret: '939 432 209 00012',
+  rcs: '939 432 209 R.C.S. Lyon',
+  vat: 'FR51939432209',
+  ape: '74.10Z, activités spécialisées de design',
+  address: 'Immeuble Le Brévent, 47 avenue Valioud, 69110 Sainte-Foy-lès-Lyon',
+  manager: 'Rémy Bourgeois, gérant',
   host: {
     name: 'Netlify, Inc.',
     address: '512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis',
