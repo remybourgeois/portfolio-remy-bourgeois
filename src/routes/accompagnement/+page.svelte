@@ -1,6 +1,7 @@
 <!-- src/routes/accompagnement/+page.svelte -->
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
+  import Icon from '$lib/components/Icons.svelte';
   import PageShell from '$lib/components/PageShell.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
   import SectionTitle from '$lib/components/SectionTitle.svelte';
@@ -94,6 +95,32 @@
     "Avec l'IA, le design system devient le carburant de la génération. Un système " +
       'mal structuré produit des variantes incohérentes, très vite.',
     'On mesure avant de changer : qualité, délai de mise sur le marché, confort des équipes.'
+  ];
+
+  /**
+   * Les trois terrains où la méthode a été éprouvée, du plus mûr au plus neuf.
+   * Chaque niveau renvoie à son étude de cas : c'est une preuve, pas une
+   * phrase d'ambiance posée sous les convictions.
+   */
+  const TERRAINS = [
+    {
+      level: 'Grand groupe',
+      client: 'Crédit Agricole',
+      what: 'Un design system adopté par plus de 15 équipes, à faire vivre sans rien casser.',
+      slug: 'credit-agricole'
+    },
+    {
+      level: 'Refonte',
+      client: 'iPify',
+      what: 'Un existant dense à restructurer, et des briques IA à y intégrer sans friction.',
+      slug: 'ipify'
+    },
+    {
+      level: 'Création de zéro',
+      client: 'Ofelia',
+      what: 'Une page blanche, un premier designer, et le système construit dans le code.',
+      slug: 'ofelia'
+    }
   ];
 
   const TITLE = 'Accompagnement design system et conception produit | Rémy Bourgeois';
@@ -246,10 +273,40 @@
           </p>
         {/each}
       </div>
-      <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
-        J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit
-        Agricole, une refonte chez iPify, une création de zéro chez Ofelia.
+    </div>
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <div class="w-full mb-20">
+      <SectionTitle class="mb-4">Trois niveaux de maturité, trois terrains</SectionTitle>
+      <p class="text-white/60 text-sm leading-relaxed mb-10 max-w-3xl">
+        Un design system n'a pas les mêmes besoins selon qu'il existe depuis dix ans, qu'il faut le
+        refondre ou qu'il reste à inventer. Les trois cas ont été traités.
       </p>
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0 m-0">
+        {#each TERRAINS as terrain, i (terrain.slug)}
+          <li>
+            <a
+              href="/projects/{terrain.slug}"
+              class="group flex h-full flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-6
+                     hover:bg-white/[0.08] hover:border-white/20 transition-colors
+                     focus-visible:ring-2 focus-visible:ring-primary focus:outline-none"
+            >
+              <span class="font-mono text-xs text-accent tracking-[0.15em]"
+                >{String(i + 1).padStart(2, '0')}</span
+              >
+              <span class="text-lg font-semibold text-white leading-snug">{terrain.level}</span>
+              <span class="text-white/70 text-sm leading-relaxed">{terrain.what}</span>
+              <span
+                class="mt-auto inline-flex items-center gap-2 text-xs text-accent group-hover:text-white transition-colors pt-2"
+              >
+                Étude de cas {terrain.client}
+                <Icon name="ArrowRight" size={12} />
+              </span>
+            </a>
+          </li>
+        {/each}
+      </ol>
     </div>
   </RevealOnScroll>
 
