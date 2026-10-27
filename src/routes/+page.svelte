@@ -169,9 +169,7 @@
             blanc, puis un paragraphe en gris sans aucun mot en gras. L'ancien
             hero mettait douze mots en violet et rien ne gagnait.
           -->
-          <p
-            class="text-xl md:text-2xl font-medium text-white leading-snug max-w-[34rem] mb-5 [text-wrap:balance]"
-          >
+          <p class="text-xl md:text-2xl font-medium text-white leading-snug mb-5">
             Je supprime le décalage entre le design et le code.
           </p>
           <p class="text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]">

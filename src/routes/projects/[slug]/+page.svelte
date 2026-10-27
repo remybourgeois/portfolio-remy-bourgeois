@@ -326,7 +326,7 @@
 {/if}
 
 <!-- ─── Page ──────────────────────────────────────────────────────────────── -->
-<PageShell width="narrow">
+<PageShell>
   <Breadcrumb items={crumbs} />
 
   <!--
@@ -560,7 +560,9 @@
   {/if}
 
   <!-- ── Contexte ────────────────────────────────────────────────────────── -->
-  <div class="mb-14 flex flex-col gap-10">
+  <!-- La page a la largeur des autres ; c'est ce bloc qui tient la mesure
+       du texte, à 46 rem comme l'accroche des en-têtes. -->
+  <div class="mb-14 flex flex-col gap-10 max-w-[46rem]">
     <!-- Description principale -->
     <div class="pl-5 border-l border-white/[0.1]">
       <h2 class="eyebrow text-white/60 mb-4">Contexte</h2>
