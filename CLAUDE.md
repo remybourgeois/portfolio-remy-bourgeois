@@ -12,13 +12,30 @@ Pour TOUTE modification demandée, suivre cette procédure :
    `git checkout main && git pull && git checkout -b <type>/<sujet>`
    (types : `feat`, `fix`, `chore`, `docs`, `refactor`)
 2. Implémenter le changement.
-3. **Vérifier en local avant de pousser** : `npm run check` puis `npm run test:e2e` (doivent passer).
+3. **Vérifier en local avant de pousser** : `npm run verify` (lint, types, règles,
+   invariants, e2e) doit passer.
 4. `git commit` → `git push -u origin <branche>` → `gh pr create --fill`.
 5. Attendre le **CI vert** sur la PR (`gh pr checks`), puis merger : `gh pr merge --squash --delete-branch`.
 6. Revenir à jour en local : `git checkout main && git pull`.
 
-Le merge n'est autorisé que si le CI (`build-and-test`) passe. Le merge sur `main`
-déclenche automatiquement le déploiement Netlify (et chaque PR génère une preview).
+Les messages de commit suivent **Conventional Commits** (`type(scope): sujet`) :
+le hook `commit-msg` les valide en local, et le job `commits` du CI rejoue le même
+hook sur chaque commit de la PR.
+
+Le merge n'est autorisé que si le CI passe (`build-and-test`, `commits`,
+`actionlint`). Le merge sur `main` déclenche automatiquement le déploiement
+Netlify (et chaque PR génère une preview).
+
+### Activer les hooks (une fois par clone)
+
+```
+git config core.hooksPath .githooks
+```
+
+Le hook `pre-commit` formate les fichiers indexés avec Prettier et lance les
+invariants sur l'index. Un outil absent qu'il peut laisser au CI ne bloque pas :
+il avertit. Prettier est l'exception, puisque le CI refuserait de toute façon un
+fichier mal formaté.
 
 ## Commandes
 
@@ -26,29 +43,54 @@ déclenche automatiquement le déploiement Netlify (et chaque PR génère une pr
 - `npm run build` — build prod → `build/`
 - `npm run preview` — prévisualiser le build
 - `npm run check` — svelte-check (types + a11y)
+- `npm run lint` — Prettier (vérification) puis ESLint
+- `npm run format` — Prettier en écriture
+- `npm run rules` — invariants du projet (scripts/checks.ts)
+- `npm run check:rules` — tests des règles (`node --test`)
 - `npm run test:e2e` — tests Playwright
+- `npm run verify` — tout ce que le CI lance, dans l'ordre
 
 ## Invariants à ne pas casser
+
+Chacun de ces invariants est **vérifié**, pas seulement écrit ici : `scripts/checks.ts`
+pour les règles statiques, les tests Playwright pour ce qui demande un navigateur.
+Une exception légitime s'écrit sur place, avec sa raison, et non en retirant la
+règle : `<!-- ds-allow-autoplay: la lightbox ne s'ouvre que sur un clic du visiteur -->`.
+Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
+`ds-allow-color` et `ds-allow-typography` ; un marqueur sans raison ne vaut pas
+échappatoire.
 
 - **Audio** : `audioStore` ne charge rien au niveau module. Seul `IntroScene`
   appelle `engine.prime()`, et `IntroScene` ne vit que sur `/intro`. Les autres
   pages n'émettent aucun son et ne doivent télécharger aucun MP3
   (`tests/perf.test.ts` le vérifie). Ne pas monter `IntroScene` sur `/` : ça
   remettrait 2,5 Mo de MP3 sur la page la plus stratégique du site.
-- **Vidéos** : jamais d'`autoplay`. Utiliser `preload="none"` + `use:playInView`
-  sur les cartes, et la lecture pilotée par `carIndex` dans la case study.
-- **Contraste** : plancher à `text-white/50` pour tout texte sur `#020205`.
-  Pour un accent violet sur fond sombre, utiliser `#a8a5ff`, pas `#706bfe` dilué.
-  `tests/a11y.test.ts` passe axe-core sur six gabarits.
+- **Vidéos** : jamais d'`autoplay` (règle « Autoplay »). Utiliser `preload="none"`
+  - `use:playInView` sur les cartes, et la lecture pilotée par `carIndex` dans la
+    case study. Seule la lightbox déroge, puisqu'un clic du visiteur l'ouvre.
+- **Contraste** : plancher à `text-white/50` pour tout texte sur `#020205`
+  (règle « Contraste »). Pour un accent violet sur fond sombre, utiliser
+  `#a8a5ff`, pas `#706bfe` dilué. `tests/a11y.test.ts` passe axe-core sur six
+  gabarits.
 - **Icônes** : `name` est typé par l'union `IconName`. Une icône non dessinée
   fait échouer `npm run check` au lieu de rendre un `<svg>` vide.
 - **Responsive** : vérifié à 390, 820 et 1440 px, aucun débordement horizontal.
-- **Rédaction** : pas de tiret cadratin (`—`) dans le contenu visible — il donne
+- **Rédaction** : pas de tiret cadratin (`—`) dans le contenu visible, il donne
   un ton « écrit par une IA ». Utiliser deux-points, virgule, point ou `|` selon
-  le cas. Les commentaires de code ne sont pas concernés.
+  le cas. Les commentaires de code ne sont pas concernés : la règle « Tiret
+  cadratin » blanchit les commentaires avant de regarder.
 - **Largeur des sections de la home** : `<main>` est en `flex items-center`, donc
   une section sans `w-full` se dimensionne sur son contenu. `RevealOnScroll`
   porte `w-full` pour que toutes les sections s'alignent sur `max-w-6xl`.
+- **Injection HTML** : tout `{@html}` passe par `md()` ou `jsonLd()`, les deux
+  seules fonctions qui échappent ce qu'elles rendent (règle « Sources de
+  {@html} »). C'est pour ça que `svelte/no-at-html-tags` est désactivée dans
+  `eslint.config.js` : la règle maison est plus précise qu'une dérogation par
+  site d'appel.
+- **Version de Node** : `.node-version` à la racine est la source unique. GitHub
+  Actions la lit avec `node-version-file`, Netlify lit le fichier tout seul. Ne
+  pas réintroduire `NODE_VERSION` dans `netlify.toml` ni de version littérale
+  dans un workflow (règle « Version de Node »).
 - **SEO/GEO** : `/` est la page indexable principale — ne jamais y remettre de
   `noindex`, et ne pas réintroduire de page `/home`. Une seule entité `Person`
   est déclarée, dans `src/lib/data/person.ts`, et toutes les pages la
