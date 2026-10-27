@@ -11,10 +11,9 @@
    * parcours : les études de cas depuis Accompagnement, les projets depuis
    * À propos.
    *
-   * Le bouton principal dit ce qu'il fait (« M'écrire ») et l'adresse est
-   * donnée en clair en dessous, copiable. Avant, l'adresse était le libellé
-   * du bouton : trop longue pour la pilule à 390 px, `break-all` la coupait
-   * au milieu du nom de domaine.
+   * Le bouton principal dit ce qu'il fait (« M'écrire ») et ouvre le
+   * courriel. Avant, l'adresse était le libellé du bouton : trop longue pour
+   * la pilule à 390 px, `break-all` la coupait au milieu du nom de domaine.
    */
   let {
     title,
@@ -77,14 +76,5 @@
         {secondaryLabel}
       </Button>
     </div>
-
-    <p class="mt-6 text-sm text-white/60">
-      ou directement à
-      <a
-        href="mailto:{EMAIL}"
-        class="text-accent hover:text-white underline underline-offset-4 transition-colors py-3"
-        >{EMAIL}</a
-      >
-    </p>
   </div>
 </div>

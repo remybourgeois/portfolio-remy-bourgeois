@@ -20,8 +20,12 @@ test('impact counters settle on their final value', async ({ page }) => {
   await expect(page.getByText('14+', { exact: true }).first()).toBeVisible({ timeout: 10000 });
 });
 
-test('shows contact section with email link', async ({ page }) => {
-  await expect(page.getByRole('link', { name: /remy.bourgeois@gmail.com/ })).toBeVisible();
+test('the contact block opens an email to the right address', async ({ page }) => {
+  // L'adresse n'est plus écrite en clair : c'est le bouton qui la porte.
+  const write = page.getByRole('link', { name: "M'écrire" }).last();
+  await write.scrollIntoViewIfNeeded();
+  await expect(write).toBeVisible();
+  await expect(write).toHaveAttribute('href', 'mailto:remy.bourgeois@gmail.com');
 });
 
 test('featured projects expose one accessible link each', async ({ page }) => {
