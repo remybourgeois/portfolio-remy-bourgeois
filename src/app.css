@@ -283,6 +283,60 @@ body {
   transform: translateY(-1px);
 }
 
+/* ── Portrait du hero ──
+   Au repos, la photo est légèrement adoucie, un grain argentique la texture et
+   une vignette assombrit les bords : c'est ce qui fait atterrir le fond blanc
+   du studio sur le noir de la page. Au survol ou au focus, elle se réveille :
+   couleurs réelles, voile levé, avancement de 4 %. Le repos est aussi la
+   version du toucher, il doit donc se suffire. */
+.hero-portrait img {
+  filter: contrast(1.06) saturate(0.85) sepia(0.1);
+  transform: scale(1.01);
+  transition:
+    filter 0.7s ease,
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hero-grain {
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  transition: opacity 0.7s ease;
+}
+.hero-vignette {
+  background: radial-gradient(
+    ellipse at 50% 38%,
+    transparent 45%,
+    color-mix(in srgb, var(--color-canvas) 90%, transparent) 100%
+  );
+  transition: opacity 0.7s ease;
+}
+.hero-portrait:hover img,
+.hero-portrait:focus-within img {
+  filter: none;
+  transform: scale(1.04);
+}
+.hero-portrait:hover .hero-vignette,
+.hero-portrait:focus-within .hero-vignette {
+  opacity: 0.45;
+}
+.hero-portrait:hover .hero-grain,
+.hero-portrait:focus-within .hero-grain {
+  opacity: 0.1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait img,
+  .hero-grain,
+  .hero-vignette {
+    transition: none !important;
+  }
+  .hero-portrait:hover img,
+  .hero-portrait:focus-within img {
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-spin-slow,

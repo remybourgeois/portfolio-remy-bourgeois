@@ -164,34 +164,21 @@
             >
           </h1>
 
-          <ul class="flex flex-wrap gap-2 list-none p-0 m-0 mb-8">
-            <Tag as="li" icon="LayoutIcon">Design system</Tag>
-            <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
-            <Tag as="li" icon="Award">14 ans d'expérience</Tag>
-          </ul>
-
-          <!-- `.body-text` porte la règle globale des termes mis en avant :
-               le violet `accent`, comme sur le reste du site. -->
-          <div class="body-text flex flex-col gap-5 max-w-[42rem]">
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              <strong
-                >Je supprime le décalage entre le design et le code, et j'aide les équipes à
-                concevoir avec l'IA.</strong
-              >
-            </p>
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>. Je
-              conçois des design systems et des produits IA
-              <strong>directement dans le code</strong>, avec les équipes qui vont les faire vivre.
-              Un développeur senior relit chacune de mes Pull Requests.
-            </p>
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
-              bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a
-              plus qu'une
-              <strong>seule source de vérité</strong>.
-            </p>
-          </div>
+          <!--
+            Trois niveaux, pas quatre : le titre, une seule phrase forte en
+            blanc, puis un paragraphe en gris sans aucun mot en gras. L'ancien
+            hero mettait douze mots en violet et rien ne gagnait.
+          -->
+          <p
+            class="text-xl md:text-2xl font-medium text-white leading-snug max-w-[34rem] mb-5 [text-wrap:balance]"
+          >
+            Je supprime le décalage entre le design et le code.
+          </p>
+          <p class="text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]">
+            14 ans de design produit, dont 7 ans en robotique humanoïde. Je conçois des design
+            systems et des produits IA directement dans le code, avec les équipes qui vont les faire
+            vivre. Un développeur senior relit chacune de mes Pull Requests.
+          </p>
 
           <div class="flex flex-wrap gap-3 mt-9">
             <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
@@ -201,15 +188,22 @@
           </div>
         </div>
 
-        <!-- Portrait en couleur, cadré 4:5, calé sur la ligne du nom. Le halo
-             évite que le fond clair du studio ne découpe un rectangle net. -->
+        <!--
+          Portrait cadré 4:5, calé sur la ligne du nom. Au repos : couleur
+          légèrement adoucie, grain argentique, bords assombris (la vignette
+          règle aussi le fond blanc du studio, qui s'arrêtait net sur le noir).
+          Au survol ou au focus, la photo se réveille : vraies couleurs, voile
+          levé, léger avancement. Tout est en CSS (app.css, « Portrait du
+          hero »), rien ne dépend de la position de la souris, et le repos
+          reste la version qu'on voit au toucher.
+        -->
         <div class="hidden md:block relative md:mt-1">
           <span
             class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none bg-primary/20"
             aria-hidden="true"
           ></span>
           <div
-            class="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/10 shadow-lift"
+            class="hero-portrait relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/10 shadow-lift"
           >
             <img
               src="/assets/remy-bourgeois.webp"
@@ -219,8 +213,9 @@
               class="w-full h-full object-cover object-[50%_20%]"
               loading="eager"
             />
-            <!-- Le fond clair du studio s'arrête net sur le noir de la page :
-                 un voile en bas du cadre le fait atterrir et assoit le tag. -->
+            <span class="hero-grain absolute inset-0 pointer-events-none" aria-hidden="true"></span>
+            <span class="hero-vignette absolute inset-0 pointer-events-none" aria-hidden="true"
+            ></span>
             <span
               class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-canvas/80 to-transparent pointer-events-none"
               aria-hidden="true"

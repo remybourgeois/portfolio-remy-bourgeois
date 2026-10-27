@@ -173,6 +173,11 @@
         convient pas à toutes les équipes : il suppose un dépôt, une revue, et quelqu'un qui accepte
         de relire.
       </p>
+      <p>
+        Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
+        bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus
+        qu'une <strong>seule source de vérité</strong>.
+      </p>
     </div>
   </section>
 
