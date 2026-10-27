@@ -101,10 +101,13 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#each PROJECTS as project}
+        <!-- Pas d'aria-label sur la carte : il remplacerait son texte visible (client,
+             titre, tags) par un libellé qui n'en reprend qu'une partie. WCAG 2.5.3
+             « Label in Name » demande l'inverse, et une commande vocale prononçant ce
+             qui est à l'écran n'atteindrait pas le lien. -->
         <a
           href="/projects/{project.slug}"
           use:sfx
-          aria-label="Voir le projet {project.title}"
           class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
                  hover:bg-white/[0.08] hover:border-white/20
                  hover:shadow-[0_0_40px_rgba(112,107,254,0.15)]
