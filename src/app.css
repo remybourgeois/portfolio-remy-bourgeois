@@ -1,17 +1,57 @@
 /* src/app.css */
 @import 'tailwindcss';
 
-/* ── Tokens ── */
-:root {
+/* ── Tokens ──
+   Les rôles de couleur vivent ici et nulle part ailleurs. Déclarés dans
+   `@theme`, ils deviennent des classes (`bg-primary`, `text-accent`,
+   `border-canvas`) et des variables CSS (`var(--color-primary)`). La règle
+   « Couleur littérale » de scripts/checks.ts refuse un hex ou un rgba() dans
+   un composant : on nomme le rôle, on ne recopie pas la valeur. */
+@theme {
+  /* Fond du site. */
+  --color-canvas: #020205;
+  /* Fond des surfaces opaques posées au-dessus du contenu (lightbox). */
+  --color-overlay: #060609;
+  /* Dégradé des panneaux média (carousel, lightbox). */
+  --color-panel-from: #14102a;
+  --color-panel-to: #0b091a;
+
+  /* Violet de marque : accents décoratifs, halos, bordures actives. */
   --color-primary: #706bfe;
+  /* Fond du bouton principal, et son survol. */
+  --color-primary-strong: #5a55e0;
+  --color-primary-hover: #4a45d0;
+  /* Violet lisible : termes mis en avant et libellés sur fond sombre.
+     `primary` dilué ne passe pas le contraste en texte, celui-ci oui. */
+  --color-accent: #a8a5ff;
+  /* Couleurs secondaires des dégradés et de la scène WebGL. */
   --color-secondary: #a78bfa;
   --color-tertiary: #38bdf8;
-  --color-bg: #020205;
+
+  /* Halos. Le violet y est mélangé à la transparence plutôt que recopié en
+     rgba() : la valeur suit le rôle. */
+  --shadow-glow-primary: 0 0 15px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --shadow-glow-card: 0 0 40px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --shadow-glow-accent: 0 0 8px color-mix(in srgb, var(--color-accent) 90%, transparent);
+  --shadow-glow-emerald: 0 0 8px color-mix(in srgb, var(--color-emerald-400) 80%, transparent);
+  /* Portée d'un portrait ou d'une vignette posés sur le fond. */
+  --shadow-lift: 0 20px 40px rgb(0 0 0 / 0.45);
+}
+
+/* Libellé de section et de champ : le seul petit texte du site. 12 px est le
+   plancher (règle « Pas de typo sous 12 px ») ; les 9, 10 et 11 px uppercase
+   qui le précédaient passaient sous le seuil pour un gain illisible. */
+@utility eyebrow {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-bg);
+  background-color: var(--color-canvas);
   font-family:
     'DM Sans Variable',
     'DM Sans',
@@ -31,12 +71,12 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #020205;
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
   background: #4a4a4a;
   border-radius: 4px;
-  border: 2px solid #020205;
+  border: 2px solid var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
@@ -71,25 +111,22 @@ body {
   filter: blur(50px);
   opacity: 0.6;
   background:
-    radial-gradient(at 0% 0%, #a78bfa, transparent 50%),
-    radial-gradient(at 100% 0%, #706bfe, transparent 50%),
-    radial-gradient(at 50% 50%, #38bdf8, transparent 50%),
+    radial-gradient(at 0% 0%, var(--color-secondary), transparent 50%),
+    radial-gradient(at 100% 0%, var(--color-primary), transparent 50%),
+    radial-gradient(at 50% 50%, var(--color-tertiary), transparent 50%),
     radial-gradient(at 80% 100%, #1e3a8a, transparent 70%);
   transition: opacity 0.5s;
   pointer-events: none;
 }
 
 .shadow-image-modal {
-  filter: drop-shadow(0 0 40px rgba(112, 107, 254, 0.6));
-}
-.shadow-expert {
-  box-shadow: 0 0 50px rgba(112, 107, 254, 0.05);
+  filter: drop-shadow(0 0 40px color-mix(in srgb, var(--color-primary) 60%, transparent));
 }
 
 /* Termes mis en avant — style unifié sur toute l'interface */
 .project-text strong,
 .body-text strong {
-  color: #a8a5ff;
+  color: var(--color-accent);
   font-weight: 500;
 }
 
@@ -175,10 +212,10 @@ body {
 @keyframes cta-halo {
   0%,
   100% {
-    box-shadow: 0 0 10px 0 rgba(112, 107, 254, 0.28);
+    box-shadow: 0 0 10px 0 color-mix(in srgb, var(--color-primary) 28%, transparent);
   }
   50% {
-    box-shadow: 0 0 18px 1px rgba(112, 107, 254, 0.5);
+    box-shadow: 0 0 18px 1px color-mix(in srgb, var(--color-primary) 50%, transparent);
   }
 }
 .cta-beam,
@@ -193,8 +230,8 @@ body {
     from 0deg,
     transparent 0deg,
     transparent 212deg,
-    #a8a5ff 268deg,
-    #38bdf8 292deg,
+    var(--color-accent) 268deg,
+    var(--color-tertiary) 292deg,
     transparent 330deg
   );
   animation: spin 3.6s linear infinite;
@@ -231,7 +268,7 @@ body {
     transparent 0deg,
     transparent 170deg,
     rgba(255, 255, 255, 0.9) 262deg,
-    #38bdf8 300deg,
+    var(--color-tertiary) 300deg,
     transparent 350deg
   );
 }
@@ -247,33 +284,57 @@ body {
 }
 
 /* ── Portrait du hero ──
-   Au repos la photo est désaturée et assombrie, au survol elle reprend ses
-   couleurs et avance lentement. Le fond clair du studio reste tenu par le
-   dégradé, qui s'allège sans disparaître. */
-.hero-photo img {
-  filter: grayscale(0.75) brightness(0.82) contrast(1.05);
+   Au repos, la photo est légèrement adoucie, un grain argentique la texture et
+   une vignette assombrit les bords : c'est ce qui fait atterrir le fond blanc
+   du studio sur le noir de la page. Au survol ou au focus, elle se réveille :
+   couleurs réelles, voile levé, avancement de 4 %. Le repos est aussi la
+   version du toucher, il doit donc se suffire. */
+.hero-portrait img {
+  filter: contrast(1.06) saturate(0.85) sepia(0.1);
   transform: scale(1.01);
   transition:
     filter 0.7s ease,
-    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.hero-photo .hero-tint,
-.hero-photo .hero-scrim {
+.hero-grain {
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
   transition: opacity 0.7s ease;
 }
+.hero-vignette {
+  background: radial-gradient(
+    ellipse at 50% 38%,
+    transparent 45%,
+    color-mix(in srgb, var(--color-canvas) 90%, transparent) 100%
+  );
+  transition: opacity 0.7s ease;
+}
+.hero-portrait:hover img,
+.hero-portrait:focus-within img {
+  filter: none;
+  transform: scale(1.04);
+}
+.hero-portrait:hover .hero-vignette,
+.hero-portrait:focus-within .hero-vignette {
+  opacity: 0.45;
+}
+.hero-portrait:hover .hero-grain,
+.hero-portrait:focus-within .hero-grain {
+  opacity: 0.1;
+}
 
-.hero-photo:hover img,
-.hero-photo:focus-within img {
-  filter: grayscale(0) brightness(1) contrast(1);
-  transform: scale(1.07);
-}
-.hero-photo:hover .hero-tint,
-.hero-photo:focus-within .hero-tint {
-  opacity: 0;
-}
-.hero-photo:hover .hero-scrim,
-.hero-photo:focus-within .hero-scrim {
-  opacity: 0.55;
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait img,
+  .hero-grain,
+  .hero-vignette {
+    transition: none !important;
+  }
+  .hero-portrait:hover img,
+  .hero-portrait:focus-within img {
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -287,10 +348,7 @@ body {
   .cta-halo,
   .cta-orbit,
   .cta-orbit-rev,
-  .cta-pill,
-  .hero-photo img,
-  .hero-photo .hero-tint,
-  .hero-photo .hero-scrim {
+  .cta-pill {
     animation: none !important;
     transition: none !important;
   }
@@ -302,6 +360,6 @@ body {
   }
   /* Sans rotation, le faisceau figé masquerait la bordure : on la rend pleine. */
   .cta-beam {
-    background: rgba(168, 165, 255, 0.45);
+    background: color-mix(in srgb, var(--color-accent) 45%, transparent);
   }
 }

@@ -38,6 +38,23 @@ test('projects are reachable from the top bar', async ({ page }) => {
   await page.waitForURL(/\/projects$/);
 });
 
+test('the top bar names the site owner and carries no sound control', async ({ page }) => {
+  const nav = page.getByRole('navigation', { name: 'Navigation principale' });
+  // La place de gauche est celle de la marque : un visiteur arrivé de Google
+  // sur une page intérieure doit savoir chez qui il est avant le pied de page.
+  await expect(nav.getByRole('link', { name: 'Rémy Bourgeois' })).toHaveAttribute('href', '/');
+  // Hors /intro le moteur audio est coupé : un bouton son y était un contrôle
+  // sans effet, donc retiré.
+  await expect(nav.getByRole('button', { name: /son/i })).toHaveCount(0);
+});
+
+test('the hero offers a way to get in touch above the fold', async ({ page }) => {
+  // Le premier lien vers l'e-mail était en bas d'une page de 6 000 px.
+  const write = page.getByRole('link', { name: "M'écrire" }).first();
+  await expect(write).toBeVisible();
+  await expect(write).toHaveAttribute('href', /^mailto:/);
+});
+
 test('scroll-to-top button appears after scrolling', async ({ page }) => {
   const btn = page.getByRole('button', { name: /Remonter en haut/ });
   await expect(btn).toBeHidden();

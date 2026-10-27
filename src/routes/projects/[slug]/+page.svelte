@@ -3,7 +3,10 @@
   import type { PageData } from './$types';
   import Icon from '$lib/components/Icons.svelte';
   import Tag from '$lib/components/Tag.svelte';
-  import { sfx } from '$lib/actions/sfx';
+  import Button from '$lib/components/Button.svelte';
+  import PageShell from '$lib/components/PageShell.svelte';
+  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+  import PageCta from '$lib/components/PageCta.svelte';
   import {
     SITE_URL,
     SITE_NAME,
@@ -23,6 +26,12 @@
   const prev = $derived(data.prev);
   const next = $derived(data.next);
   const index = $derived(data.index);
+
+  const crumbs = $derived([
+    { name: 'Accueil', path: '/' },
+    { name: 'Projets', path: '/projects' },
+    { name: project.title, path: `/projects/${project.slug}` }
+  ]);
 
   // ── Slides : hero + galerie fusionnés dans un seul tableau ────────────────
   type Slide = {
@@ -144,6 +153,10 @@
   function lockScroll(lock: boolean) {
     if (typeof document !== 'undefined') document.body.style.overflow = lock ? 'hidden' : '';
   }
+
+  // Les flèches du carousel et de la lightbox partagent la même forme.
+  const arrowClass =
+    'w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-primary/30 hover:border-primary/50 transition-all disabled:opacity-20 disabled:pointer-events-none';
 </script>
 
 <svelte:window
@@ -183,11 +196,7 @@
   {@html `<script type="application/ld+json">${jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
-      breadcrumb([
-        { name: 'Accueil', path: '/' },
-        { name: 'Projets', path: '/projects' },
-        { name: project.title, path: `/projects/${project.slug}` }
-      ]),
+      breadcrumb(crumbs),
       {
         '@type': 'CreativeWork',
         '@id': `${SITE_URL}/projects/${project.slug}#work`,
@@ -215,7 +224,7 @@
 {#if lbOpen && lbSlide}
   <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-[300] bg-[#060609]/98 backdrop-blur-xl flex flex-col lb-enter"
+    class="fixed inset-0 z-[300] bg-overlay/98 backdrop-blur-xl flex flex-col lb-enter"
     onclick={closeLightbox}
     role="dialog"
     tabindex="-1"
@@ -231,7 +240,7 @@
       <div class="flex items-center gap-3">
         {#if lbBadge}
           <span
-            class="font-mono text-[10px] text-white/55 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full"
+            class="font-mono text-xs text-white/55 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full"
           >
             {lbBadge}
           </span>
@@ -250,31 +259,27 @@
       </button>
     </div>
 
-    <!-- Media + flèches -->
+    <!--
+      Les flèches sont posées PAR-DESSUS le média, pas à côté : en colonne
+      avec lui, elles lui prenaient 120 px de large à 390 px et la vidéo
+      finissait sur 230 px, plus petite que dans le carousel qu'on venait
+      d'agrandir.
+    -->
     <div
       role="none"
-      class="flex-1 flex items-center justify-center px-5 pb-5 gap-4 min-h-0"
+      class="relative flex-1 flex items-center justify-center px-2 sm:px-5 pb-5 min-h-0"
       onclick={(e) => e.stopPropagation()}
     >
-      {#if slides.length > 1}
-        <button
-          class="flex-shrink-0 w-10 h-10 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08]
-                 flex items-center justify-center text-white/60 hover:text-white transition-all
-                 disabled:opacity-20 disabled:pointer-events-none"
-          onclick={lbPrev}
-          disabled={lbIndex === 0}
-          aria-label="Précédent"
-        >
-          <Icon name="ArrowLeft" size={15} />
-        </button>
-      {/if}
-
       <div
-        class="relative flex-1 min-w-0 max-w-5xl min-h-0 max-h-full rounded-2xl overflow-hidden
-                  bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07]
-                  flex items-center justify-center p-6"
+        class="relative w-full max-w-5xl min-h-0 max-h-full rounded-2xl overflow-hidden
+                  bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07]
+                  flex items-center justify-center p-2 sm:p-6"
       >
         {#if lbSlide.type === 'video'}
+          <!-- Démo d'interface muette, sans parole ni son : une piste de
+               sous-titres n'aurait rien à transcrire. L'ancienne `<track>`
+               vide satisfaisait l'avertisseur sans servir personne. -->
+          <!-- svelte-ignore a11y_media_has_caption -->
           <!-- ds-allow-autoplay: la lightbox ne s'ouvre que sur un clic du visiteur -->
           <video
             src={lbSlide.src}
@@ -284,9 +289,7 @@
             width={lbSlide.width}
             height={lbSlide.height}
             class="max-w-full max-h-[78vh] object-contain rounded-xl"
-          >
-            <track kind="captions" src="" label="Captions" />
-          </video>
+          ></video>
         {:else}
           <img
             src={lbSlide.src}
@@ -302,9 +305,15 @@
 
       {#if slides.length > 1}
         <button
-          class="flex-shrink-0 w-10 h-10 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08]
-                 flex items-center justify-center text-white/60 hover:text-white transition-all
-                 disabled:opacity-20 disabled:pointer-events-none"
+          class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-10 {arrowClass}"
+          onclick={lbPrev}
+          disabled={lbIndex === 0}
+          aria-label="Précédent"
+        >
+          <Icon name="ArrowLeft" size={15} />
+        </button>
+        <button
+          class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-10 {arrowClass}"
           onclick={lbNext}
           disabled={lbIndex === slides.length - 1}
           aria-label="Suivant"
@@ -317,361 +326,352 @@
 {/if}
 
 <!-- ─── Page ──────────────────────────────────────────────────────────────── -->
-<main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-5xl mx-auto px-6 pt-28 pb-24">
-    <!-- Retour -->
-    <a
-      href="/projects"
-      use:sfx
-      class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-widest mb-14 transition-colors min-h-[44px]"
-    >
-      <Icon name="ArrowLeft" size={13} />
-      Tous les projets
-    </a>
+<PageShell>
+  <Breadcrumb items={crumbs} />
 
-    <!-- ── Header — Version A : Split 2 colonnes ────────────────────────── -->
-    <header
-      class="grid grid-cols-1 md:grid-cols-[1fr_200px] items-stretch pb-12 mb-14 border-b border-white/[0.06]"
-    >
-      <!-- Gauche : index + logo + tags -->
-      <div class="flex flex-col items-start gap-5">
-        <span class="font-mono text-[10px] text-[#a8a5ff] tracking-[0.15em]">
-          {String(index + 1).padStart(3, '0')}
-        </span>
+  <!--
+    Le H1 porte la hiérarchie visuelle : avant, le logo client faisait 56 px
+    de haut et le titre du projet, pourtant le H1, 20 px en blanc atténué. Ce
+    que la page annonce comme principal est maintenant ce qu'on voit en
+    premier ; le logo redevient une marque d'identification.
+  -->
+  <header
+    class="grid grid-cols-1 md:grid-cols-[1fr_200px] items-end pb-12 mb-14 border-b border-white/[0.06]"
+  >
+    <div class="flex flex-col items-start gap-5">
+      <span class="font-mono text-xs text-accent tracking-[0.15em]">
+        {String(index + 1).padStart(3, '0')}
+      </span>
 
-        {#if project.logo}
-          <img
-            src={project.logo}
-            alt={project.client}
-            class="h-14 w-auto object-contain brightness-0 invert opacity-90"
-            loading="eager"
-          />
-        {:else}
-          <span class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-none">
-            {project.client}
-          </span>
-        {/if}
-
-        <h1 class="text-xl md:text-2xl font-semibold text-white/80 leading-snug">
-          {project.title}
-        </h1>
-
-        {#if project.tags.length > 0}
-          <div class="flex flex-wrap gap-2">
-            {#each project.tags as tag}
-              <Tag>{tag}</Tag>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
-      <!-- Droite : rôle + année, ancrés en bas -->
-      {#if project.role || project.year}
-        <div
-          class="flex flex-row md:flex-col gap-6 md:gap-5
-                    md:justify-end md:pl-8 md:border-l md:border-white/[0.07]
-                    border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0"
-        >
-          {#if project.role}
-            <div>
-              <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-1">Rôle</div>
-              <div class="text-[13px] text-[#a8a5ff] font-medium leading-snug">{project.role}</div>
-            </div>
-          {/if}
-          {#if project.year}
-            <div>
-              <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-1">Année</div>
-              <div class="text-[13px] text-white/60 font-mono">{project.year}</div>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </header>
-
-    <!-- ── En bref ─────────────────────────────────────────────────────────── -->
-    <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
-    <section
-      aria-labelledby="en-bref-title"
-      class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
-    >
-      <h2
-        id="en-bref-title"
-        class="text-[11px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-5"
-      >
-        En bref
-      </h2>
-      <dl class="grid gap-5 md:grid-cols-3 md:gap-8">
-        <div>
-          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Contexte</dt>
-          <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
-        </div>
-        <div>
-          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">
-            Stack &amp; méthodes
-          </dt>
-          <dd>
-            <ul class="flex flex-wrap gap-2">
-              {#each project.summary.stack as item}
-                <Tag as="li">{item}</Tag>
-              {/each}
-            </ul>
-          </dd>
-        </div>
-        <div>
-          <dt class="text-[11px] uppercase tracking-[0.2em] text-[#a8a5ff] mb-2">Impact</dt>
-          <dd class="text-sm text-white/85 leading-relaxed font-medium">
-            {project.summary.impact}
-          </dd>
-        </div>
-      </dl>
-    </section>
-
-    <!-- ── Carousel ──────────────────────────────────────────────────────── -->
-    {#if slides.length > 0}
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div
-        class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07] group"
-        ontouchstart={onTouchStart}
-        ontouchend={onTouchEnd}
-      >
-        <!-- Track -->
-        <div
-          bind:this={carTrack}
-          class="flex"
-          style="transform: translateX(-{carIndex *
-            100}%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
-        >
-          {#each slides as slide, i}
-            <button
-              class="flex-[0_0_100%] flex items-center justify-center p-4 sm:p-6 md:p-10 min-h-[260px] sm:min-h-[380px] md:min-h-[500px] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#706bfe]"
-              onclick={(e) => openSlide(i, e.currentTarget as HTMLButtonElement)}
-              tabindex={i === carIndex ? 0 : -1}
-              aria-hidden={i === carIndex ? undefined : 'true'}
-              aria-label="Voir {slide.caption ?? `le visuel ${i + 1}`} en plein écran"
-            >
-              {#if slide.type === 'video'}
-                <video
-                  src={slide.src}
-                  poster={slide.poster}
-                  preload="none"
-                  loop
-                  muted
-                  playsinline
-                  aria-hidden="true"
-                  width={slide.width}
-                  height={slide.height}
-                  class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
-                ></video>
-              {:else}
-                <img
-                  src={slide.src}
-                  srcset={projectSrcset(slide.src)}
-                  sizes="(min-width: 1024px) 1024px, 100vw"
-                  alt={slide.caption ?? ''}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  width={slide.width}
-                  height={slide.height}
-                  class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
-                />
-              {/if}
-            </button>
-          {/each}
-        </div>
-
-        <!-- Badge slide x/n -->
-        {#if slides.length > 1}
-          <div
-            class="absolute top-4 right-4 font-mono text-[10px] text-white/55 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none"
-          >
-            {carIndex + 1} / {slides.length}
-          </div>
-        {/if}
-
-        <!-- Plein écran hint (hover desktop) -->
-        <div
-          class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        >
-          <div
-            class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white text-xs font-medium"
-          >
-            <Icon name="Maximize2" size={13} /> Plein écran
-          </div>
-        </div>
-
-        <!-- Flèches de navigation -->
-        {#if slides.length > 1}
-          <button
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full
-                   bg-black/40 backdrop-blur-sm border border-white/10
-                   flex items-center justify-center text-white/50
-                   hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
-                   transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-            onclick={(e) => {
-              e.stopPropagation();
-              carPrev();
-            }}
-            aria-label="Précédent"
-          >
-            <Icon name="ArrowLeft" size={16} />
-          </button>
-          <button
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full
-                   bg-black/40 backdrop-blur-sm border border-white/10
-                   flex items-center justify-center text-white/50
-                   hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
-                   transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-            onclick={(e) => {
-              e.stopPropagation();
-              carNext();
-            }}
-            aria-label="Suivant"
-          >
-            <Icon name="ArrowRight" size={16} />
-          </button>
-        {/if}
-      </div>
-
-      <!-- Dots -->
-      {#if slides.length > 1}
-        <!--
-          La pastille reste fine, mais le bouton qui la porte fait 24 px de
-          haut : une cible de 5 px est invisable au doigt. La barre est un
-          <span> décoratif, la zone sensible est le <button> autour.
-        -->
-        <div class="flex justify-center items-center gap-1 pt-2 mb-14">
-          {#each slides as _, i}
-            <button
-              class="h-6 px-1 flex items-center border-none bg-transparent p-0 cursor-pointer"
-              onclick={() => carGo(i)}
-              aria-label="Aller au visuel {i + 1}"
-              aria-current={i === carIndex ? 'true' : undefined}
-            >
-              <span
-                class="block h-[5px] rounded-full transition-all duration-300
-                       {i === carIndex ? 'w-[22px] bg-[#706bfe]' : 'w-[5px] bg-white/[0.18]'}"
-                aria-hidden="true"
-              ></span>
-            </button>
-          {/each}
-        </div>
+      {#if project.logo}
+        <img
+          src={project.logo}
+          alt={project.client}
+          class="h-7 w-auto object-contain brightness-0 invert opacity-80"
+          loading="eager"
+        />
       {:else}
-        <div class="mb-14"></div>
+        <span class="eyebrow text-white/60">{project.client}</span>
       {/if}
-    {:else}
-      <!-- Placeholder si aucun media -->
+
+      <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.05]">
+        {project.title}
+      </h1>
+
+      {#if project.tags.length > 0}
+        <div class="flex flex-wrap gap-2">
+          {#each project.tags as tag (tag)}
+            <Tag>{tag}</Tag>
+          {/each}
+        </div>
+      {/if}
+    </div>
+
+    <!-- Droite : rôle + année, ancrés en bas -->
+    {#if project.role || project.year}
       <div
-        class="rounded-3xl bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07] min-h-[300px] flex items-center justify-center mb-14"
+        class="flex flex-row md:flex-col gap-6 md:gap-5
+                  md:justify-end md:pl-8 md:border-l md:border-white/[0.07]
+                  border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0"
       >
-        <span class="text-xs uppercase tracking-[0.4em] text-white/50 font-medium">Bientôt</span>
+        {#if project.role}
+          <div>
+            <div class="eyebrow text-white/60 mb-1">Rôle</div>
+            <div class="text-sm text-accent font-medium leading-snug">{project.role}</div>
+          </div>
+        {/if}
+        {#if project.year}
+          <div>
+            <div class="eyebrow text-white/60 mb-1">Année</div>
+            <div class="text-sm text-white/60 font-mono">{project.year}</div>
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </header>
+
+  <!-- ── En bref ─────────────────────────────────────────────────────────── -->
+  <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
+  <section
+    aria-labelledby="en-bref-title"
+    class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
+  >
+    <h2 id="en-bref-title" class="eyebrow text-white/60 mb-5">En bref</h2>
+    <dl class="grid gap-5 md:grid-cols-3 md:gap-8">
+      <div>
+        <dt class="eyebrow text-white/60 mb-2">Contexte</dt>
+        <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
+      </div>
+      <div>
+        <dt class="eyebrow text-white/60 mb-2">Stack &amp; méthodes</dt>
+        <dd>
+          <ul class="flex flex-wrap gap-2">
+            {#each project.summary.stack as item (item)}
+              <Tag as="li">{item}</Tag>
+            {/each}
+          </ul>
+        </dd>
+      </div>
+      <div>
+        <dt class="eyebrow text-accent mb-2">Impact</dt>
+        <dd class="text-sm text-white/85 leading-relaxed font-medium">
+          {project.summary.impact}
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ── Carousel ──────────────────────────────────────────────────────── -->
+  {#if slides.length > 0}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07] group"
+      ontouchstart={onTouchStart}
+      ontouchend={onTouchEnd}
+    >
+      <!-- Track -->
+      <div
+        bind:this={carTrack}
+        class="flex"
+        style="transform: translateX(-{carIndex *
+          100}%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
+      >
+        {#each slides as slide, i (slide.src)}
+          <button
+            class="flex-[0_0_100%] flex items-center justify-center p-4 sm:p-6 md:p-10 min-h-[260px] sm:min-h-[380px] md:min-h-[500px] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+            onclick={(e) => openSlide(i, e.currentTarget as HTMLButtonElement)}
+            tabindex={i === carIndex ? 0 : -1}
+            aria-hidden={i === carIndex ? undefined : 'true'}
+            aria-label="Voir {slide.caption ?? `le visuel ${i + 1}`} en plein écran"
+          >
+            {#if slide.type === 'video'}
+              <video
+                src={slide.src}
+                poster={slide.poster}
+                preload="none"
+                loop
+                muted
+                playsinline
+                aria-hidden="true"
+                width={slide.width}
+                height={slide.height}
+                class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
+              ></video>
+            {:else}
+              <img
+                src={slide.src}
+                srcset={projectSrcset(slide.src)}
+                sizes="(min-width: 1024px) 1024px, 100vw"
+                alt={slide.caption ?? ''}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                width={slide.width}
+                height={slide.height}
+                class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
+              />
+            {/if}
+          </button>
+        {/each}
+      </div>
+
+      <!-- Badge slide x/n -->
+      {#if slides.length > 1}
+        <div
+          class="absolute top-4 right-4 font-mono text-xs text-white/55 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none"
+        >
+          {carIndex + 1} / {slides.length}
+        </div>
+      {/if}
+
+      <!-- Plein écran hint (hover desktop) -->
+      <div
+        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+      >
+        <div
+          class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white text-xs font-medium"
+        >
+          <Icon name="Maximize2" size={13} /> Plein écran
+        </div>
+      </div>
+
+      <!--
+        Flèches de navigation. Révélées au survol sur un appareil à pointeur,
+        toujours visibles au toucher : `group-hover` n'existe pas sur un
+        téléphone, et le balayage seul n'annonce pas qu'il y a une suite.
+      -->
+      {#if slides.length > 1}
+        <button
+          class="absolute left-4 top-1/2 -translate-y-1/2 z-10 {arrowClass} opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+          onclick={(e) => {
+            e.stopPropagation();
+            carPrev();
+          }}
+          aria-label="Précédent"
+        >
+          <Icon name="ArrowLeft" size={16} />
+        </button>
+        <button
+          class="absolute right-4 top-1/2 -translate-y-1/2 z-10 {arrowClass} opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+          onclick={(e) => {
+            e.stopPropagation();
+            carNext();
+          }}
+          aria-label="Suivant"
+        >
+          <Icon name="ArrowRight" size={16} />
+        </button>
+      {/if}
+    </div>
+
+    <!-- Dots -->
+    {#if slides.length > 1}
+      <!--
+        La pastille reste fine, mais le bouton qui la porte fait 24 px de
+        haut : une cible de 5 px est invisable au doigt. La barre est un
+        <span> décoratif, la zone sensible est le <button> autour. Les
+        pastilles inactives sont à 35 % de blanc : 18 % restait sous les 3:1
+        du contraste non textuel (WCAG 1.4.11), qu'axe ne mesure pas.
+      -->
+      <div class="flex justify-center items-center gap-1 pt-2 mb-14">
+        {#each slides as _, i (i)}
+          <button
+            class="h-6 px-1 flex items-center border-none bg-transparent p-0 cursor-pointer"
+            onclick={() => carGo(i)}
+            aria-label="Aller au visuel {i + 1}"
+            aria-current={i === carIndex ? 'true' : undefined}
+          >
+            <span
+              class="block h-[5px] rounded-full transition-all duration-300
+                     {i === carIndex ? 'w-[22px] bg-primary' : 'w-[5px] bg-white/35'}"
+              aria-hidden="true"
+            ></span>
+          </button>
+        {/each}
+      </div>
+    {:else}
+      <div class="mb-14"></div>
+    {/if}
+  {:else}
+    <!-- Placeholder si aucun media -->
+    <div
+      class="rounded-3xl bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07] min-h-[300px] flex items-center justify-center mb-14"
+    >
+      <span class="eyebrow text-white/50">Bientôt</span>
+    </div>
+  {/if}
+
+  <!-- ── Contexte ────────────────────────────────────────────────────────── -->
+  <!-- La page a la largeur des autres ; c'est ce bloc qui tient la mesure
+       du texte, à 46 rem comme l'accroche des en-têtes. -->
+  <div class="mb-14 flex flex-col gap-10 max-w-[46rem]">
+    <!-- Description principale -->
+    <div class="pl-5 border-l border-white/[0.1]">
+      <h2 class="eyebrow text-white/60 mb-4">Contexte</h2>
+      <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
+        {@html md(project.description)}
+      </p>
+      {#if project.url}
+        <div class="mt-6">
+          <Button href={project.url} variant="secondary" size="sm" iconLeft="ExternalLink" external>
+            Voir le projet en ligne
+          </Button>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Challenge -->
+    {#if project.challenge}
+      <div class="pl-5 border-l-2 border-primary/50">
+        <h2 class="eyebrow text-accent mb-4">Challenge</h2>
+        <p class="project-text text-white/60 text-base leading-[1.85]">
+          {@html md(project.challenge)}
+        </p>
       </div>
     {/if}
 
-    <!-- ── Contexte ────────────────────────────────────────────────────────── -->
-    <div class="mb-14 flex flex-col gap-10">
-      <!-- Description principale -->
-      <div class="pl-5 border-l border-white/[0.1]">
-        <h2 class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">
-          Contexte
-        </h2>
-        <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
-          {@html md(project.description)}
+    <!-- Résultat -->
+    {#if project.outcome}
+      <div class="pl-5 border-l-2 border-emerald-400/50">
+        <h2 class="eyebrow text-emerald-400/70 mb-4">Résultat</h2>
+        <p class="project-text text-white/60 text-base leading-[1.85]">
+          {@html md(project.outcome)}
         </p>
-        {#if project.url}
-          <a
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            use:sfx
-            class="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-sm transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-          >
-            <Icon name="ExternalLink" size={14} /> Voir le projet en ligne
-          </a>
-        {/if}
       </div>
-
-      <!-- Challenge -->
-      {#if project.challenge}
-        <div class="pl-5 border-l-2 border-[#706bfe]/50">
-          <h2 class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">
-            Challenge
-          </h2>
-          <p class="project-text text-white/60 text-base leading-[1.85]">
-            {@html md(project.challenge)}
-          </p>
-        </div>
-      {/if}
-
-      <!-- Résultat -->
-      {#if project.outcome}
-        <div class="pl-5 border-l-2 border-emerald-400/50">
-          <h2 class="text-[9px] uppercase tracking-[0.25em] text-emerald-400/70 font-semibold mb-4">
-            Résultat
-          </h2>
-          <p class="project-text text-white/60 text-base leading-[1.85]">
-            {@html md(project.outcome)}
-          </p>
-        </div>
-      {/if}
-    </div>
-
-    <!-- ── Prev / Next ─────────────────────────────────────────────────────── -->
-    <div class="border-t border-white/[0.08] pt-10 flex flex-col sm:flex-row gap-4 justify-between">
-      {#if prev}
-        <a
-          href="/projects/{prev.slug}"
-          use:sfx
-          class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]
-                 hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 group
-                 flex-1 sm:flex-none sm:max-w-[240px] min-h-[60px]
-                 focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-        >
-          <Icon
-            name="ArrowLeft"
-            size={15}
-            className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
-          />
-          <div class="min-w-0">
-            <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
-            <div
-              class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
-            >
-              {prev.title}
-            </div>
-          </div>
-        </a>
-      {:else}
-        <div></div>
-      {/if}
-
-      {#if next}
-        <a
-          href="/projects/{next.slug}"
-          use:sfx
-          class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]
-                 hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 group
-                 flex-1 sm:flex-none sm:max-w-[240px] justify-end text-right min-h-[60px]
-                 focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-        >
-          <div class="min-w-0">
-            <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
-            <div
-              class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
-            >
-              {next.title}
-            </div>
-          </div>
-          <Icon
-            name="ArrowRight"
-            size={15}
-            className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
-          />
-        </a>
-      {:else}
-        <div></div>
-      {/if}
-    </div>
+    {/if}
   </div>
-</main>
+
+  <!-- ── Prev / Next ─────────────────────────────────────────────────────── -->
+  <nav
+    aria-label="Autres études de cas"
+    class="border-t border-white/[0.08] pt-10 flex flex-col sm:flex-row gap-4 justify-between"
+  >
+    {#if prev}
+      <a
+        href="/projects/{prev.slug}"
+        class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]
+               hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 group
+               flex-1 sm:flex-none sm:max-w-[240px] min-h-[60px]
+               focus-visible:ring-2 focus-visible:ring-primary"
+      >
+        <Icon
+          name="ArrowLeft"
+          size={15}
+          className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
+        />
+        <div class="min-w-0">
+          <div class="eyebrow text-white/60 mb-0.5">Précédent</div>
+          <div
+            class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
+          >
+            {prev.title}
+          </div>
+        </div>
+      </a>
+    {:else}
+      <div></div>
+    {/if}
+
+    {#if next}
+      <a
+        href="/projects/{next.slug}"
+        class="flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]
+               hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 group
+               flex-1 sm:flex-none sm:max-w-[240px] justify-end text-right min-h-[60px]
+               focus-visible:ring-2 focus-visible:ring-primary"
+      >
+        <div class="min-w-0">
+          <div class="eyebrow text-white/60 mb-0.5">Suivant</div>
+          <div
+            class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
+          >
+            {next.title}
+          </div>
+        </div>
+        <Icon
+          name="ArrowRight"
+          size={15}
+          className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
+        />
+      </a>
+    {:else}
+      <div></div>
+    {/if}
+  </nav>
+
+  <!-- La page se terminait sur « Suivant » : le parcours de conversion
+       s'arrêtait là où il devrait aboutir. -->
+  <div class="mt-20">
+    <PageCta
+      title="Un projet qui ressemble à celui-là ?"
+      secondaryHref="/accompagnement"
+      secondaryLabel="Voir comment je travaille"
+      secondaryIcon="ArrowRight"
+    >
+      {#snippet lede()}
+        Design systems, assistants IA et interfaces complexes. Dites-moi le vôtre.
+      {/snippet}
+    </PageCta>
+  </div>
+</PageShell>
 
 <style>
   .lb-enter {

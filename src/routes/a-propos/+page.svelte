@@ -2,9 +2,10 @@
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
   import Icon from '$lib/components/Icons.svelte';
+  import PageShell from '$lib/components/PageShell.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
+  import SectionTitle from '$lib/components/SectionTitle.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
-  import { sfx } from '$lib/actions/sfx';
   import {
     SITE_URL,
     SITE_NAME,
@@ -19,35 +20,47 @@
   import { jsonLd } from '$lib/utils/text';
 
   /**
-   * Repères datés. Chaque entrée est une affirmation autonome et vérifiable —
+   * Repères datés. Chaque entrée est une affirmation autonome et vérifiable :
    * c'est la forme qu'un moteur génératif peut citer hors de son contexte,
    * contrairement à une prose allusive à la première personne.
+   *
+   * `cases` nomme chaque étude de cas liée : quatre liens « Voir l'étude de
+   * cas » identiques ne se distinguaient pas dans la liste des liens d'un
+   * lecteur d'écran, et l'entrée iPify et Highlight n'en liait qu'une.
    */
   const TIMELINE = [
     {
       period: '2013 – 2020',
       title: 'Designer d’interaction, Aldebaran Robotics',
       body: 'Sept ans à concevoir les comportements et les interactions de NAO et Pepper, les robots humanoïdes les plus déployés au monde. Applications embarquées sur des milliers de robots dans plus de 70 pays, en retail, en gare et en aéroport. Design conversationnel, scénarisation vocale et sound design, dix ans avant l’arrivée des LLM.',
-      slug: 'aldebaran'
+      cases: [{ slug: 'aldebaran', name: 'Aldebaran' }]
     },
     {
       period: 'Déc. 2021 – nov. 2024',
       title: 'Lead UI et référent design system, Crédit Agricole',
       body: 'Trois ans sur l’un des plus vastes écosystèmes digitaux d’Europe : site institutionnel, application « Ma Banque » et outils conseillers. Architecture de design tokens pour gérer la déclinaison multi-marques des caisses régionales. Design system adopté par plus de 15 équipes produit, application utilisée par plus de 30 millions de personnes chaque mois.',
-      slug: 'credit-agricole'
+      cases: [{ slug: 'credit-agricole', name: 'Crédit Agricole' }]
     },
     {
       period: 'Sept. 2024 – août 2025',
       title: 'Lead Design System, iPify et Highlight',
       body: 'Deux missions menées en parallèle, quelques jours par semaine chacune. Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
-      slug: 'ipify'
+      cases: [
+        { slug: 'ipify', name: 'iPify' },
+        { slug: 'highlight', name: 'Highlight' }
+      ]
     },
     {
       period: 'Mars 2025 – oct. 2026',
       title: 'Premier designer, Ofelia',
       body: 'Seul designer d’une suite d’orchestration IA gouvernée, construite à partir d’une page blanche. Le produit, un assistant agentique, s’intègre directement dans Slack et Teams. C’est sur ce projet que le rôle a basculé vers le design engineering : plus de maquette statique, des Pull Requests ouvertes directement dans le dépôt et revues par un développeur front.',
-      slug: 'ofelia'
+      cases: [{ slug: 'ofelia', name: 'Ofelia' }]
     }
+  ];
+
+  const CRUMBS = [
+    { name: 'Accueil', path: '/' },
+    { name: 'À propos', path: '/a-propos' }
   ];
 </script>
 
@@ -87,10 +100,7 @@
   {@html `<script type="application/ld+json">${jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
-      breadcrumb([
-        { name: 'Accueil', path: '/' },
-        { name: 'À propos', path: '/a-propos' }
-      ]),
+      breadcrumb(CRUMBS),
       {
         '@type': 'AboutPage',
         '@id': SITE_URL + '/a-propos#webpage',
@@ -106,153 +116,136 @@
   })}<\/script>`}
 </svelte:head>
 
-<main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
-    <!--
-      Le portrait passe à DROITE du bloc de titre : devant, il décalait le H1
-      et cette page était la seule dont le titre ne démarrait pas au bord du
-      conteneur. L'accroche est raccourcie pour tenir dans la même hauteur
-      d'en-tête que les deux autres pages ; la nuance sur la relecture des PR
-      rejoint le fil conducteur, où elle était de toute façon déjà à moitié.
-    -->
-    <PageHeader title="À propos">
-      {#snippet lede()}
-        <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer freelance,
-        basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces pour des produits
-        complexes, et les implémente lui-même dans le dépôt.
-      {/snippet}
-      {#snippet media()}
-        <img
-          src="/assets/remy-bourgeois.webp"
-          alt="Portrait de Rémy Bourgeois"
-          width="500"
-          height="500"
-          class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
-          loading="eager"
-        />
-      {/snippet}
-    </PageHeader>
+<PageShell>
+  <!-- Le nom dans le H1 : c'est le titre que les moteurs génératifs citent,
+       et « À propos » seul ne dit pas de qui. -->
+  <PageHeader title="À propos de Rémy Bourgeois" crumbs={CRUMBS}>
+    {#snippet lede()}
+      <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer freelance,
+      basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces pour des produits
+      complexes, et les implémente lui-même dans le dépôt.
+    {/snippet}
+    {#snippet media()}
+      <img
+        src="/assets/remy-bourgeois.webp"
+        alt="Portrait de Rémy Bourgeois"
+        width="500"
+        height="500"
+        class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover shadow-lift"
+        loading="eager"
+      />
+    {/snippet}
+  </PageHeader>
 
-    <!-- ── Le fil ───────────────────────────────────────────────────────── -->
-    <section class="mb-20" aria-labelledby="fil-title">
-      <h2
-        id="fil-title"
-        class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4"
-      >
-        <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Le fil conducteur
-      </h2>
-      <div
-        class="body-text flex flex-col gap-5 max-w-4xl text-white/70 text-base md:text-[1.05rem] leading-[1.85]"
-      >
-        <p>
-          Le point de départ n'est pas un écran, c'est un <strong>robot</strong>. Pendant sept ans
-          chez Aldebaran, la question n'était pas « où placer ce bouton » mais « comment une machine
-          peut-elle se rendre compréhensible à quelqu'un qui ne l'a jamais vue ». Concevoir pour un
-          corps dans l'espace, dans une gare bruyante, oblige à penser l'interaction avant
-          l'interface.
-        </p>
-        <p>
-          Ce terrain a laissé deux héritages. Le premier est le <strong
-            >design conversationnel</strong
-          >
-          : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se trompe.
-          Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
-          <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est resté
-          une pratique personnelle, sous le même nom, en musique.
-        </p>
-        <p>
-          Les années suivantes ont ajouté l'échelle. Le Crédit Agricole a imposé la rigueur des
-          <strong>design systems</strong> opérés par des dizaines d'équipes. iPify et Highlight ont ajouté
-          la contrainte du SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle : un assistant
-          IA à concevoir de zéro, et un mode de travail où le design ne s'arrête plus à la maquette.
-        </p>
-        <p>
-          C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants
-          sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le
-          designer et revues par un développeur front. Il n'y a plus de traduction entre l'intention
-          et l'implémentation, donc plus de perte. Je ne me présente pas pour autant comme
-          développeur : chacune de mes Pull Requests est relue avant la mise en production. Ce mode
-          de travail ne convient pas à toutes les équipes : il suppose un dépôt, une revue, et
-          quelqu'un qui accepte de relire.
-        </p>
-      </div>
-    </section>
-
-    <!-- ── Parcours ─────────────────────────────────────────────────────── -->
-    <section class="mb-20" aria-labelledby="parcours-title">
-      <h2
-        id="parcours-title"
-        class="text-xs uppercase tracking-widest text-white/50 mb-10 font-semibold flex items-center gap-4"
-      >
-        <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Parcours
-      </h2>
-
-      <ol class="flex flex-col gap-8 max-w-4xl">
-        {#each TIMELINE as step}
-          <!-- RevealOnScroll rend un <div> : il doit vivre DANS le <li>, sinon
-               l'<ol> a des enfants directs invalides (axe: list / listitem). -->
-          <li class="pl-5 border-l-2 border-[#706bfe]/50">
-            <RevealOnScroll>
-              <p class="text-[10px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-2">
-                {step.period}
-              </p>
-              <h3 class="text-lg font-semibold mb-3">{step.title}</h3>
-              <p class="text-sm md:text-base text-white/65 leading-[1.85] mb-4">{step.body}</p>
-              <a
-                href="/projects/{step.slug}"
-                use:sfx
-                class="inline-flex items-center gap-2 text-xs text-[#a8a5ff] hover:text-white transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#706bfe] rounded-full"
-              >
-                Voir l'étude de cas <Icon name="ArrowRight" size={12} />
-              </a>
-            </RevealOnScroll>
-          </li>
-        {/each}
-      </ol>
-    </section>
-
-    <!-- ── Ailleurs ─────────────────────────────────────────────────────── -->
-    <section class="mb-20" aria-labelledby="ailleurs-title">
-      <h2
-        id="ailleurs-title"
-        class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4"
-      >
-        <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ailleurs sur le web
-      </h2>
-      <p class="text-white/65 text-sm leading-[1.85] mb-6">
-        Plusieurs personnes portent ce nom. Les profils ci-dessous sont les miens, y compris le
-        versant musique et sound design, qui vient directement des années passées en robotique.
-      </p>
-      <ul class="flex flex-wrap gap-3">
-        {#each PROFILES as url}
-          <li>
-            <a
-              href={url}
-              target="_blank"
-              rel="me noopener noreferrer"
-              use:sfx
-              class="inline-flex items-center gap-2 px-4 py-3 rounded-full border border-white/15 hover:border-white/35
-                     text-white/60 hover:text-white text-xs transition-colors min-h-[44px]
-                     focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-            >
-              <Icon name="ExternalLink" size={12} />
-              {new URL(url).hostname.replace(/^www\./, '')}
-            </a>
-          </li>
-        {/each}
-      </ul>
-    </section>
-
-    <!-- ── Contact ──────────────────────────────────────────────────────── -->
-    <PageCta
-      title="Parlons-en"
-      secondaryHref="/projects"
-      secondaryLabel="Voir les projets"
-      secondaryIcon="ArrowRight"
+  <!-- ── Le fil ───────────────────────────────────────────────────────── -->
+  <section class="mb-20" aria-labelledby="fil-title">
+    <SectionTitle id="fil-title" class="mb-8">Le fil conducteur</SectionTitle>
+    <div
+      class="body-text flex flex-col gap-5 max-w-4xl text-white/70 text-base md:text-[1.05rem] leading-[1.85]"
     >
-      {#snippet lede()}
-        Un projet, une question, ou juste l'envie d'échanger sur le design d'interfaces IA.
-      {/snippet}
-    </PageCta>
-  </div>
-</main>
+      <p>
+        Le point de départ n'est pas un écran, c'est un <strong>robot</strong>. Pendant sept ans
+        chez Aldebaran, la question n'était pas « où placer ce bouton » mais « comment une machine
+        peut-elle se rendre compréhensible à quelqu'un qui ne l'a jamais vue ». Concevoir pour un
+        corps dans l'espace, dans une gare bruyante, oblige à penser l'interaction avant
+        l'interface.
+      </p>
+      <p>
+        Ce terrain a laissé deux héritages. Le premier est le <strong>design conversationnel</strong
+        >
+        : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se trompe.
+        Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
+        <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est resté
+        une pratique personnelle, sous le même nom, en musique.
+      </p>
+      <p>
+        Les années suivantes ont ajouté l'échelle. Le Crédit Agricole a imposé la rigueur des
+        <strong>design systems</strong> opérés par des dizaines d'équipes. iPify et Highlight ont ajouté
+        la contrainte du SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle : un assistant IA
+        à concevoir de zéro, et un mode de travail où le design ne s'arrête plus à la maquette.
+      </p>
+      <p>
+        C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants
+        sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le designer
+        et revues par un développeur front. Il n'y a plus de traduction entre l'intention et
+        l'implémentation, donc plus de perte. Je ne me présente pas pour autant comme développeur :
+        chacune de mes Pull Requests est relue avant la mise en production. Ce mode de travail ne
+        convient pas à toutes les équipes : il suppose un dépôt, une revue, et quelqu'un qui accepte
+        de relire.
+      </p>
+      <p>
+        Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
+        bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus
+        qu'une <strong>seule source de vérité</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Parcours ─────────────────────────────────────────────────────── -->
+  <section class="mb-20" aria-labelledby="parcours-title">
+    <SectionTitle id="parcours-title" class="mb-10">Parcours</SectionTitle>
+
+    <ol class="flex flex-col gap-8 max-w-4xl">
+      {#each TIMELINE as step (step.period)}
+        <!-- RevealOnScroll rend un <div> : il doit vivre DANS le <li>, sinon
+             l'<ol> a des enfants directs invalides (axe: list / listitem). -->
+        <li class="pl-5 border-l-2 border-primary/50">
+          <RevealOnScroll>
+            <p class="eyebrow text-accent mb-2">{step.period}</p>
+            <h3 class="text-lg font-semibold mb-3">{step.title}</h3>
+            <p class="text-sm md:text-base text-white/65 leading-[1.85] mb-4">{step.body}</p>
+            <div class="flex flex-wrap gap-x-6">
+              {#each step.cases as c (c.slug)}
+                <a
+                  href="/projects/{c.slug}"
+                  class="inline-flex items-center gap-2 text-xs text-accent hover:text-white transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+                >
+                  Étude de cas {c.name}
+                  <Icon name="ArrowRight" size={12} />
+                </a>
+              {/each}
+            </div>
+          </RevealOnScroll>
+        </li>
+      {/each}
+    </ol>
+  </section>
+
+  <!-- ── Ailleurs ─────────────────────────────────────────────────────── -->
+  <section class="mb-20" aria-labelledby="ailleurs-title">
+    <SectionTitle id="ailleurs-title" class="mb-8">Ailleurs sur le web</SectionTitle>
+    <p class="text-white/65 text-sm leading-[1.85] mb-6">
+      Plusieurs personnes portent ce nom. Les profils ci-dessous sont les miens, y compris le
+      versant musique et sound design, qui vient directement des années passées en robotique.
+    </p>
+    <ul class="flex flex-wrap gap-3">
+      {#each PROFILES as url (url)}
+        <li>
+          <a
+            href={url}
+            target="_blank"
+            rel="me noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-3 rounded-full border border-white/15 hover:border-white/35
+                   text-white/60 hover:text-white text-xs transition-colors min-h-[44px]
+                   focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <Icon name="ExternalLink" size={12} />
+            {new URL(url).hostname.replace(/^www\./, '')}
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <!-- ── Contact ──────────────────────────────────────────────────────── -->
+  <PageCta
+    title="Parlons-en"
+    secondaryHref="/projects"
+    secondaryLabel="Voir les projets"
+    secondaryIcon="ArrowRight"
+  >
+    {#snippet lede()}
+      Un projet, une question, ou juste l'envie d'échanger sur le design d'interfaces IA.
+    {/snippet}
+  </PageCta>
+</PageShell>

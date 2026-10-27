@@ -9,7 +9,7 @@ Une expérience immersive (intro WebGL) suivie d'études de cas, en SvelteKit pr
 
 - **SvelteKit 2** (Svelte 5 runes) + **adapter-static** — site 100 % prérendu
 - **Tailwind CSS v4**
-- **Three.js** — scène de particules de l'intro (chargée uniquement sur `/`)
+- **Three.js** — scène de particules de l'intro (chargée uniquement sur `/intro`)
 - **TypeScript** · **Playwright** (tests e2e)
 - Déploiement **Netlify**
 
@@ -26,7 +26,7 @@ npm run test:e2e   # tests end-to-end (Playwright)
 
 ## Structure
 
-- `src/routes/` — pages : `/` (intro), `/home`, `/projects`, `/projects/[slug]`
+- `src/routes/` — pages : `/` (accueil), `/intro`, `/projects`, `/projects/[slug]`, `/accompagnement`, `/a-propos`
 - `src/lib/components/` — composants (IntroScene, Nav, …)
 - `src/lib/data/` — contenu (projets, témoignages, expertises…)
 - `static/assets/` — médias (images WebP, audio MP3, vidéos)

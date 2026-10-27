@@ -1,8 +1,7 @@
 <!-- src/lib/components/PageHeader.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import { sfx } from '$lib/actions/sfx';
+  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 
   /**
    * En-tête commun à Projets, Accompagnement et À propos. Les trois pages
@@ -15,30 +14,25 @@
    *
    * `min-h` sur la rangée : c'est ce qui garantit que le contenu démarre au
    * même pixel, que l'accroche tienne sur une ou trois lignes.
+   *
+   * `crumbs` est le même tableau que celui du JSON-LD de la page : le fil
+   * d'Ariane visible remplace l'ancien lien « Retour », qui doublonnait la
+   * barre permanente.
    */
   let {
     title,
-    backHref = '/',
-    backLabel = 'Retour',
+    crumbs,
     lede,
     media
   }: {
     title: string;
-    backHref?: string;
-    backLabel?: string;
+    crumbs: { name: string; path: string }[];
     lede?: Snippet;
     media?: Snippet;
   } = $props();
 </script>
 
-<a
-  href={backHref}
-  use:sfx
-  class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]"
->
-  <Icon name="ArrowLeft" size={14} />
-  {backLabel}
-</a>
+<Breadcrumb items={crumbs} />
 
 <header class="mb-14 pb-10 border-b border-white/10">
   <div class="flex flex-col md:flex-row md:items-start gap-8 md:min-h-[180px]">

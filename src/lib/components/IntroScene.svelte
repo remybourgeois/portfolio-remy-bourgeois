@@ -839,7 +839,7 @@
       {#key isMuted}
         <div class="w-2 h-2 rounded-full {isMuted ? 'bg-red-500' : 'bg-emerald-400'}"></div>
       {/key}
-      <span class="text-[10px] uppercase tracking-widest font-medium text-white/70">
+      <span class="text-xs uppercase tracking-widest font-medium text-white/70">
         Sound Experience {isMuted ? 'OFF' : 'ON'}
       </span>
       <Icon name={isMuted ? 'SpeakerOff' : 'Speaker'} size={14} className="text-white/50" />
@@ -852,7 +852,7 @@
     -->
     <a
       href="/"
-      class="w-full md:w-auto text-center px-5 py-2.5 rounded-xl text-[10px] uppercase tracking-widest
+      class="w-full md:w-auto text-center px-5 py-2.5 rounded-xl text-xs uppercase tracking-widest
              font-medium text-white/60 hover:text-white border border-transparent hover:border-white/10
              transition-colors focus-visible:ring-2 focus-visible:ring-[#706bfe] focus:outline-none"
     >
@@ -902,12 +902,9 @@
         >
       </div>
       <div class="flex flex-col pr-3 sm:pr-4 text-left min-w-0">
-        <span class="text-white/70 text-[9px] sm:text-[10px] uppercase tracking-wider truncate"
-          >Création du Lien</span
+        <span class="text-white/70 text-xs uppercase tracking-wider truncate">Création du Lien</span
         >
-        <span class="font-medium text-[11px] sm:text-xs text-white truncate"
-          >Appuyez pour découvrir</span
-        >
+        <span class="font-medium text-xs text-white truncate">Appuyez pour découvrir</span>
       </div>
     </button>
   </div>
@@ -954,7 +951,7 @@
         DESIGNING<br />INTENTIONS
       </h1>
       <span
-        class="text-[10px] text-white mt-8 block uppercase tracking-[0.3em] [text-shadow:0_1px_12px_rgba(0,0,0,1),0_0_30px_rgba(0,0,0,0.8)]"
+        class="text-xs text-white mt-8 block uppercase tracking-[0.3em] [text-shadow:0_1px_12px_rgba(0,0,0,1),0_0_30px_rgba(0,0,0,0.8)]"
         >{isTouch ? "Touchez l'écran" : 'Cliquez pour commencer'}</span
       >
     </div>
