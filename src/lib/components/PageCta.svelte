@@ -3,7 +3,7 @@
   import type { Snippet } from 'svelte';
   import Button from '$lib/components/Button.svelte';
   import Tag from '$lib/components/Tag.svelte';
-  import { EMAIL, BOOKING_URL } from '$lib/data/site';
+  import { EMAIL } from '$lib/data/site';
 
   /**
    * Bloc de fin commun à l'accueil, aux trois pages intérieures et aux études
@@ -65,13 +65,7 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      {#if BOOKING_URL}
-        <Button href={BOOKING_URL} external iconLeft="Calendar" class="w-full sm:w-auto">
-          Réserver 30 minutes
-        </Button>
-      {:else}
-        <Button href="mailto:{EMAIL}" iconLeft="Mail" class="w-full sm:w-auto">M'écrire</Button>
-      {/if}
+      <Button href="mailto:{EMAIL}" iconLeft="Mail" class="w-full sm:w-auto">M'écrire</Button>
       <Button
         href={secondaryHref}
         variant="secondary"
