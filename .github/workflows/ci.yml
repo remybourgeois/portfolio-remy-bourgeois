@@ -19,10 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          # Les règles de diff de scripts/checks.ts ont besoin du merge-base, et
-          # .checks-ignore-revs doit pouvoir être résolu.
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -49,12 +45,7 @@ jobs:
         run: npm run check:rules
 
       - name: Invariants du projet
-        env:
-          # Le merge-base, pas la pointe de main : sinon toute PR ouverte
-          # deviendrait rouge dès qu'une autre fusionne. Et la vraie tête de la
-          # PR, le checkout étant un commit de fusion synthétique.
-          DS_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
-          DS_HEAD_REF: ${{ github.event.pull_request.head.sha }}
+        # Scan complet des fichiers suivis : aucune base de diff à calculer.
         run: npm run rules
 
       - name: Cache des navigateurs Playwright

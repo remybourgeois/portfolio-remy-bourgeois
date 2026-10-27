@@ -13,12 +13,16 @@
 //   - chaque règle est une fonction pure, testée dans rules.spec.ts, séparée
 //     de ce « runner » qui est le seul à lire git et le disque ;
 //   - deux modes, le même code : `--staged` pour le hook (l'index git) et le
-//     mode par défaut pour le CI (la base de la PR comparée à sa tête).
+//     mode par défaut pour le CI (tous les fichiers suivis).
+//
+// Toutes les règles sont des scans complets. Les règles « Couleur littérale »
+// et « Pas de typo sous 12 px » tournaient en mode diff tant que l'existant
+// était sale ; il a été migré vers les rôles de `@theme`, et le mode diff, sa
+// base, son merge-base et `.checks-ignore-revs` ont été retirés avec lui.
 //
 // Usage :
-//   node scripts/checks.ts              toutes les règles, diff contre la base
+//   node scripts/checks.ts              toutes les règles, tous les fichiers suivis
 //   node scripts/checks.ts --staged     mode hook : l'index git
-//   node scripts/checks.ts --base <ref> impose la base du diff
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
@@ -26,7 +30,6 @@ import { join } from 'node:path';
 
 import {
   type Violation,
-  parseAddedLines,
   scanContrast,
   scanAutoplay,
   scanEmDash,
@@ -34,13 +37,9 @@ import {
   scanHtmlSources,
   scanIntroSceneImport,
   scanVersionPins,
-  findLiteralColors,
-  findSmallType,
-  baseAfterIgnoredRevs,
-  parseIgnoreRevs
+  scanLiteralColors,
+  scanSmallType
 } from './rules.ts';
-
-const IGNORE_REVS = '.checks-ignore-revs';
 
 const CONFIG = {
   minTypePx: 12,
@@ -53,12 +52,14 @@ const CONFIG = {
     color: 'ds-allow-color',
     typography: 'ds-allow-typography'
   },
+  // La scène WebGL passe ses couleurs à Three.js en JavaScript, où une classe
+  // Tailwind n'existe pas : ses hex sont des constantes de scène, pas du style.
+  literalColorExempt: ['src/lib/components/IntroScene.svelte'],
   versionPinFiles: ['netlify.toml', '.github/workflows/ci.yml']
 };
 
 const args = process.argv.slice(2);
 const staged = args.includes('--staged');
-const baseArg = args.indexOf('--base');
 const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim();
 
 function git(argv: string[]): string {
@@ -84,82 +85,13 @@ function filesIn(prefixes: string[], extensions: string[]): string[] {
     .filter((f) => existsSync(join(root, f)));
 }
 
-/**
- * La base du diff. En CI, DS_BASE_REF porte le merge-base calculé par le
- * workflow : la pointe de `main` ferait rougir toutes les PR ouvertes dès
- * qu'une autre fusionne. En local, on retombe sur origin/main puis main.
- * Base introuvable : la règle de diff est sautée, jamais durcie.
- */
-function diffBase(): string | null {
-  if (baseArg !== -1 && args[baseArg + 1]) return args[baseArg + 1];
-
-  // DS_BASE_REF est le `base.sha` de l'événement GitHub : il est figé à
-  // l'ouverture de la PR, donc il attribuerait à la PR tout ce que `main` a reçu
-  // depuis. C'est le merge-base avec la vraie tête qui fait foi.
-  if (process.env.DS_BASE_REF) {
-    try {
-      return git(['merge-base', process.env.DS_BASE_REF, process.env.DS_HEAD_REF || 'HEAD']).trim();
-    } catch {
-      return null;
-    }
-  }
-
-  for (const ref of ['origin/main', 'main']) {
-    try {
-      return git(['merge-base', ref, 'HEAD']).trim();
-    } catch {
-      /* ref absente : on essaie la suivante */
-    }
-  }
-  return null;
-}
-
-function addedLines(): { lines: ReturnType<typeof parseAddedLines>; skipped: string | null } {
-  if (staged) {
-    return { lines: parseAddedLines(git(['diff', '--staged', '--unified=0'])), skipped: null };
-  }
-  const base = diffBase();
-  if (!base) {
-    return { lines: [], skipped: 'base introuvable (ni origin/main ni main)' };
-  }
-  const head = process.env.DS_HEAD_REF || 'HEAD';
-  const from = skipReformatting(base, head);
-  return {
-    lines: parseAddedLines(git(['diff', '--unified=0', `${from}...${head}`])),
-    skipped: null
-  };
-}
-
-/**
- * Un passage de formateur sur tout le dépôt réécrit chaque ligne. Les commits
- * listés dans `.checks-ignore-revs` ne sont donc imputables à personne : la base
- * du diff avance jusqu'au plus récent d'entre eux présent dans l'intervalle.
- * Le même fichier sert à `git blame` (blame.ignoreRevsFile).
- */
-function skipReformatting(base: string, head: string): string {
-  const file = join(root, IGNORE_REVS);
-  if (!existsSync(file)) return base;
-  const revisions = git(['rev-list', `${base}..${head}`]).split('\n');
-  const resolved = parseIgnoreRevs(readFileSync(file, 'utf8')).flatMap((rev) => {
-    try {
-      return [git(['rev-parse', rev]).trim()];
-    } catch {
-      return []; // révision absente de ce clone : elle ne concerne pas cet intervalle
-    }
-  });
-  return baseAfterIgnoredRevs(revisions, resolved) ?? base;
-}
-
 /* ───────────────────────── Exécution ───────────────────────── */
 
-type Result = { name: string; violations: Violation[]; skipped: string | null };
+type Result = { name: string; violations: Violation[] };
 const results: Result[] = [];
 
 const run = (name: string, fn: () => Violation[]) => {
-  results.push({ name, violations: fn(), skipped: null });
-};
-const skip = (name: string, why: string) => {
-  results.push({ name, violations: [], skipped: why });
+  results.push({ name, violations: fn() });
 };
 
 const svelteFiles = filesIn(['src/'], ['.svelte']);
@@ -198,17 +130,15 @@ run('Version de Node', () =>
   )
 );
 
-const { lines, skipped } = addedLines();
-if (skipped) {
-  skip('Couleur littérale ajoutée', skipped);
-  skip('Pas de typo ajouté', skipped);
-} else {
-  const svelteAdded = lines.filter((l) => l.file.endsWith('.svelte'));
-  run('Couleur littérale ajoutée', () => findLiteralColors(svelteAdded, CONFIG.markers.color));
-  run('Pas de typo ajouté', () =>
-    findSmallType(svelteAdded, CONFIG.markers.typography, CONFIG.minTypePx)
-  );
-}
+run('Couleur littérale', () =>
+  svelteFiles
+    .filter((f) => !CONFIG.literalColorExempt.includes(f))
+    .flatMap((f) => scanLiteralColors(read(f), f, CONFIG.markers.color))
+);
+
+run('Pas de typo sous 12 px', () =>
+  svelteFiles.flatMap((f) => scanSmallType(read(f), f, CONFIG.markers.typography, CONFIG.minTypePx))
+);
 
 /* ───────────────────────── Rapport ───────────────────────── */
 
@@ -217,8 +147,7 @@ let failed = 0;
 
 for (const r of results) {
   const label = r.name.padEnd(width);
-  if (r.skipped) console.log(`⚠️  ${label}  sautée : ${r.skipped}`);
-  else if (r.violations.length === 0) console.log(`✅ ${label}`);
+  if (r.violations.length === 0) console.log(`✅ ${label}`);
   else {
     failed += r.violations.length;
     console.log(`❌ ${label}  ${r.violations.length}`);

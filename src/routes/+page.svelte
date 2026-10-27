@@ -5,13 +5,21 @@
   import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
   import Icon from '$lib/components/Icons.svelte';
   import Tag from '$lib/components/Tag.svelte';
+  import Button from '$lib/components/Button.svelte';
+  import SectionTitle from '$lib/components/SectionTitle.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
   import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
   import { TESTIMONIALS } from '$lib/data/testimonials';
   import { EXPERTISES } from '$lib/data/expertises';
-  import { CLIENT_LOGOS } from '$lib/data/clients';
-  import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, CONTENT_UPDATED } from '$lib/data/site';
+  import { CLIENTS } from '$lib/data/clients';
+  import {
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    OG_IMAGE,
+    CONTENT_UPDATED,
+    EMAIL
+  } from '$lib/data/site';
   import { personNode, reviewNodes, websiteNode } from '$lib/data/person';
   import { md, jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
@@ -19,7 +27,7 @@
 
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
-  const marqueeItems = [...CLIENT_LOGOS, ...CLIENT_LOGOS];
+  const marqueeItems = [...CLIENTS, ...CLIENTS];
 
   let expandedTestimonial = $state<number | null>(null);
   let showTopBtn = $state(false);
@@ -110,7 +118,7 @@
   })}<\/script>`}
 </svelte:head>
 
-<div class="relative min-h-screen bg-[#020205] text-white">
+<div class="relative min-h-screen bg-canvas text-white">
   <!-- Sentinelle pour le bouton back-to-top (≈400px du haut) -->
   <div
     bind:this={topSentinel}
@@ -123,133 +131,110 @@
     class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40"
   >
     <!--
-      Hero en deux colonnes alignées en HAUT, pas au centre : c'est la première
-      ligne du H1 qui ancre la composition. L'ancienne version centrait le
-      groupe portrait + titre comme une unité pendant que l'accroche vivait
-      dans son propre conteneur centré : les deux blocs ne partageaient aucun
-      bord, et le décalage atteignait 130 px à 1280.
+      Hero sur une colonne, aligné à gauche. Le portrait passe en vignette :
+      à 380 px de large, désaturé et voilé, il occupait toute la première
+      hauteur d'écran sur mobile sans rien dire du travail, et concurrençait
+      le H1 sur desktop sans le servir. Une vignette de 72 px identifie, le
+      titre et l'accroche portent le message, et les deux boutons donnent
+      enfin au hero la suite qui n'existait qu'en bas de page.
     -->
     <RevealOnScroll>
-      <div
-        class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)] gap-10 lg:gap-14 items-start mb-20"
-      >
-        <div class="relative w-full max-w-[380px] mx-auto md:mx-0">
-          <!-- Le halo évite que le fond clair du studio ne découpe un
-               rectangle dans la page. -->
-          <span
-            class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none
-                   bg-[radial-gradient(60%_50%_at_50%_35%,rgba(112,107,254,0.3),transparent_70%)]"
-            aria-hidden="true"
-          ></span>
-          <div
-            class="hero-photo relative aspect-[4/3] md:aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.6)]"
-          >
-            <img
-              src="/assets/remy-bourgeois.webp"
-              alt="Portrait de Rémy Bourgeois"
-              width="500"
-              height="500"
-              class="w-full h-full object-cover object-[50%_20%]"
-              loading="eager"
-            />
-            <span
-              class="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#020205]/55 to-[#020205]/95 pointer-events-none"
-              aria-hidden="true"
-            ></span>
-            <span
-              class="hero-tint absolute inset-0 bg-[linear-gradient(200deg,rgba(112,107,254,0.16),transparent_55%)] pointer-events-none"
-              aria-hidden="true"
-            ></span>
-            <span class="absolute left-5 right-5 bottom-4 flex items-center gap-2.5">
-              <span
-                class="w-[7px] h-[7px] rounded-full bg-emerald-400 flex-shrink-0 animate-pulse"
-                aria-hidden="true"
-              ></span>
-              <span class="text-white/85 text-xs font-medium">Disponible</span>
-            </span>
-          </div>
+      <div class="w-full max-w-[52rem] mb-20">
+        <div class="flex items-center gap-4 mb-7">
+          <img
+            src="/assets/remy-bourgeois.webp"
+            alt="Portrait de Rémy Bourgeois"
+            width="500"
+            height="500"
+            class="w-[72px] h-[72px] rounded-full object-cover object-[50%_20%] border border-white/15 shadow-lift flex-shrink-0"
+            loading="eager"
+          />
+          <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
         </div>
 
-        <div class="text-center md:text-left">
-          <h1 class="leading-tight mb-6">
-            <span
-              class="block text-xs font-semibold text-[#a8a5ff] uppercase tracking-[0.16em] mb-2.5"
-              >Rémy Bourgeois</span
-            >
-            <span
-              class="block text-3xl md:text-[2.9rem] font-bold text-white tracking-tight leading-[1.06]"
-              >Lead Design System &amp; Senior Product Designer</span
-            >
-          </h1>
+        <h1 class="leading-tight mb-6">
+          <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
+          <span
+            class="block text-4xl md:text-[3.75rem] font-bold text-white tracking-tight leading-[1.04] [text-wrap:balance]"
+            >Lead Design System &amp; Senior Product Designer</span
+          >
+        </h1>
 
-          <ul class="flex flex-wrap justify-center md:justify-start gap-2 list-none p-0 m-0 mb-8">
-            <Tag as="li" icon="LayoutIcon">Design system</Tag>
-            <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
-            <Tag as="li" icon="Award">14 ans d'expérience</Tag>
-          </ul>
+        <ul class="flex flex-wrap gap-2 list-none p-0 m-0 mb-8">
+          <Tag as="li" icon="LayoutIcon">Design system</Tag>
+          <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
+          <Tag as="li" icon="Award">14 ans d'expérience</Tag>
+        </ul>
 
-          <!-- `.body-text` porte la règle globale des termes mis en avant :
-               le violet #a8a5ff, comme sur le reste du site. -->
-          <div class="body-text flex flex-col gap-5 max-w-[42rem] mx-auto md:mx-0 text-left">
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              <strong
-                >Je supprime le décalage entre le design et le code, et j'aide les équipes à
-                concevoir avec l'IA.</strong
-              >
-            </p>
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>. Je
-              conçois des design systems et des produits IA
-              <strong>directement dans le code</strong>, avec les équipes qui vont les faire vivre.
-              Un développeur senior relit chacune de mes Pull Requests.
-            </p>
-            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-              Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
-              bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a
-              plus qu'une
-              <strong>seule source de vérité</strong>.
-            </p>
-          </div>
+        <!-- `.body-text` porte la règle globale des termes mis en avant :
+             le violet `accent`, comme sur le reste du site. -->
+        <div class="body-text flex flex-col gap-5 max-w-[42rem]">
+          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+            <strong
+              >Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir
+              avec l'IA.</strong
+            >
+          </p>
+          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+            14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>. Je conçois
+            des design systems et des produits IA
+            <strong>directement dans le code</strong>, avec les équipes qui vont les faire vivre. Un
+            développeur senior relit chacune de mes Pull Requests.
+          </p>
+          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+            Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
+            bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus
+            qu'une
+            <strong>seule source de vérité</strong>.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-9">
+          <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+          <Button href="/projects" variant="secondary" iconRight="ArrowRight">
+            Voir les projets
+          </Button>
         </div>
       </div>
     </RevealOnScroll>
 
-    <!-- Client marquee -->
-    <div class="w-full mb-20" role="region" aria-label="Clients et partenaires">
+    <!-- Client marquee. Le défilement est décoratif : c'est la liste hors
+         écran qu'un lecteur d'écran lit à sa place. -->
+    <section class="w-full mb-20" aria-label="Clients et partenaires">
+      <ul class="sr-only">
+        {#each CLIENTS as client (client.name)}
+          <li>{client.name}</li>
+        {/each}
+      </ul>
       <div class="w-full overflow-hidden py-6 relative">
         <div
-          class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#020205] to-transparent z-10 pointer-events-none"
+          class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-canvas to-transparent z-10 pointer-events-none"
         ></div>
         <div
-          class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#020205] to-transparent z-10 pointer-events-none"
+          class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-canvas to-transparent z-10 pointer-events-none"
         ></div>
         <div class="flex w-max animate-marquee items-center marquee-track" aria-hidden="true">
-          {#each marqueeItems as logo, i (i)}
+          {#each marqueeItems as client, i (i)}
             <div class="mx-5 sm:mx-8 md:mx-10 flex items-center justify-center">
               <img
-                src={logo}
+                src={client.logo}
                 alt=""
                 class="h-6 w-auto object-contain opacity-70"
-                loading={i < CLIENT_LOGOS.length ? 'eager' : 'lazy'}
+                loading={i < CLIENTS.length ? 'eager' : 'lazy'}
                 decoding="async"
               />
             </div>
           {/each}
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Testimonials -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h2
-          class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4"
-        >
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Recommandations
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h2>
+        <SectionTitle align="center" class="mb-16">Recommandations</SectionTitle>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-          {#each TESTIMONIALS as t, i}
+          {#each TESTIMONIALS as t, i (t.id)}
             <div
               class="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 h-fit {i ===
                 1 || i === 4
@@ -299,7 +284,7 @@
                 onclick={() => (expandedTestimonial = expandedTestimonial === t.id ? null : t.id)}
                 aria-expanded={expandedTestimonial === t.id}
                 aria-controls="testimonial-{t.id}"
-                class="mt-3 text-[#706bfe] hover:text-[#a78bfa] text-xs flex items-center gap-1 transition-colors self-start min-h-[44px]"
+                class="mt-3 text-accent hover:text-white text-xs flex items-center gap-1 transition-colors self-start min-h-[44px]"
               >
                 {expandedTestimonial === t.id ? 'Réduire' : 'Lire le témoignage'}
               </button>
@@ -312,24 +297,19 @@
     <!-- Expertises -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h2
-          class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4"
-        >
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Expertises
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h2>
+        <SectionTitle align="center" class="mb-16">Expertises</SectionTitle>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-          {#each EXPERTISES as exp}
+          {#each EXPERTISES as exp (exp.id)}
             <div
-              class="group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-expert hover:translate-y-[-4px] transition-all duration-300"
+              class="group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
-                class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-[0_0_15px_#706bfe33]"
+                class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
               >
                 <Icon
                   name={exp.icon}
                   size={24}
-                  className="text-white group-hover:text-[#38bdf8] transition-colors"
+                  className="text-white group-hover:text-tertiary transition-colors"
                 />
               </div>
               <h3 class="text-lg font-semibold mb-2">{exp.title}</h3>
@@ -344,43 +324,31 @@
     <RevealOnScroll>
       <div class="w-full mb-24 py-10 relative">
         <div
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-32 bg-[#706bfe] opacity-10 blur-[100px] rounded-full pointer-events-none"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-32 bg-primary opacity-10 blur-[100px] rounded-full pointer-events-none"
           aria-hidden="true"
         ></div>
-        <h2
-          class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4"
-        >
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Impact
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h2>
+        <SectionTitle align="center" class="mb-16">Impact</SectionTitle>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {#each impacts as item}
+          {#each impacts as item (item.label)}
             <div
               class="flex flex-col items-center text-center p-6 rounded-xl bg-white/5 border border-white/10"
             >
               <span class="text-4xl md:text-5xl font-bold text-white mb-2">
                 <AnimatedCounter end={item.value} suffix={item.suffix} />
               </span>
-              <span class="text-xs text-[#706bfe] uppercase tracking-wider font-semibold"
-                >{item.label}</span
-              >
+              <span class="eyebrow text-accent">{item.label}</span>
             </div>
           {/each}
         </div>
       </div>
     </RevealOnScroll>
 
-    <!-- Featured projects (3) — liens vers case studies -->
+    <!-- Featured projects — liens vers case studies -->
     <RevealOnScroll>
       <div class="w-full mb-20">
-        <h2
-          class="text-xs uppercase tracking-widest text-white/50 mb-16 font-semibold flex items-center justify-center gap-4"
-        >
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Projets
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
-        </h2>
+        <SectionTitle align="center" class="mb-16">Projets</SectionTitle>
         <div class="flex flex-col gap-8">
-          {#each homeProjects as project, i}
+          {#each homeProjects as project, i (project.slug)}
             {@const alt = i % 2 !== 0}
             <div
               class="w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/[0.07] transition-all duration-500 group"
@@ -394,7 +362,6 @@
                   <div class="mesh-gradient-bg opacity-30" aria-hidden="true"></div>
                   <a
                     href="/projects/{project.slug}"
-                    use:sfx
                     tabindex="-1"
                     aria-hidden="true"
                     class="absolute inset-0 z-10 w-full h-full focus:outline-none"
@@ -425,9 +392,7 @@
                         loading="lazy"
                       />
                     {:else}
-                      <span class="text-xs uppercase tracking-[0.3em] text-white/50 font-medium"
-                        >Bientôt</span
-                      >
+                      <span class="eyebrow text-white/50">Bientôt</span>
                     {/if}
                   </a>
                 </div>
@@ -451,14 +416,13 @@
                   <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
                     <a
                       href="/projects/{project.slug}"
-                      use:sfx
-                      class="text-left hover:text-[#706bfe] transition-colors focus-visible:underline focus:outline-none"
+                      class="text-left hover:text-accent transition-colors focus-visible:underline focus:outline-none"
                     >
                       {project.title}
                     </a>
                   </h3>
                   <div class="flex flex-wrap gap-2 mb-6">
-                    {#each project.tags as tag}
+                    {#each project.tags as tag (tag)}
                       <Tag>{tag}</Tag>
                     {/each}
                   </div>
@@ -471,20 +435,16 @@
           {/each}
         </div>
         <div class="mt-12 flex justify-center">
-          <a
-            href="/projects"
-            use:sfx
-            class="flex items-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white hover:border-white/40 hover:bg-white/5 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-          >
-            Découvrir tous les projets <Icon name="ArrowRight" size={16} />
-          </a>
+          <Button href="/projects" variant="secondary" iconRight="ArrowRight">
+            Découvrir tous les projets
+          </Button>
         </div>
       </div>
     </RevealOnScroll>
 
     <!-- Contact -->
     <RevealOnScroll>
-      <div class="w-full py-20 relative">
+      <div class="w-full pt-20">
         <PageCta
           title="Démarrons un projet"
           secondaryHref="https://www.linkedin.com/in/remy-bourgeois/"
@@ -501,20 +461,12 @@
           {#snippet extra()}
             <a
               href="/accompagnement"
-              use:sfx
-              class="text-[#a8a5ff] hover:text-white underline underline-offset-4 transition-colors"
+              class="text-accent hover:text-white underline underline-offset-4 transition-colors"
             >
               Voir les trois façons de travailler ensemble
             </a>
           {/snippet}
         </PageCta>
-
-        <div class="mt-16 text-center">
-          <p class="text-white/55 text-xs mb-1">
-            Ce site a été entièrement vibe codé et crafté avec intention 💙
-          </p>
-          <p class="text-white/50 text-xs">© 2026 Rémy Bourgeois</p>
-        </div>
       </div>
     </RevealOnScroll>
   </main>
@@ -524,7 +476,7 @@
     <button
       onclick={scrollToTop}
       aria-label="Remonter en haut"
-      class="fixed bottom-8 right-8 z-[100] p-3 rounded-full bg-[#706bfe]/20 border border-[#706bfe]/40 text-white hover:bg-[#706bfe]/60 transition-all shadow-lg backdrop-blur-sm min-h-[44px] min-w-[44px] flex items-center justify-center"
+      class="fixed bottom-8 right-8 z-[100] p-3 rounded-full bg-primary/20 border border-primary/40 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm min-h-[44px] min-w-[44px] flex items-center justify-center"
     >
       <Icon name="ChevronUp" size={20} />
     </button>

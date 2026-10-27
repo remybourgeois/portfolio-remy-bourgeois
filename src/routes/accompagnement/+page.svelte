@@ -1,8 +1,11 @@
 <!-- src/routes/accompagnement/+page.svelte -->
 <script lang="ts">
   import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
+  import PageShell from '$lib/components/PageShell.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
+  import SectionTitle from '$lib/components/SectionTitle.svelte';
   import Tag from '$lib/components/Tag.svelte';
+  import Button from '$lib/components/Button.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
   import {
     SITE_URL,
@@ -11,7 +14,8 @@
     OG_IMAGE,
     PERSON_ID,
     WEBSITE_ID,
-    CONTENT_UPDATED
+    CONTENT_UPDATED,
+    EMAIL
   } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
@@ -96,6 +100,16 @@
   const DESCRIPTION =
     'Conception produit, audit de design system et accompagnement à la mise en place. ' +
     'Trois façons de travailler avec Rémy Bourgeois, Lead Design System à Lyon.';
+
+  const CRUMBS = [
+    { name: 'Accueil', path: '/' },
+    { name: 'Accompagnement', path: '/accompagnement' }
+  ];
+
+  // Un courriel qui arrive avec le format en objet évite la question « pour
+  // quoi ? » : le visiteur a déjà choisi, l'objet le dit.
+  const mailto = (title: string) =>
+    `mailto:${EMAIL}?subject=${encodeURIComponent(`Accompagnement : ${title}`)}`;
 </script>
 
 <svelte:head>
@@ -123,10 +137,7 @@
   {@html `<script type="application/ld+json">${jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
-      breadcrumb([
-        { name: 'Accueil', path: '/' },
-        { name: 'Accompagnement', path: '/accompagnement' }
-      ]),
+      breadcrumb(CRUMBS),
       {
         '@type': 'WebPage',
         '@id': SITE_URL + '/accompagnement#webpage',
@@ -151,116 +162,107 @@
   })}<\/script>`}
 </svelte:head>
 
-<main id="main-content" class="min-h-screen bg-[#020205] text-white">
-  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
-    <PageHeader title="Accompagnement">
-      {#snippet lede()}
-        Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique, et la
-        façon dont l'équipe s'en sert.
-      {/snippet}
-    </PageHeader>
+<PageShell>
+  <PageHeader title="Accompagnement" crumbs={CRUMBS}>
+    {#snippet lede()}
+      Trois façons de travailler ensemble : le produit lui-même, le système qui le fabrique, et la
+      façon dont l'équipe s'en sert.
+    {/snippet}
+  </PageHeader>
 
-    <RevealOnScroll>
-      <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20 items-start">
-        {#each FORMATS as format, i}
-          <section
-            id={format.id}
-            aria-labelledby="{format.id}-title"
-            class="h-full rounded-3xl border p-8 {i === 0
-              ? 'border-[#706bfe]/30 bg-[#706bfe]/[0.07]'
-              : 'border-white/10 bg-white/5'}"
-          >
-            <p class="text-[10px] uppercase tracking-[0.2em] text-[#a8a5ff] font-semibold mb-2">
-              {format.label}
+  <RevealOnScroll>
+    <div class="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20 items-start">
+      {#each FORMATS as format, i (format.id)}
+        <!-- `scroll-mt` : les ancres #conception, #audit et #mise-en-place sont
+             liées depuis l'accueil, et la barre fixe recouvrirait le titre. -->
+        <section
+          id={format.id}
+          aria-labelledby="{format.id}-title"
+          class="h-full flex flex-col rounded-3xl border p-8 scroll-mt-28 {i === 0
+            ? 'border-primary/30 bg-primary/[0.07]'
+            : 'border-white/10 bg-white/5'}"
+        >
+          <p class="eyebrow text-accent mb-2">{format.label}</p>
+          <h2 id="{format.id}-title" class="text-xl font-semibold mb-3 leading-snug">
+            {format.title}
+          </h2>
+          <p class="text-white/70 text-sm leading-relaxed mb-6">{format.lede}</p>
+
+          {#if format.id === 'audit'}
+            <p class="eyebrow text-white/60 mb-2">Méthode</p>
+            <p class="text-white/70 text-sm leading-relaxed mb-4">
+              Une grille de maturité sur neuf axes. Chaque note est appuyée par une preuve :
+              inventaire Figma, lecture du code, entretiens avec les équipes.
             </p>
-            <h2 id="{format.id}-title" class="text-xl font-semibold mb-3 leading-snug">
-              {format.title}
-            </h2>
-            <p class="text-white/70 text-sm leading-relaxed mb-6">{format.lede}</p>
-
-            {#if format.id === 'audit'}
-              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">
-                Méthode
-              </p>
-              <p class="text-white/70 text-sm leading-relaxed mb-4">
-                Une grille de maturité sur neuf axes. Chaque note est appuyée par une preuve :
-                inventaire Figma, lecture du code, entretiens avec les équipes.
-              </p>
-              <ul class="flex flex-wrap gap-2 mb-6 list-none p-0 m-0">
-                {#each AXES as axe}
-                  <Tag as="li">{axe}</Tag>
-                {/each}
-              </ul>
-            {/if}
-
-            <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-3">
-              {format.listTitle}
-            </p>
-            <ul class="flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
-              {#each format.items as item}
-                <li class="flex gap-3 text-white/70 text-sm leading-relaxed">
-                  <span
-                    class="mt-2 w-1.5 h-1.5 rounded-full bg-[#a8a5ff] flex-shrink-0"
-                    aria-hidden="true"
-                  ></span>
-                  {item}
-                </li>
+            <ul class="flex flex-wrap gap-2 mb-6 list-none p-0 m-0">
+              {#each AXES as axe (axe)}
+                <Tag as="li">{axe}</Tag>
               {/each}
             </ul>
+          {/if}
 
-            {#if format.id === 'mise-en-place'}
-              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-semibold mb-2">
-                Ce que vous gardez
-              </p>
-              <p class="text-white/70 text-sm leading-relaxed mb-6">
-                Le jour où je pars, rien ne s'arrête. C'est le critère de réussite, et il est
-                vérifiable.
-              </p>
-            {/if}
+          <p class="eyebrow text-white/60 mb-3">{format.listTitle}</p>
+          <ul class="flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
+            {#each format.items as item (item)}
+              <li class="flex gap-3 text-white/70 text-sm leading-relaxed">
+                <span
+                  class="mt-2 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"
+                  aria-hidden="true"
+                ></span>
+                {item}
+              </li>
+            {/each}
+          </ul>
 
-            <p class="text-white/60 text-xs tracking-wide">{format.meta}</p>
-          </section>
+          {#if format.id === 'mise-en-place'}
+            <p class="eyebrow text-white/60 mb-2">Ce que vous gardez</p>
+            <p class="text-white/70 text-sm leading-relaxed mb-6">
+              Le jour où je pars, rien ne s'arrête. C'est le critère de réussite, et il est
+              vérifiable.
+            </p>
+          {/if}
+
+          <p class="text-white/60 text-xs tracking-wide mb-6">{format.meta}</p>
+
+          <div class="mt-auto">
+            <Button href={mailto(format.title)} variant="secondary" size="sm" iconLeft="Mail">
+              Parler de ce format
+            </Button>
+          </div>
+        </section>
+      {/each}
+    </div>
+  </RevealOnScroll>
+
+  <RevealOnScroll>
+    <div class="w-full mb-20">
+      <SectionTitle class="mb-12">Ce que je défends</SectionTitle>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {#each CONVICTIONS as conviction (conviction)}
+          <p
+            class="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70 text-sm leading-relaxed"
+          >
+            {conviction}
+          </p>
         {/each}
       </div>
-    </RevealOnScroll>
+      <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
+        J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit
+        Agricole, une refonte chez iPify, une création de zéro chez Ofelia.
+      </p>
+    </div>
+  </RevealOnScroll>
 
-    <RevealOnScroll>
-      <div class="w-full mb-20">
-        <!-- Même motif que les titres de section d'À propos : un seul filet,
-             à gauche. Le motif centré à deux filets reste celui de l'accueil,
-             qui est une vitrine et non un document. -->
-        <h2
-          class="text-xs uppercase tracking-widest text-white/50 mb-12 font-semibold flex items-center gap-4"
-        >
-          <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ce que je défends
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {#each CONVICTIONS as conviction}
-            <p
-              class="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70 text-sm leading-relaxed"
-            >
-              {conviction}
-            </p>
-          {/each}
-        </div>
-        <p class="text-white/60 text-sm leading-relaxed mt-8 max-w-3xl">
-          J'ai vu les trois niveaux de maturité d'un design system : un grand groupe au Crédit
-          Agricole, une refonte chez iPify, une création de zéro chez Ofelia.
-        </p>
-      </div>
-    </RevealOnScroll>
-
-    <RevealOnScroll>
-      <PageCta
-        title="Démarrons un projet"
-        secondaryHref="/projects"
-        secondaryLabel="Voir les études de cas"
-        secondaryIcon="ArrowRight"
-      >
-        {#snippet lede()}
-          Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
-        {/snippet}
-      </PageCta>
-    </RevealOnScroll>
-  </div>
-</main>
+  <RevealOnScroll>
+    <PageCta
+      title="Démarrons un projet"
+      secondaryHref="/projects"
+      secondaryLabel="Voir les études de cas"
+      secondaryIcon="ArrowRight"
+    >
+      {#snippet lede()}
+        Dites-moi où vous en êtes, et je vous dirai lequel des trois formats a du sens.
+      {/snippet}
+    </PageCta>
+  </RevealOnScroll>
+</PageShell>

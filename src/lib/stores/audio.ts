@@ -332,7 +332,21 @@ function createAudioStore() {
   // Aucun média n'est demandé ici : c'est IntroScene qui appelle engine.prime().
   const engine = new AudioEngine();
 
-  const { subscribe, update } = writable({ isMuted: false });
+  // Le choix du visiteur est retenu d'une visite à l'autre : couper le son une
+  // fois ne doit pas avoir à être refait à chaque retour sur l'intro. Le
+  // stockage peut être indisponible (navigation privée, données bloquées) :
+  // on retombe alors sur le son actif, qui est le défaut de l'expérience.
+  const STORAGE_KEY = 'intro-sound';
+  const remembered = (() => {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === 'off';
+    } catch {
+      return false;
+    }
+  })();
+  engine.isGlobalMuted = remembered;
+
+  const { subscribe, update } = writable({ isMuted: remembered });
 
   return {
     subscribe,
@@ -348,6 +362,11 @@ function createAudioStore() {
         engine.fadeOutBGM();
       } else if (engine.bgmActive) {
         engine.startBGM();
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, engine.isGlobalMuted ? 'off' : 'on');
+      } catch {
+        /* stockage indisponible : le choix vaut pour cette visite seulement */
       }
       update(() => ({ isMuted: engine.isGlobalMuted }));
     }

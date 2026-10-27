@@ -11,13 +11,6 @@ export type Violation = {
   message: string;
 };
 
-/** Une ligne ajoutée par un diff, avec son numéro dans le fichier d'arrivée. */
-export type AddedLine = {
-  file: string;
-  line: number;
-  text: string;
-};
-
 /* ───────────────────────── Outillage commun ───────────────────────── */
 
 /**
@@ -382,105 +375,64 @@ export function scanVersionPins(files: Array<{ file: string; text: string }>): V
   return out;
 }
 
-/* ───────────────────────── Règles de diff ───────────────────────── */
-
 /**
- * Lit un diff unifié et en sort les lignes ajoutées, numérotées dans le fichier
- * d'arrivée. Les suppressions et le contexte sont ignorés : ces règles bloquent
- * le neuf sans rien exiger de l'existant.
+ * Aucune couleur littérale dans un composant : les rôles vivent dans le bloc
+ * `@theme` de `src/app.css` et s'emploient par leur nom (`bg-primary`,
+ * `text-accent`, `var(--color-canvas)`). Scan complet : le dépôt a été migré,
+ * la règle n'a plus besoin du mode diff qui épargnait l'existant. Les
+ * commentaires sont blanchis d'abord, un exemple écrit en commentaire ne
+ * compte pas ; les chaînes restent lues, parce qu'un hex dans un `style=` ou
+ * un attribut SVG est bien une couleur.
  */
-export function parseAddedLines(diff: string): AddedLine[] {
-  const out: AddedLine[] = [];
-  let file = '';
-  let line = 0;
+export function scanLiteralColors(text: string, file: string, marker: string): Violation[] {
+  const lines = toLines(blankComments(text, 'svelte'));
+  const raw = toLines(text);
+  // Pas de `\b` devant la fonction : dans une valeur arbitraire Tailwind,
+  // l'espace devient `_` (`shadow-[0_0_8px_rgba(0,0,0,0.5)]`), et `_` est un
+  // caractère de mot. Seule une lettre juste devant disqualifie le motif.
+  const pattern = /#[0-9a-fA-F]{3,8}\b|(?<![A-Za-z])(rgba?|hsla?|oklch|lab)\(\s*[\d.]/;
+  const out: Violation[] = [];
 
-  for (const raw of toLines(diff)) {
-    const plus = /^\+\+\+ b\/(.+)$/.exec(raw);
-    if (plus) {
-      file = plus[1];
-      continue;
-    }
-    const hunk = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/.exec(raw);
-    if (hunk) {
-      line = Number(hunk[1]);
-      continue;
-    }
-    if (raw.startsWith('+') && !raw.startsWith('+++')) {
-      out.push({ file, line, text: raw.slice(1) });
-      line++;
-      continue;
-    }
-    if (raw.startsWith(' ')) line++;
-  }
+  lines.forEach((line, i) => {
+    if (!pattern.test(line)) return;
+    if (hasEscape(raw, i, marker)) return;
+    out.push({
+      file,
+      line: i + 1,
+      message: 'Couleur littérale : passer par un rôle du bloc @theme de src/app.css.'
+    });
+  });
   return out;
 }
 
 /**
- * Aucune couleur littérale ajoutée dans un composant : les quatre rôles vivent
- * dans `src/app.css`. En mode diff, parce que le dépôt en contient déjà une
- * centaine : on bloque le neuf sans demander un nettoyage préalable.
+ * Pas de pas de typographie sous 12 px. `min-h-[44px]` et compagnie ne sont
+ * pas concernés : la règle ne regarde que `text-[…]`. Scan complet, comme la
+ * règle des couleurs : les 26 pas sous le plancher ont été remplacés par
+ * `text-xs` ou par l'utilitaire `eyebrow`.
  */
-export function findLiteralColors(added: AddedLine[], marker: string): Violation[] {
-  const pattern = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|lab)\(\s*[\d.]/;
-
-  return added
-    .filter((l) => pattern.test(l.text) && !hasEscape([l.text], 0, marker))
-    .map((l) => ({
-      file: l.file,
-      line: l.line,
-      message: 'Couleur littérale ajoutée : passer par un rôle de src/app.css.'
-    }));
-}
-
-/**
- * Pas de pas de typographie ajouté sous 12 px. Le dépôt en compte déjà 26, d'où
- * le mode diff. `min-h-[44px]` et compagnie ne sont pas concernés : la règle ne
- * regarde que `text-[…]`.
- */
-export function findSmallType(added: AddedLine[], marker: string, minPx: number): Violation[] {
+export function scanSmallType(
+  text: string,
+  file: string,
+  marker: string,
+  minPx: number
+): Violation[] {
+  const lines = toLines(blankComments(text, 'svelte'));
+  const raw = toLines(text);
   const pattern = /text-\[([0-9.]+)(px|rem)\]/g;
   const out: Violation[] = [];
 
-  for (const l of added) {
-    if (hasEscape([l.text], 0, marker)) continue;
-    for (const m of l.text.matchAll(pattern)) {
+  lines.forEach((line, i) => {
+    for (const m of line.matchAll(pattern)) {
       const px = m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1]);
       if (px >= minPx) continue;
+      if (hasEscape(raw, i, marker)) continue;
       out.push({
-        file: l.file,
-        line: l.line,
+        file,
+        line: i + 1,
         message: `\`${m[0]}\` est sous le plancher de ${minPx} px.`
       });
     }
-  }
+  });
   return out;
-}
-
-/**
- * Avance la base d'un diff jusqu'au commit de reformatage le plus récent, quand
- * il y en a un dans l'intervalle.
- *
- * Un passage de formateur sur tout le dépôt réécrit chaque ligne : sans cela,
- * les règles de diff attribueraient à la PR la centaine de couleurs littérales
- * et les 26 pas de typo que le dépôt contenait déjà. `revisions` est la liste
- * des commits de l'intervalle, du plus récent au plus ancien, telle que
- * `git rev-list base..HEAD` la donne ; `ignored` vient de `.checks-ignore-revs`.
- *
- * Les commits plus récents que celui retenu restent évalués : seul le
- * reformatage, et ce qui le précède, sort du périmètre.
- */
-export function baseAfterIgnoredRevs(revisions: string[], ignored: string[]): string | null {
-  const set = new Set(ignored.map((r) => r.trim()).filter(Boolean));
-  for (const rev of revisions) {
-    if (set.has(rev.trim())) return rev.trim();
-  }
-  return null;
-}
-
-/** Lit un fichier de révisions à ignorer : un SHA par ligne, `#` en commentaire. */
-export function parseIgnoreRevs(text: string): string[] {
-  return text
-    .split('\n')
-    .map((l) => l.replace(/#.*/, '').trim())
-    .filter((l) => /^[0-9a-f]{7,40}$/i.test(l));
 }

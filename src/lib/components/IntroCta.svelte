@@ -1,7 +1,5 @@
 <!-- src/lib/components/IntroCta.svelte -->
 <script lang="ts">
-  import { sfx } from '$lib/actions/sfx';
-
   /**
    * Invitation vers /intro. Elle ne doit pas se lire comme un lien de nav de
    * plus : un faisceau tourne dans la bordure, le halo respire, et une pastille
@@ -19,7 +17,7 @@
   `overflow-hidden` rognerait l'anneau de focus clavier.
 -->
 <div class="cta-shell inline-flex">
-  <span class="cta-halo relative inline-block rounded-full bg-[#706bfe]/35 p-[1.5px]">
+  <span class="cta-halo relative inline-block rounded-full bg-primary/35 p-[1.5px]">
     <!--
       Deux faisceaux, même durée donc jamais déphasés. Le second est plus large
       et plus blanc, et ne fait qu'apparaître au survol : rien n'accélère, donc
@@ -32,13 +30,13 @@
     </span>
     <a
       href="/intro"
-      use:sfx
       aria-label="Vivre l'expérience : intro 3D et sonore, 40 secondes"
-      class="cta-pill relative flex items-center gap-2 text-white text-[11px] font-semibold uppercase tracking-wider px-3 lg:px-4 py-2.5 rounded-full focus-visible:ring-2 focus-visible:ring-[#706bfe]"
+      class="cta-pill relative flex items-center gap-2 text-white text-xs font-semibold uppercase tracking-wider px-3 lg:px-4 py-2.5 rounded-full focus-visible:ring-2 focus-visible:ring-primary"
     >
       <!--
         Icône inline plutôt que <Icon> : elle anime deux groupes à des vitesses
-        différentes, ce que le composant ne sait pas exprimer.
+        différentes, ce que le composant ne sait pas exprimer. Les couleurs
+        passent par les classes `fill-*` et `stroke-*`, donc par les rôles.
       -->
       <svg
         width="18"
@@ -48,14 +46,14 @@
         aria-hidden="true"
         class="flex-shrink-0"
       >
-        <circle cx="12" cy="12" r="9" stroke="rgba(168,165,255,0.28)" stroke-width="1" />
-        <circle cx="12" cy="12" r="2.4" fill="#a8a5ff" />
+        <circle cx="12" cy="12" r="9" class="stroke-accent/30" stroke-width="1" />
+        <circle cx="12" cy="12" r="2.4" class="fill-accent" />
         <g class="cta-orbit">
-          <circle cx="21" cy="12" r="1.7" fill="#38bdf8" />
-          <circle cx="3" cy="12" r="1.2" fill="#a8a5ff" />
+          <circle cx="21" cy="12" r="1.7" class="fill-tertiary" />
+          <circle cx="3" cy="12" r="1.2" class="fill-accent" />
         </g>
         <g class="cta-orbit-rev">
-          <circle cx="12" cy="4" r="1.4" fill="#ffffff" />
+          <circle cx="12" cy="4" r="1.4" class="fill-white" />
         </g>
       </svg>
       <span class="whitespace-nowrap hidden lg:inline">Vivre l'expérience</span>

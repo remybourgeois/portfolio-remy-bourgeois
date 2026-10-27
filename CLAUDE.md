@@ -58,20 +58,40 @@ Une exception légitime s'écrit sur place, avec sa raison, et non en retirant l
 règle : `<!-- ds-allow-autoplay: la lightbox ne s'ouvre que sur un clic du visiteur -->`.
 Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
 `ds-allow-color` et `ds-allow-typography` ; un marqueur sans raison ne vaut pas
-échappatoire.
+échappatoire. Toutes les règles sont des scans complets des fichiers suivis.
 
 - **Audio** : `audioStore` ne charge rien au niveau module. Seul `IntroScene`
   appelle `engine.prime()`, et `IntroScene` ne vit que sur `/intro`. Les autres
   pages n'émettent aucun son et ne doivent télécharger aucun MP3
-  (`tests/perf.test.ts` le vérifie). Ne pas monter `IntroScene` sur `/` : ça
+  (`tests/perf.test.ts` le vérifie). Elles ne portent donc ni bouton son ni
+  effet sonore sur les liens : hors intro, ces contrôles n'avaient aucun effet. Ne pas monter `IntroScene` sur `/` : ça
   remettrait 2,5 Mo de MP3 sur la page la plus stratégique du site.
 - **Vidéos** : jamais d'`autoplay` (règle « Autoplay »). Utiliser `preload="none"`
   - `use:playInView` sur les cartes, et la lecture pilotée par `carIndex` dans la
     case study. Seule la lightbox déroge, puisqu'un clic du visiteur l'ouvre.
-- **Contraste** : plancher à `text-white/50` pour tout texte sur `#020205`
-  (règle « Contraste »). Pour un accent violet sur fond sombre, utiliser
-  `#a8a5ff`, pas `#706bfe` dilué. `tests/a11y.test.ts` passe axe-core sur six
-  gabarits.
+- **Contraste** : plancher à `text-white/50` pour tout texte sur le fond
+  (règle « Contraste »). Pour un accent violet lisible sur fond sombre, le rôle
+  est `accent`, pas `primary` dilué. `tests/a11y.test.ts` passe axe-core sur six
+  gabarits. Le contraste non textuel (pastilles, bordures porteuses de sens)
+  n'est pas mesuré par axe : viser 3:1 à la main, `bg-white/35` au minimum.
+- **Couleurs** : les rôles vivent dans le bloc `@theme` de `src/app.css`
+  (`canvas`, `primary`, `primary-strong`, `primary-hover`, `accent`,
+  `secondary`, `tertiary`, `overlay`, `panel-from`, `panel-to`) et s'emploient
+  par leur nom : `bg-primary`, `text-accent`, `var(--color-canvas)`. Aucun hex
+  ni `rgba()` dans un composant (règle « Couleur littérale », scan complet ;
+  seule `IntroScene` est exemptée, ses hex allant à Three.js). Un halo passe
+  par un token `--shadow-*` du même bloc. Faire correspondre par l'usage, jamais
+  par la valeur la plus proche.
+- **Typographie** : pas de `text-[…]` sous 12 px (règle « Pas de typo sous
+  12 px », scan complet). Les libellés de section et de champ utilisent
+  l'utilitaire `eyebrow` (12 px, capitales, interlettrage), avec leur couleur à
+  côté.
+- **Composants** : `Button` (primaire ou secondaire, `md` ou `sm`),
+  `SectionTitle` (`align` centré sur l'accueil, gauche ailleurs), `PageShell`,
+  `PageHeader`, `Breadcrumb`, `PageCta`, `Tag`. Avant d'écrire une pilule, un
+  titre de section ou un conteneur de page à la main, regarder s'il existe ;
+  s'il manque une variante, l'ajouter au composant plutôt que recopier ses
+  classes.
 - **Icônes** : `name` est typé par l'union `IconName`. Une icône non dessinée
   fait échouer `npm run check` au lieu de rendre un `<svg>` vide.
 - **Responsive** : vérifié à 390, 820 et 1440 px, aucun débordement horizontal.

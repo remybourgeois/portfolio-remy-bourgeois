@@ -11,7 +11,7 @@
    *
    * Un seul accent existe, `emerald`, réservé au statut de disponibilité.
    * Tout le reste est neutre : c'est ce qui rend les tags du hero, ceux des
-   * cartes projet, ceux des études de cas et le témoin de la barre uniformes.
+   * cartes projet et ceux des études de cas uniformes.
    */
   let {
     as = 'span',
@@ -39,16 +39,14 @@
   // pas par celui de l'attribut, donc un override côté appelant est un piège.
   const toneClass = $derived(
     solid
-      ? 'bg-[#020205]/80 backdrop-blur-md text-white/80'
+      ? 'bg-canvas/80 backdrop-blur-md text-white/80'
       : tone === 'emerald'
         ? 'bg-emerald-400/10 text-emerald-300'
         : 'bg-white/[0.055] text-white/80'
   );
 
   const dotClass = $derived(
-    dot === 'emerald'
-      ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]'
-      : 'bg-[#a8a5ff] shadow-[0_0_8px_rgba(112,107,254,0.9)]'
+    dot === 'emerald' ? 'bg-emerald-400 shadow-glow-emerald' : 'bg-accent shadow-glow-accent'
   );
 </script>
 

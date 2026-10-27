@@ -14,7 +14,6 @@ import {
   blankComments,
   hasEscape,
   extractHtmlExpressions,
-  parseAddedLines,
   scanContrast,
   scanAutoplay,
   scanEmDash,
@@ -22,10 +21,8 @@ import {
   scanHtmlSources,
   scanIntroSceneImport,
   scanVersionPins,
-  findLiteralColors,
-  findSmallType,
-  baseAfterIgnoredRevs,
-  parseIgnoreRevs
+  scanLiteralColors,
+  scanSmallType
 } from './rules.ts';
 
 /* ───────────────────────── blankComments ───────────────────────── */
@@ -245,98 +242,68 @@ test('scanVersionPins laisse passer node-version-file', () => {
   assert.deepEqual(v, []);
 });
 
-/* ───────────────────────── Diff ───────────────────────── */
+/* ───────────────────────── Couleurs et typo ───────────────────────── */
 
-test('parseAddedLines numérote dans le fichier d’arrivée', () => {
-  const diff = [
-    'diff --git a/x.svelte b/x.svelte',
-    '--- a/x.svelte',
-    '+++ b/x.svelte',
-    '@@ -10,3 +10,4 @@',
-    ' contexte',
-    '+ajoutée',
-    ' contexte',
-    '-retirée'
+test('scanLiteralColors signale un hex et un rgba, laisse passer un rôle', () => {
+  const text = [
+    '<div style="color: #706bfe"></div>',
+    '<div class="shadow-[0_0_8px_rgba(0,0,0,0.5)]"></div>',
+    '<div class="bg-primary text-accent"></div>',
+    '<div class="bg-[var(--color-primary)]"></div>'
   ].join('\n');
-  const added = parseAddedLines(diff);
-  assert.equal(added.length, 1);
-  assert.deepEqual(added[0], { file: 'x.svelte', line: 11, text: 'ajoutée' });
+  const v = scanLiteralColors(text, 'x.svelte', 'ds-allow-color');
+  assert.deepEqual(
+    v.map((x) => x.line),
+    [1, 2]
+  );
 });
 
-test('findLiteralColors ne regarde que ce que le diff ajoute', () => {
-  const added = parseAddedLines(
-    [
-      '+++ b/x.svelte',
-      '@@ -1,0 +1,2 @@',
-      '+<div style="color: #706bfe" />',
-      '+<div class="bg-[var(--color-primary)]" />'
-    ].join('\n')
+test('scanLiteralColors respecte une échappatoire motivée', () => {
+  const text = [
+    '<!-- ds-allow-color: arrêt de dégradé -->',
+    '<stop stop-color="#706bfe" />',
+    '<stop stop-color="#38bdf8" /> <!-- ds-allow-color: idem -->'
+  ].join('\n');
+  assert.deepEqual(scanLiteralColors(text, 'x.svelte', 'ds-allow-color'), []);
+});
+
+test('scanLiteralColors ignore un hex écrit en commentaire, pas en chaîne', () => {
+  const text = [
+    '<!-- le fond est #020205 -->',
+    '<script lang="ts">',
+    '  // PRIMARY = #706bfe',
+    "  const c = '#706bfe';",
+    '</script>'
+  ].join('\n');
+  const v = scanLiteralColors(text, 'x.svelte', 'ds-allow-color');
+  assert.deepEqual(
+    v.map((x) => x.line),
+    [4]
   );
-  const v = findLiteralColors(added, 'ds-allow-color');
+});
+
+test('scanSmallType ne vise que text-[…] et laisse les cibles tactiles', () => {
+  const text = [
+    '<p class="text-[9px]">x</p>',
+    '<button class="min-h-[44px]">y</button>',
+    '<p class="text-[12px]">z</p>'
+  ].join('\n');
+  const v = scanSmallType(text, 'x.svelte', 'ds-allow-typography', 12);
   assert.equal(v.length, 1);
   assert.equal(v[0].line, 1);
-});
-
-test('findLiteralColors respecte une échappatoire sur la ligne ajoutée', () => {
-  const added = parseAddedLines(
-    [
-      '+++ b/x.svelte',
-      '@@ -1,0 +1,1 @@',
-      '+<stop stop-color="#706bfe" /> <!-- ds-allow-color: arrêt de dégradé -->'
-    ].join('\n')
-  );
-  assert.deepEqual(findLiteralColors(added, 'ds-allow-color'), []);
-});
-
-test('findSmallType ne vise que text-[…] et laisse les cibles tactiles', () => {
-  const added = parseAddedLines(
-    [
-      '+++ b/x.svelte',
-      '@@ -1,0 +1,3 @@',
-      '+<p class="text-[9px]">x</p>',
-      '+<button class="min-h-[44px]">y</button>',
-      '+<p class="text-[12px]">z</p>'
-    ].join('\n')
-  );
-  const v = findSmallType(added, 'ds-allow-typography', 12);
-  assert.equal(v.length, 1);
   assert.ok(v[0].message.includes('text-[9px]'));
 });
 
-test('findSmallType convertit les rem', () => {
-  const added = parseAddedLines(
-    ['+++ b/x.svelte', '@@ -1,0 +1,1 @@', '+<p class="text-[0.6rem]">x</p>'].join('\n')
+test('scanSmallType convertit les rem et respecte une échappatoire', () => {
+  assert.equal(
+    scanSmallType('<p class="text-[0.6rem]">x</p>', 'x.svelte', 'ds-allow-typography', 12).length,
+    1
   );
-  assert.equal(findSmallType(added, 'ds-allow-typography', 12).length, 1);
-});
-
-/* ───────────────────────── Révisions non imputables ───────────────────────── */
-
-test('parseIgnoreRevs lit les SHA et ignore commentaires et vide', () => {
-  const text = [
-    '# Reformatage initial',
-    'bc8cb4e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7',
-    '',
-    '  deadbeef  # autre',
-    'pas-un-sha'
+  const escaped = [
+    '<!-- ds-allow-typography: badge décoratif aria-hidden -->',
+    '<p class="text-[10px]" aria-hidden="true">x</p>'
   ].join('\n');
-  assert.deepEqual(parseIgnoreRevs(text), ['bc8cb4e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7', 'deadbeef']);
-});
-
-test('baseAfterIgnoredRevs avance jusqu’au reformatage le plus récent', () => {
-  // rev-list donne du plus récent au plus ancien.
-  const revisions = ['aaa', 'bbb', 'ccc', 'ddd'];
-  assert.equal(baseAfterIgnoredRevs(revisions, ['ccc']), 'ccc');
-});
-
-test('baseAfterIgnoredRevs garde les commits plus récents dans le périmètre', () => {
-  // 'aaa' et 'bbb' restent évalués : la base devient 'ccc', pas 'aaa'.
-  assert.equal(baseAfterIgnoredRevs(['aaa', 'bbb', 'ccc'], ['ccc', 'zzz']), 'ccc');
-});
-
-test('baseAfterIgnoredRevs ne touche à rien sans reformatage dans l’intervalle', () => {
-  assert.equal(baseAfterIgnoredRevs(['aaa', 'bbb'], ['ccc']), null);
-  assert.equal(baseAfterIgnoredRevs(['aaa', 'bbb'], []), null);
+  assert.deepEqual(scanSmallType(escaped, 'x.svelte', 'ds-allow-typography', 12), []);
 });
 
 /* ───────────── Échappatoire et attributs éclatés par Prettier ───────────── */

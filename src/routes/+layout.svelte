@@ -3,12 +3,16 @@
   import '../app.css';
   import '@fontsource-variable/dm-sans'; // DM Sans auto-hébergée (plus de Google Fonts)
   import Nav from '$lib/components/Nav.svelte';
+  import SiteFooter from '$lib/components/SiteFooter.svelte';
   import { audioStore } from '$lib/stores/audio';
   import { browser } from '$app/environment';
   import { onNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { SITE_URL } from '$lib/data/site';
+
+  let { children } = $props();
+  const isIntro = $derived($page.url.pathname === '/intro');
 
   onMount(() => {
     if (!browser) return;
@@ -56,12 +60,15 @@
 
 <!-- Skip link : sur l'intro (pas de #main-content) on saute directement au portfolio -->
 <a
-  href={$page.url.pathname === '/intro' ? '/' : '#main-content'}
+  href={isIntro ? '/' : '#main-content'}
   class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999]
-         focus:px-4 focus:py-2 focus:rounded-full focus:bg-[#706bfe] focus:text-white
+         focus:px-4 focus:py-2 focus:rounded-full focus:bg-primary focus:text-white
          focus:text-sm focus:font-medium focus:outline-none"
 >
-  {$page.url.pathname === '/intro' ? 'Accéder au portfolio' : 'Passer au contenu'}
+  {isIntro ? 'Accéder au portfolio' : 'Passer au contenu'}
 </a>
 <Nav />
-<slot />
+{@render children()}
+{#if !isIntro}
+  <SiteFooter />
+{/if}

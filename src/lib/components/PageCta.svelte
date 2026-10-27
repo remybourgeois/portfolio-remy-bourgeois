@@ -1,19 +1,20 @@
 <!-- src/lib/components/PageCta.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Icon from '$lib/components/Icons.svelte';
+  import Button from '$lib/components/Button.svelte';
   import Tag from '$lib/components/Tag.svelte';
-  import { sfx } from '$lib/actions/sfx';
   import { EMAIL } from '$lib/data/site';
 
   /**
-   * Bloc de fin commun à l'accueil et aux trois pages intérieures. Il n'existait
-   * que sur trois d'entre elles, et sous deux formes : carte avec halo et tags
-   * sur l'accueil et Accompagnement, simple section centrée sur À propos.
-   * Projets n'en avait aucun et se terminait sur sa grille.
+   * Bloc de fin commun à l'accueil, aux trois pages intérieures et aux études
+   * de cas. `secondary` laisse chaque page proposer la suite logique de son
+   * parcours : les études de cas depuis Accompagnement, les projets depuis
+   * À propos.
    *
-   * `secondary` laisse chaque page proposer la suite logique de son parcours :
-   * les études de cas depuis Accompagnement, les projets depuis À propos.
+   * Le bouton principal dit ce qu'il fait (« M'écrire ») et l'adresse est
+   * donnée en clair en dessous, copiable. Avant, l'adresse était le libellé
+   * du bouton : trop longue pour la pilule à 390 px, `break-all` la coupait
+   * au milieu du nom de domaine.
    */
   let {
     title,
@@ -36,7 +37,7 @@
 
 <div class="w-full relative">
   <div
-    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-[#706bfe] opacity-10 blur-[120px] rounded-full pointer-events-none"
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-primary opacity-10 blur-[120px] rounded-full pointer-events-none"
     aria-hidden="true"
   ></div>
 
@@ -62,29 +63,25 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+      <Button
+        href={secondaryHref}
+        variant="secondary"
+        external={secondaryExternal}
+        iconLeft={secondaryIcon === 'Linkedin' ? 'Linkedin' : undefined}
+        iconRight={secondaryIcon === 'ArrowRight' ? 'ArrowRight' : undefined}
+      >
+        {secondaryLabel}
+      </Button>
+    </div>
+
+    <p class="mt-6 text-sm text-white/60">
+      ou directement à
       <a
         href="mailto:{EMAIL}"
-        use:sfx
-        class="flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5a55e0] text-white font-medium hover:bg-[#4a45d0] transition-all focus-visible:ring-2 focus-visible:ring-white"
+        class="text-accent hover:text-white underline underline-offset-4 transition-colors"
+        >{EMAIL}</a
       >
-        <Icon name="Mail" size={16} className="flex-shrink-0" />
-        <span class="break-all">{EMAIL}</span>
-      </a>
-      <a
-        href={secondaryHref}
-        use:sfx
-        target={secondaryExternal ? '_blank' : undefined}
-        rel={secondaryExternal ? 'noopener noreferrer' : undefined}
-        class="flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all focus-visible:ring-2 focus-visible:ring-[#706bfe]"
-      >
-        {#if secondaryIcon === 'Linkedin'}
-          <Icon name="Linkedin" size={16} className="flex-shrink-0" />
-        {/if}
-        {secondaryLabel}
-        {#if secondaryIcon === 'ArrowRight'}
-          <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
-        {/if}
-      </a>
-    </div>
+    </p>
   </div>
 </div>
