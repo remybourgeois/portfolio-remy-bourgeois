@@ -18,7 +18,8 @@
     SITE_LOCALE,
     OG_IMAGE,
     CONTENT_UPDATED,
-    EMAIL
+    EMAIL,
+    BOOKING_URL
   } from '$lib/data/site';
   import { personNode, reviewNodes, websiteNode } from '$lib/data/person';
   import { md, jsonLd } from '$lib/utils/text';
@@ -179,7 +180,11 @@
           </p>
 
           <div class="flex flex-wrap gap-3 mt-9">
-            <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+            {#if BOOKING_URL}
+              <Button href={BOOKING_URL} external iconLeft="Calendar">Réserver 30 minutes</Button>
+            {:else}
+              <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+            {/if}
             <Button href="/projects" variant="secondary" iconRight="ArrowRight">
               Voir les projets
             </Button>

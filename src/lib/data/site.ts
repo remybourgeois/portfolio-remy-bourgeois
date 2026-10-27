@@ -6,6 +6,30 @@ export const OG_IMAGE = `${SITE_URL}/assets/og-cover.jpg`;
 export const EMAIL = 'remy.bourgeois@gmail.com';
 
 /**
+ * Lien de prise de rendez-vous (Calendly, cal.com, Google Agenda). Tant qu'il
+ * est vide, les blocs de contact gardent « M'écrire » en bouton principal ;
+ * renseigné, il devient le premier bouton : un prospect qui arrive de LinkedIn
+ * veut un créneau de trente minutes, pas rédiger un courriel.
+ */
+export const BOOKING_URL = '';
+
+/**
+ * Mentions légales. Le SIRET et l'adresse sont obligatoires pour un site
+ * professionnel ; la page ne les affiche que renseignés, et le dit sinon.
+ */
+export const LEGAL = {
+  publisher: 'Rémy Bourgeois',
+  status: 'Entrepreneur individuel',
+  siret: '',
+  address: '',
+  host: {
+    name: 'Netlify, Inc.',
+    address: '512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis',
+    url: 'https://www.netlify.com'
+  }
+};
+
+/**
  * Identifiants stables de l'entité. Tout le JSON-LD du site référence la même
  * personne par `@id` au lieu de redéclarer un objet Person par page : sans ça,
  * chaque page décrit une entité distincte et rien ne se consolide.

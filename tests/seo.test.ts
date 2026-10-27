@@ -120,3 +120,18 @@ test('robots.txt allows generative crawlers and points to the sitemap', async ({
   }
   expect(body).toContain('Sitemap: https://remybourgeois.com/sitemap.xml');
 });
+
+test('the legal notice page is served, linked from the footer, and kept out of the index', async ({
+  request
+}) => {
+  const home = await (await request.get('/')).text();
+  expect(home).toContain('href="/mentions-legales"');
+  expect(home).not.toContain('vibe cod');
+  const res = await request.get('/mentions-legales');
+  expect(res.status()).toBe(200);
+  const html = await res.text();
+  expect(html).toMatch(/name="robots"[^>]*noindex/);
+  for (const section of ['Éditeur du site', 'Hébergement', 'Données personnelles']) {
+    expect(html).toContain(section);
+  }
+});
