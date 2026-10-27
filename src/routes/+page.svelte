@@ -481,10 +481,9 @@
           secondaryExternal
         >
           {#snippet lede()}
-            Je vous accompagne sur vos projets d'<strong>IA</strong>, de
-            <strong>design system</strong>, d'<strong>interfaces complexes</strong> et de
-            <strong>conseil stratégique</strong>, que vous soyez une startup, une scale-up, une PME
-            ou une grande entreprise.
+            Je vous accompagne sur vos projets d'IA, de design system, d'interfaces complexes et de
+            conseil stratégique, que vous soyez une startup, une scale-up, une PME ou une grande
+            entreprise.
           {/snippet}
           {#snippet extra()}
             <a

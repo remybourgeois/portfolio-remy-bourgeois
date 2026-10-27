@@ -22,7 +22,8 @@ import {
   scanIntroSceneImport,
   scanVersionPins,
   scanLiteralColors,
-  scanSmallType
+  scanSmallType,
+  scanEmphasis
 } from './rules.ts';
 
 /* ───────────────────────── blankComments ───────────────────────── */
@@ -333,4 +334,40 @@ test('hasEscape ne traverse pas un élément fermé', () => {
 test('hasEscape reste vrai sur la ligne et celle du dessus', () => {
   assert.equal(hasEscape(['<!-- m: raison -->', 'x'], 1, 'm'), true);
   assert.equal(hasEscape(['x <!-- m: raison -->'], 0, 'm'), true);
+});
+
+/* ───────────────────────── Emphase ───────────────────────── */
+
+test('scanEmphasis signale deux gras dans un paragraphe de données, pas un seul', () => {
+  const text = [
+    '  description:',
+    "    'Un **premier** point et un **second** point.\\n\\nUn seul **fait** ici.',"
+  ].join('\n');
+  const v = scanEmphasis(text, 'projects.ts', 'script');
+  assert.equal(v.length, 1);
+  assert.equal(v[0].line, 2);
+});
+
+test('scanEmphasis ne compte ni les chiffres ni les libellés de puces', () => {
+  const text =
+    "    'Adopté par **plus de 15 équipes** et **30 millions** de personnes.\\n\\n• **Un Lab** : pour prototyper.\\n• **Zéro maquette** : itérer dans le code.',";
+  assert.deepEqual(scanEmphasis(text, 'projects.ts', 'script'), []);
+});
+
+test('scanEmphasis lit les <p> et les snippets lede des composants', () => {
+  const text = [
+    '<p class="x">',
+    '  Un <strong>robot</strong> et un <strong>écran</strong>.',
+    '</p>',
+    '<p>Un seul <strong>fait</strong>.</p>',
+    '{#snippet lede()}',
+    '  <strong>IA</strong>, <strong>design system</strong>.',
+    '{/snippet}',
+    '<!-- <strong>a</strong> <strong>b</strong> en commentaire -->'
+  ].join('\n');
+  const v = scanEmphasis(text, 'x.svelte', 'svelte');
+  assert.deepEqual(
+    v.map((x) => x.line),
+    [1, 5]
+  );
 });

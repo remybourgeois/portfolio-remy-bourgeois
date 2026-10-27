@@ -377,7 +377,7 @@
         {#if project.role}
           <div>
             <div class="eyebrow text-white/60 mb-1">Rôle</div>
-            <div class="text-sm text-accent font-medium leading-snug">{project.role}</div>
+            <div class="text-sm text-white/85 font-medium leading-snug">{project.role}</div>
           </div>
         {/if}
         {#if project.year}

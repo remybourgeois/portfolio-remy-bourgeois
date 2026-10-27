@@ -436,3 +436,53 @@ export function scanSmallType(
   });
   return out;
 }
+
+/**
+ * Une emphase par paragraphe. Le gras est ce que le lecteur retient en
+ * balayant la page : à trois mots violets par phrase, il ne retient plus rien
+ * et le texte prend un ton d'argumentaire généré. Une seule mise en avant par
+ * paragraphe, celle du fait à retenir. Les chiffres (« plus de 30 millions »)
+ * ne comptent pas, ni les libellés qui ouvrent une puce (« • **Un Lab** : »),
+ * qui sont une structure de liste et non une emphase.
+ *
+ * `script` lit les littéraux de `src/lib/data` : un paragraphe y est séparé
+ * par un `\n\n` écrit en toutes lettres dans la chaîne. `svelte` lit chaque
+ * `<p>` et chaque `{#snippet lede()}`.
+ */
+export function scanEmphasis(text: string, file: string, kind: 'svelte' | 'script'): Violation[] {
+  const blanked = blankComments(text, kind);
+  const out: Violation[] = [];
+  const lineAt = (offset: number) => blanked.slice(0, offset).split('\n').length;
+  const report = (offset: number, count: number) =>
+    out.push({
+      file,
+      line: lineAt(offset),
+      message: `${count} emphases dans un paragraphe : garder celle que le lecteur doit retenir.`
+    });
+
+  if (kind === 'script') {
+    const lines = blanked.split('\n');
+    let offset = 0;
+    for (const line of lines) {
+      for (const paragraph of line.split('\\n\\n')) {
+        const prose = paragraph.split('\\n').filter((l) => !l.trimStart().startsWith('•'));
+        const count = prose
+          .flatMap((l) => [...l.matchAll(/\*\*(.+?)\*\*/g)].map((m) => m[1]))
+          .filter((b) => !/\d/.test(b)).length;
+        if (count > 1) report(offset, count);
+      }
+      offset += line.length + 1;
+    }
+    return out;
+  }
+
+  const blocks = /<p\b[^>]*>([\s\S]*?)<\/p>|\{#snippet lede\(\)\}([\s\S]*?)\{\/snippet\}/g;
+  for (const m of blanked.matchAll(blocks)) {
+    const body = m[1] ?? m[2] ?? '';
+    const count = [...body.matchAll(/<strong\b[^>]*>([\s\S]*?)<\/strong>/g)]
+      .map((x) => x[1])
+      .filter((b) => !/\d/.test(b)).length;
+    if (count > 1) report(m.index ?? 0, count);
+  }
+  return out;
+}

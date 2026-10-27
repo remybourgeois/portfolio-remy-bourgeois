@@ -121,9 +121,9 @@
        et « À propos » seul ne dit pas de qui. -->
   <PageHeader title="À propos de Rémy Bourgeois" crumbs={CRUMBS}>
     {#snippet lede()}
-      <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer freelance,
-      basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces pour des produits
-      complexes, et les implémente lui-même dans le dépôt.
+      Rémy Bourgeois est Lead Design System et Senior Product Designer freelance, basé à Lyon. Il
+      conçoit depuis 14 ans des interfaces pour des produits complexes, et les implémente lui-même
+      dans le dépôt.
     {/snippet}
     {#snippet media()}
       <img
@@ -154,15 +154,15 @@
         Ce terrain a laissé deux héritages. Le premier est le <strong>design conversationnel</strong
         >
         : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se trompe.
-        Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
-        <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est resté
-        une pratique personnelle, sous le même nom, en musique.
+        Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le son :
+        la voix et le sound design faisaient partie du travail, et c'est resté une pratique personnelle,
+        sous le même nom, en musique.
       </p>
       <p>
-        Les années suivantes ont ajouté l'échelle. Le Crédit Agricole a imposé la rigueur des
-        <strong>design systems</strong> opérés par des dizaines d'équipes. iPify et Highlight ont ajouté
-        la contrainte du SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle : un assistant IA
-        à concevoir de zéro, et un mode de travail où le design ne s'arrête plus à la maquette.
+        Les années suivantes ont ajouté l'échelle. Le Crédit Agricole a imposé la rigueur des design
+        systems opérés par des dizaines d'équipes. iPify et Highlight ont ajouté la contrainte du
+        SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle : un assistant IA à concevoir
+        de zéro, et un mode de travail où le design ne s'arrête plus à la maquette.
       </p>
       <p>
         C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants

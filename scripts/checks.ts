@@ -38,7 +38,8 @@ import {
   scanIntroSceneImport,
   scanVersionPins,
   scanLiteralColors,
-  scanSmallType
+  scanSmallType,
+  scanEmphasis
 } from './rules.ts';
 
 const CONFIG = {
@@ -129,6 +130,11 @@ run('Version de Node', () =>
       .map((f) => ({ file: f, text: read(f) }))
   )
 );
+
+run('Emphase', () => [
+  ...svelteFiles.flatMap((f) => scanEmphasis(read(f), f, 'svelte')),
+  ...contentFiles.flatMap((f) => scanEmphasis(read(f), f, 'script'))
+]);
 
 run('Couleur littérale', () =>
   svelteFiles

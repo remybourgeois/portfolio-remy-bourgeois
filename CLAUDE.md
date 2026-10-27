@@ -99,6 +99,11 @@ Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
   un ton « écrit par une IA ». Utiliser deux-points, virgule, point ou `|` selon
   le cas. Les commentaires de code ne sont pas concernés : la règle « Tiret
   cadratin » blanchit les commentaires avant de regarder.
+- **Emphase** : une seule mise en avant par paragraphe, celle du fait que le
+  lecteur doit retenir (règle « Emphase »). Le gras rend en violet `accent` :
+  trois mots violets par phrase, et plus rien ne ressort. Les chiffres et les
+  libellés qui ouvrent une puce ne comptent pas. Jamais de gras sur un nom de
+  marque ou un simple nom commun.
 - **Largeur des sections de la home** : `<main>` est en `flex items-center`, donc
   une section sans `w-full` se dimensionne sur son contenu. `RevealOnScroll`
   porte `w-full` pour que toutes les sections s'alignent sur `max-w-6xl`.
