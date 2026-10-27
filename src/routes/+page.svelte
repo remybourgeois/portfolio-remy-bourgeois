@@ -131,69 +131,104 @@
     class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40"
   >
     <!--
-      Hero sur une colonne, aligné à gauche. Le portrait passe en vignette :
-      à 380 px de large, désaturé et voilé, il occupait toute la première
-      hauteur d'écran sur mobile sans rien dire du travail, et concurrençait
-      le H1 sur desktop sans le servir. Une vignette de 72 px identifie, le
-      titre et l'accroche portent le message, et les deux boutons donnent
-      enfin au hero la suite qui n'existait qu'en bas de page.
+      Hero en deux colonnes dès md : le texte à gauche, le portrait à droite,
+      en couleur et grand. L'ancienne version le désaturait et le voilait,
+      et le posait AVANT le titre : sur mobile il occupait tout le premier
+      écran. Ici la colonne du portrait disparaît sous md, où seule une
+      vignette de 72 px reste au-dessus du nom : le titre et les deux boutons
+      tiennent dans le premier écran du téléphone, et l'écran large n'a plus
+      de vide à droite. La même image sert aux deux : une seule requête.
     -->
     <RevealOnScroll>
-      <div class="w-full max-w-[52rem] mb-20">
-        <div class="flex items-center gap-4 mb-7">
-          <img
-            src="/assets/remy-bourgeois.webp"
-            alt="Portrait de Rémy Bourgeois"
-            width="500"
-            height="500"
-            class="w-[72px] h-[72px] rounded-full object-cover object-[50%_20%] border border-white/15 shadow-lift flex-shrink-0"
-            loading="eager"
-          />
-          <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
-        </div>
+      <div
+        class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,320px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] gap-10 lg:gap-16 items-start mb-20"
+      >
+        <div class="max-w-[44rem]">
+          <div class="flex items-center gap-4 mb-7 md:hidden">
+            <img
+              src="/assets/remy-bourgeois.webp"
+              alt="Portrait de Rémy Bourgeois"
+              width="500"
+              height="500"
+              class="w-[72px] h-[72px] rounded-full object-cover object-[50%_20%] border border-white/15 shadow-lift flex-shrink-0"
+              loading="eager"
+            />
+            <Tag tone="emerald" dot="emerald" pulse>Disponible</Tag>
+          </div>
 
-        <h1 class="leading-tight mb-6">
-          <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
-          <span
-            class="block text-4xl md:text-[3.75rem] font-bold text-white tracking-tight leading-[1.04] [text-wrap:balance]"
-            >Lead Design System &amp; Senior Product Designer</span
-          >
-        </h1>
-
-        <ul class="flex flex-wrap gap-2 list-none p-0 m-0 mb-8">
-          <Tag as="li" icon="LayoutIcon">Design system</Tag>
-          <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
-          <Tag as="li" icon="Award">14 ans d'expérience</Tag>
-        </ul>
-
-        <!-- `.body-text` porte la règle globale des termes mis en avant :
-             le violet `accent`, comme sur le reste du site. -->
-        <div class="body-text flex flex-col gap-5 max-w-[42rem]">
-          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-            <strong
-              >Je supprime le décalage entre le design et le code, et j'aide les équipes à concevoir
-              avec l'IA.</strong
+          <h1 class="leading-tight mb-6">
+            <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
+            <span
+              class="block text-4xl md:text-[3.25rem] lg:text-[3.75rem] font-bold text-white tracking-tight leading-[1.04] [text-wrap:balance]"
+              >Lead Design System &amp; Senior Product Designer</span
             >
-          </p>
-          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-            14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>. Je conçois
-            des design systems et des produits IA
-            <strong>directement dans le code</strong>, avec les équipes qui vont les faire vivre. Un
-            développeur senior relit chacune de mes Pull Requests.
-          </p>
-          <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
-            Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
-            bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a plus
-            qu'une
-            <strong>seule source de vérité</strong>.
-          </p>
+          </h1>
+
+          <ul class="flex flex-wrap gap-2 list-none p-0 m-0 mb-8">
+            <Tag as="li" icon="LayoutIcon">Design system</Tag>
+            <Tag as="li" icon="BrainCircuit">IA et agents</Tag>
+            <Tag as="li" icon="Award">14 ans d'expérience</Tag>
+          </ul>
+
+          <!-- `.body-text` porte la règle globale des termes mis en avant :
+               le violet `accent`, comme sur le reste du site. -->
+          <div class="body-text flex flex-col gap-5 max-w-[42rem]">
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+              <strong
+                >Je supprime le décalage entre le design et le code, et j'aide les équipes à
+                concevoir avec l'IA.</strong
+              >
+            </p>
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+              14 ans de design produit, dont <strong>7 ans en robotique humanoïde</strong>. Je
+              conçois des design systems et des produits IA
+              <strong>directement dans le code</strong>, avec les équipes qui vont les faire vivre.
+              Un développeur senior relit chacune de mes Pull Requests.
+            </p>
+            <p class="text-white/70 font-light leading-relaxed text-base md:text-lg">
+              Ce n'est pas contre Figma. L'outil garde sa place : l'exploration d'un côté, une
+              bibliothèque alimentée depuis le code de l'autre. Ce qui change, c'est qu'il n'y a
+              plus qu'une
+              <strong>seule source de vérité</strong>.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-3 mt-9">
+            <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+            <Button href="/projects" variant="secondary" iconRight="ArrowRight">
+              Voir les projets
+            </Button>
+          </div>
         </div>
 
-        <div class="flex flex-wrap gap-3 mt-9">
-          <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
-          <Button href="/projects" variant="secondary" iconRight="ArrowRight">
-            Voir les projets
-          </Button>
+        <!-- Portrait en couleur, cadré 4:5, calé sur la ligne du nom. Le halo
+             évite que le fond clair du studio ne découpe un rectangle net. -->
+        <div class="hidden md:block relative md:mt-1">
+          <span
+            class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none bg-primary/20"
+            aria-hidden="true"
+          ></span>
+          <div
+            class="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/10 shadow-lift"
+          >
+            <img
+              src="/assets/remy-bourgeois.webp"
+              alt=""
+              width="500"
+              height="500"
+              class="w-full h-full object-cover object-[50%_20%]"
+              loading="eager"
+            />
+            <!-- Le fond clair du studio s'arrête net sur le noir de la page :
+                 un voile en bas du cadre le fait atterrir et assoit le tag. -->
+            <span
+              class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-canvas/80 to-transparent pointer-events-none"
+              aria-hidden="true"
+            ></span>
+            <span class="absolute left-5 bottom-5">
+              <Tag tone="emerald" dot="emerald" pulse solid>Disponible</Tag>
+            </span>
+          </div>
         </div>
       </div>
     </RevealOnScroll>
