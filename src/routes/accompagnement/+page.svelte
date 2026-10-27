@@ -135,7 +135,7 @@
         "serviceType": f.title
       }))
     ]
-  })}</script>`}
+  })}<\/script>`}
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">

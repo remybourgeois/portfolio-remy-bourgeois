@@ -7,7 +7,7 @@
   import { sfx } from '$lib/actions/sfx';
   import {
     SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE,
-    PERSON_ID, WEBSITE_ID, CONTENT_UPDATED, EMAIL, PROFILES
+    PERSON_ID, WEBSITE_ID, CONTENT_UPDATED, PROFILES
   } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
@@ -95,7 +95,7 @@
         "dateModified": CONTENT_UPDATED
       }
     ]
-  })}</script>`}
+  })}<\/script>`}
 </svelte:head>
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">

@@ -181,7 +181,7 @@
         "image": project.image ? SITE_URL + project.image : OG_IMAGE
       }
     ]
-  })}</script>`}
+  })}<\/script>`}
 </svelte:head>
 
 <!-- ─── Lightbox ─────────────────────────────────────────────────────────── -->
@@ -237,7 +237,6 @@
                   bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07]
                   flex items-center justify-center p-6">
         {#if lbSlide.type === 'video'}
-          <!-- svelte-ignore a11y_media_has_caption -->
           <video src={lbSlide.src} poster={lbSlide.poster} controls autoplay
                  width={lbSlide.width} height={lbSlide.height}
                  class="max-w-full max-h-[78vh] object-contain rounded-xl">

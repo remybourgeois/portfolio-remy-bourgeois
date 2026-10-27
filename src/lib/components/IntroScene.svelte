@@ -2,6 +2,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import * as THREE from 'three';
   import { audioStore, SFX_SUCCESS, SFX_CLICKS } from '$lib/stores/audio';
   import { POETIC_PHRASES } from '$lib/data/phrases';
@@ -9,7 +10,6 @@
 
   const PRIMARY   = '#706bfe';
   const SECONDARY = '#a78bfa';
-  const TERTIARY  = '#38bdf8';
   const ANIM_DURATION = 2000;
   const TRANSITION_DELAY = 500;
 
@@ -94,7 +94,12 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     renderer.domElement.setAttribute('aria-hidden', 'true');
     renderer.domElement.setAttribute('role', 'presentation');
+    // Le canvas WebGL est créé par Three.js, pas par Svelte, et monté dans un
+    // conteneur que le composant laisse vide : il n'y a aucun DOM attendu avec
+    // lequel diverger.
+    // eslint-disable-next-line svelte/no-dom-manipulating -- voir ci-dessus
     mountEl.innerHTML = '';
+    // eslint-disable-next-line svelte/no-dom-manipulating -- voir ci-dessus
     mountEl.appendChild(renderer.domElement);
 
     // ── Math helpers ──
@@ -468,6 +473,7 @@
       sprite.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
+      // eslint-disable-next-line svelte/no-dom-manipulating -- démontage du canvas Three.js
       mountEl?.replaceChildren();
     };
   });
@@ -538,7 +544,7 @@
     if (next === 10) {
       stepTimers.push(setTimeout(() => { if (!isMuted) audioStore.engine?.fadeOutBGM(); }, ANIM_DURATION));
       stepTimers.push(setTimeout(() => { flood = 0.1; }, ANIM_DURATION));
-      stepTimers.push(setTimeout(() => { goto('/'); }, ANIM_DURATION + TRANSITION_DELAY));
+      stepTimers.push(setTimeout(() => { goto(resolve('/')); }, ANIM_DURATION + TRANSITION_DELAY));
     }
   }
 </script>

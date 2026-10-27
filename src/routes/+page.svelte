@@ -89,7 +89,7 @@
       personNode,
       ...reviewNodes
     ]
-  })}</script>`}
+  })}<\/script>`}
 </svelte:head>
 
 <div class="relative min-h-screen bg-[#020205] text-white">

@@ -45,7 +45,9 @@ class AudioEngine {
 
   private createContext() {
     if (this.ctx) return;
-    const AC = window.AudioContext || (window as any).webkitAudioContext;
+    const AC =
+      window.AudioContext ||
+      (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     this.ctx = new AC();
     this.masterGain = this.ctx.createGain();
     this.masterGain.gain.value = this.isGlobalMuted ? 0 : 0.15;

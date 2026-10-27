@@ -33,7 +33,8 @@
       audioStore.engine?.disableBGM();
     }
 
-    const conn = (navigator as any).connection;
+    const conn = (navigator as Navigator & { connection?: { effectiveType?: string } })
+      .connection;
     const slow = conn?.effectiveType === '2g';
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!document.startViewTransition || slow || reduced) return;
