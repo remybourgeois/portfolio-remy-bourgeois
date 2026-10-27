@@ -880,6 +880,7 @@
         class="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0"
       >
         <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" aria-hidden="true">
+          <!-- ds-allow-contrast: piste du cercle de progression, pas du texte (svg aria-hidden) -->
           <path
             class="text-white/10"
             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"

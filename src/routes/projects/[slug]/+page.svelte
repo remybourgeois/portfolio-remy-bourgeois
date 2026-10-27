@@ -275,6 +275,7 @@
                   flex items-center justify-center p-6"
       >
         {#if lbSlide.type === 'video'}
+          <!-- ds-allow-autoplay: la lightbox ne s'ouvre que sur un clic du visiteur -->
           <video
             src={lbSlide.src}
             poster={lbSlide.poster}

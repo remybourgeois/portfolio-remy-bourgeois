@@ -155,9 +155,8 @@
           Ce terrain a laissé deux héritages. Le premier est le <strong
             >design conversationnel</strong
           >
-          : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se
-          trompe. Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second
-          est le
+          : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se trompe.
+          Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
           <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est resté
           une pratique personnelle, sous le même nom, en musique.
         </p>

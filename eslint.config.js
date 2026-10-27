@@ -32,9 +32,11 @@ export default ts.config(
   },
 
   // Lint typé sur les sources seulement. Le service de projet ne voit que ce que
-  // tsconfig.json couvre : y soumettre les fichiers de configuration le ferait échouer.
+  // couvre le tsconfig généré par SvelteKit (src et tests) : `scripts/` et les
+  // fichiers de configuration en sont absents et le feraient échouer. Ils restent
+  // lintés, sans les règles qui demandent les types.
   {
-    files: ['src/**/*.ts', 'src/**/*.svelte', 'scripts/**/*.ts'],
+    files: ['src/**/*.ts', 'src/**/*.svelte'],
     languageOptions: {
       parserOptions: {
         projectService: true,

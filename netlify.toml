@@ -2,8 +2,9 @@
   command = "npm run build"
   publish = "build"
 
-[build.environment]
-  NODE_VERSION = "20"
+# La version de Node vient de `.node-version` à la racine, que Netlify lit
+# tout seul : un NODE_VERSION ici prendrait le pas sans prévenir et les deux
+# pins divergeraient en silence (règle « Version de Node » de scripts/checks.ts).
 
 # L'ancienne page de contenu vivait sur /home, la racine n'étant qu'une intro
 # WebGL en noindex : tous les backlinks externes atterrissaient donc sur une
