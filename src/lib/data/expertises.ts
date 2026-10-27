@@ -13,7 +13,7 @@ export const EXPERTISES: Expertise[] = [
     id: 1,
     title: 'Design systems et tokens',
     icon: 'LayoutIcon',
-    desc: "Une seule source de vérité : le code. Figma garde sa place, mais ne la définit plus."
+    desc: 'Une seule source de vérité : le code. Figma garde sa place, mais ne la définit plus.'
   },
   {
     id: 2,
@@ -31,18 +31,18 @@ export const EXPERTISES: Expertise[] = [
     id: 4,
     title: 'Design stratégique',
     icon: 'Zap',
-    desc: "Passer du « comment on construit » au « est-ce que ça vaut la peine »."
+    desc: 'Passer du « comment on construit » au « est-ce que ça vaut la peine ».'
   },
   {
     id: 5,
     title: 'Conception dans le code',
     icon: 'Code',
-    desc: 'Git, Storybook, Claude Code. Des règles vérifiées à chaque PR plutôt qu\'une documentation que personne ne relit.'
+    desc: "Git, Storybook, Claude Code. Des règles vérifiées à chaque PR plutôt qu'une documentation que personne ne relit."
   },
   {
     id: 6,
     title: 'Interaction homme-machine',
     icon: 'Cpu',
-    desc: "Sept ans sur des robots qui devaient se rendre compréhensibles à des gens qui ne les avaient jamais vus."
+    desc: 'Sept ans sur des robots qui devaient se rendre compréhensibles à des gens qui ne les avaient jamais vus.'
   }
 ];

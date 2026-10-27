@@ -62,7 +62,11 @@
       aria-hidden="true"
     ></span>
   {:else if icon}
-    <Icon name={icon} size={13} className="flex-shrink-0 {tone === 'neutral' ? 'text-white/50' : ''}" />
+    <Icon
+      name={icon}
+      size={13}
+      className="flex-shrink-0 {tone === 'neutral' ? 'text-white/50' : ''}"
+    />
   {/if}
   {@render children()}
 </svelte:element>

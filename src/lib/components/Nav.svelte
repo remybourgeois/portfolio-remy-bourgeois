@@ -20,10 +20,10 @@
   let visible = $derived(currentPath !== '/intro');
 
   const LINKS = [
-    { href: '/',               label: 'Home',           exact: true },
-    { href: '/projects',       label: 'Projets',        exact: false },
+    { href: '/', label: 'Home', exact: true },
+    { href: '/projects', label: 'Projets', exact: false },
     { href: '/accompagnement', label: 'Accompagnement', exact: true },
-    { href: '/a-propos',       label: 'À propos',       exact: true }
+    { href: '/a-propos', label: 'À propos', exact: true }
   ];
 
   const isActive = (href: string, exact: boolean) =>
@@ -52,10 +52,14 @@
     -->
     <div class="hidden lg:flex items-center gap-6">
       {#each LINKS as link}
-        <a href={link.href}
-           use:sfx
-           class="text-xs uppercase tracking-wider transition-colors py-3 px-1
-                  {isActive(link.href, link.exact) ? 'text-white' : 'text-white/60 hover:text-white'}">
+        <a
+          href={link.href}
+          use:sfx
+          class="text-xs uppercase tracking-wider transition-colors py-3 px-1
+                  {isActive(link.href, link.exact)
+            ? 'text-white'
+            : 'text-white/60 hover:text-white'}"
+        >
           {link.label}
         </a>
       {/each}
@@ -72,13 +76,15 @@
         aria-pressed={!isMuted}
         class="hidden lg:flex items-center gap-2 text-white/60 hover:text-white transition-colors min-h-[44px] px-2"
       >
-        <div class="w-1.5 h-1.5 rounded-full {isMuted ? 'bg-red-500' : 'bg-emerald-400 animate-pulse'}"></div>
+        <div
+          class="w-1.5 h-1.5 rounded-full {isMuted ? 'bg-red-500' : 'bg-emerald-400 animate-pulse'}"
+        ></div>
         <Icon name={isMuted ? 'SpeakerOff' : 'Speaker'} size={14} />
       </button>
 
       <button
         class="lg:hidden text-white/60 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
-        onclick={() => menuOpen = !menuOpen}
+        onclick={() => (menuOpen = !menuOpen)}
         aria-label="Menu"
         aria-expanded={menuOpen}
         aria-controls="mobile-menu"
@@ -89,15 +95,24 @@
   </div>
 
   {#if menuOpen}
-    <div id="mobile-menu" class="lg:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95">
+    <div
+      id="mobile-menu"
+      class="lg:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-4 bg-[#020205]/95"
+    >
       {#each LINKS as link}
-        <a href={link.href} use:sfx onclick={() => menuOpen = false}
-           class="text-sm text-white/70 hover:text-white transition-colors py-2">{link.label}</a>
+        <a
+          href={link.href}
+          use:sfx
+          onclick={() => (menuOpen = false)}
+          class="text-sm text-white/70 hover:text-white transition-colors py-2">{link.label}</a
+        >
       {/each}
-      <button onclick={audioStore.toggleMute}
+      <button
+        onclick={audioStore.toggleMute}
         aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
         aria-pressed={!isMuted}
-        class="flex items-center gap-2 text-sm text-white/60 hover:text-white w-fit py-2 min-h-[44px]">
+        class="flex items-center gap-2 text-sm text-white/60 hover:text-white w-fit py-2 min-h-[44px]"
+      >
         <Icon name={isMuted ? 'SpeakerOff' : 'Speaker'} size={14} />
         Son {isMuted ? 'OFF' : 'ON'}
       </button>

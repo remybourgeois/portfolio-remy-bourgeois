@@ -4,7 +4,15 @@
   import Icon from '$lib/components/Icons.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
+  import {
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    OG_IMAGE,
+    PERSON_ID,
+    WEBSITE_ID,
+    CONTENT_UPDATED
+  } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { md, jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
@@ -12,9 +20,9 @@
 
   const { data }: { data: PageData } = $props();
   const project = $derived(data.project);
-  const prev    = $derived(data.prev);
-  const next    = $derived(data.next);
-  const index   = $derived(data.index);
+  const prev = $derived(data.prev);
+  const next = $derived(data.next);
+  const index = $derived(data.index);
 
   // ── Slides : hero + galerie fusionnés dans un seul tableau ────────────────
   type Slide = {
@@ -29,22 +37,31 @@
   const slides = $derived.by((): Slide[] => {
     const items: Slide[] = [];
     const hero = heroSize(project);
-    if (project.video)      items.push({ type: 'video', src: project.video, poster: project.videoPoster, ...hero });
+    if (project.video)
+      items.push({ type: 'video', src: project.video, poster: project.videoPoster, ...hero });
     else if (project.image) items.push({ type: 'image', src: project.image, ...hero });
-    if (project.media)      items.push(...project.media);
+    if (project.media) items.push(...project.media);
     return items;
   });
 
   // ── Carousel ───────────────────────────────────────────────────────────────
-  let carIndex  = $state(0);
-  let carTrack  = $state<HTMLDivElement | null>(null);
-  let touchX    = $state(0);
+  let carIndex = $state(0);
+  let carTrack = $state<HTMLDivElement | null>(null);
+  let touchX = $state(0);
 
-  function carPrev() { carIndex = (carIndex - 1 + slides.length) % slides.length; }
-  function carNext() { carIndex = (carIndex + 1) % slides.length; }
-  function carGo(i: number) { carIndex = i; }
+  function carPrev() {
+    carIndex = (carIndex - 1 + slides.length) % slides.length;
+  }
+  function carNext() {
+    carIndex = (carIndex + 1) % slides.length;
+  }
+  function carGo(i: number) {
+    carIndex = i;
+  }
 
-  function onTouchStart(e: TouchEvent) { touchX = e.touches[0].clientX; }
+  function onTouchStart(e: TouchEvent) {
+    touchX = e.touches[0].clientX;
+  }
   function onTouchEnd(e: TouchEvent) {
     const dx = e.changedTouches[0].clientX - touchX;
     if (Math.abs(dx) > 40) dx < 0 ? carNext() : carPrev();
@@ -53,10 +70,10 @@
   // Reset du carousel + lightbox à chaque changement de projet (navigation client-side).
   // Sans ça, carIndex garde sa valeur précédente et le transform pointe hors-limites.
   $effect(() => {
-    void project.id;  // dépendance réactive : se déclenche quand on change de projet
+    void project.id; // dépendance réactive : se déclenche quand on change de projet
     carIndex = 0;
-    lbOpen   = false;
-    lbIndex  = 0;
+    lbOpen = false;
+    lbIndex = 0;
     lockScroll(false);
   });
 
@@ -72,19 +89,19 @@
   });
 
   // ── Lightbox ───────────────────────────────────────────────────────────────
-  let lbOpen    = $state(false);
-  let lbIndex   = $state(0);
+  let lbOpen = $state(false);
+  let lbIndex = $state(0);
   let lbCloseEl = $state<HTMLButtonElement | null>(null);
   let lbTrigger: HTMLButtonElement | null = null;
 
-  const lbSlide   = $derived(slides[lbIndex]);
+  const lbSlide = $derived(slides[lbIndex]);
   const lbCaption = $derived(slides[lbIndex]?.caption ?? null);
-  const lbBadge   = $derived(slides.length > 1 ? `${lbIndex + 1} / ${slides.length}` : null);
+  const lbBadge = $derived(slides.length > 1 ? `${lbIndex + 1} / ${slides.length}` : null);
 
   function openSlide(i: number, trigger?: HTMLButtonElement) {
     lbTrigger = trigger ?? null;
-    lbIndex   = i;
-    lbOpen    = true;
+    lbIndex = i;
+    lbOpen = true;
     lockScroll(true);
     // Focus déplacé vers "Fermer" après le rendu
     setTimeout(() => lbCloseEl?.focus(), 50);
@@ -100,34 +117,44 @@
     if (e.key !== 'Tab' || !lbCloseEl) return;
     const dialog = lbCloseEl.closest('[role="dialog"]') as HTMLElement;
     if (!dialog) return;
-    const focusable = [...dialog.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), a[href], input, [tabindex]:not([tabindex="-1"])'
-    )];
+    const focusable = [
+      ...dialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], input, [tabindex]:not([tabindex="-1"])'
+      )
+    ];
     if (!focusable.length) return;
     const first = focusable[0];
-    const last  = focusable[focusable.length - 1];
+    const last = focusable[focusable.length - 1];
     if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault(); last.focus();
+      e.preventDefault();
+      last.focus();
     } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault(); first.focus();
+      e.preventDefault();
+      first.focus();
     }
   }
 
-  function lbPrev() { if (lbIndex > 0) lbIndex--; }
-  function lbNext() { if (lbIndex < slides.length - 1) lbIndex++; }
+  function lbPrev() {
+    if (lbIndex > 0) lbIndex--;
+  }
+  function lbNext() {
+    if (lbIndex < slides.length - 1) lbIndex++;
+  }
 
   function lockScroll(lock: boolean) {
     if (typeof document !== 'undefined') document.body.style.overflow = lock ? 'hidden' : '';
   }
 </script>
 
-<svelte:window onkeydown={(e) => {
-  if (!lbOpen) return;
-  if (e.key === 'Escape')     closeLightbox();
-  if (e.key === 'ArrowLeft')  lbPrev();
-  if (e.key === 'ArrowRight') lbNext();
-  trapFocus(e);
-}} />
+<svelte:window
+  onkeydown={(e) => {
+    if (!lbOpen) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbPrev();
+    if (e.key === 'ArrowRight') lbNext();
+    trapFocus(e);
+  }}
+/>
 
 <svelte:head>
   <title>{project.title}, {project.role} | Rémy Bourgeois</title>
@@ -154,31 +181,31 @@
   <meta name="twitter:url" content="{SITE_URL}/projects/{project.slug}" />
 
   {@html `<script type="application/ld+json">${jsonLd({
-    "@context": "https://schema.org",
-    "@graph": [
+    '@context': 'https://schema.org',
+    '@graph': [
       breadcrumb([
-        { name: 'Accueil',  path: '/' },
-        { name: 'Projets',  path: '/projects' },
+        { name: 'Accueil', path: '/' },
+        { name: 'Projets', path: '/projects' },
         { name: project.title, path: `/projects/${project.slug}` }
       ]),
       {
-        "@type": "CreativeWork",
-        "@id": `${SITE_URL}/projects/${project.slug}#work`,
-        "url": `${SITE_URL}/projects/${project.slug}`,
-        "name": project.title,
-        "headline": `${project.title}, ${project.role}`,
-        "description": project.seoDescription,
-        "abstract": `${project.summary.context} Impact : ${project.summary.impact}`,
-        "inLanguage": "fr-FR",
-        "isPartOf": { "@id": WEBSITE_ID },
-        "creator": { "@id": PERSON_ID },
-        "author": { "@id": PERSON_ID },
-        "keywords": project.tags,
-        "about": project.tags,
-        "temporalCoverage": project.year,
-        "dateModified": CONTENT_UPDATED,
-        "sourceOrganization": { "@type": "Organization", "name": project.client },
-        "image": project.image ? SITE_URL + project.image : OG_IMAGE
+        '@type': 'CreativeWork',
+        '@id': `${SITE_URL}/projects/${project.slug}#work`,
+        url: `${SITE_URL}/projects/${project.slug}`,
+        name: project.title,
+        headline: `${project.title}, ${project.role}`,
+        description: project.seoDescription,
+        abstract: `${project.summary.context} Impact : ${project.summary.impact}`,
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': WEBSITE_ID },
+        creator: { '@id': PERSON_ID },
+        author: { '@id': PERSON_ID },
+        keywords: project.tags,
+        about: project.tags,
+        temporalCoverage: project.year,
+        dateModified: CONTENT_UPDATED,
+        sourceOrganization: { '@type': 'Organization', name: project.client },
+        image: project.image ? SITE_URL + project.image : OG_IMAGE
       }
     ]
   })}<\/script>`}
@@ -196,10 +223,16 @@
     aria-label="Aperçu plein écran"
   >
     <!-- Barre supérieure -->
-    <div role="none" class="flex items-center justify-between px-5 py-4 flex-shrink-0" onclick={(e) => e.stopPropagation()}>
+    <div
+      role="none"
+      class="flex items-center justify-between px-5 py-4 flex-shrink-0"
+      onclick={(e) => e.stopPropagation()}
+    >
       <div class="flex items-center gap-3">
         {#if lbBadge}
-          <span class="font-mono text-[10px] text-white/55 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full">
+          <span
+            class="font-mono text-[10px] text-white/55 bg-white/[0.05] border border-white/[0.07] px-3 py-1 rounded-full"
+          >
             {lbBadge}
           </span>
         {/if}
@@ -218,8 +251,11 @@
     </div>
 
     <!-- Media + flèches -->
-    <div role="none" class="flex-1 flex items-center justify-center px-5 pb-5 gap-4 min-h-0" onclick={(e) => e.stopPropagation()}>
-
+    <div
+      role="none"
+      class="flex-1 flex items-center justify-center px-5 pb-5 gap-4 min-h-0"
+      onclick={(e) => e.stopPropagation()}
+    >
       {#if slides.length > 1}
         <button
           class="flex-shrink-0 w-10 h-10 rounded-full bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08]
@@ -233,20 +269,33 @@
         </button>
       {/if}
 
-      <div class="relative flex-1 min-w-0 max-w-5xl min-h-0 max-h-full rounded-2xl overflow-hidden
+      <div
+        class="relative flex-1 min-w-0 max-w-5xl min-h-0 max-h-full rounded-2xl overflow-hidden
                   bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07]
-                  flex items-center justify-center p-6">
+                  flex items-center justify-center p-6"
+      >
         {#if lbSlide.type === 'video'}
-          <video src={lbSlide.src} poster={lbSlide.poster} controls autoplay
-                 width={lbSlide.width} height={lbSlide.height}
-                 class="max-w-full max-h-[78vh] object-contain rounded-xl">
+          <video
+            src={lbSlide.src}
+            poster={lbSlide.poster}
+            controls
+            autoplay
+            width={lbSlide.width}
+            height={lbSlide.height}
+            class="max-w-full max-h-[78vh] object-contain rounded-xl"
+          >
             <track kind="captions" src="" label="Captions" />
           </video>
         {:else}
-          <img src={lbSlide.src} srcset={projectSrcset(lbSlide.src)} sizes="100vw"
-               alt={lbCaption ?? project.title}
-               width={lbSlide.width} height={lbSlide.height}
-               class="max-w-full max-h-[78vh] object-contain rounded-xl" />
+          <img
+            src={lbSlide.src}
+            srcset={projectSrcset(lbSlide.src)}
+            sizes="100vw"
+            alt={lbCaption ?? project.title}
+            width={lbSlide.width}
+            height={lbSlide.height}
+            class="max-w-full max-h-[78vh] object-contain rounded-xl"
+          />
         {/if}
       </div>
 
@@ -269,7 +318,6 @@
 <!-- ─── Page ──────────────────────────────────────────────────────────────── -->
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-5xl mx-auto px-6 pt-28 pb-24">
-
     <!-- Retour -->
     <a
       href="/projects"
@@ -281,8 +329,9 @@
     </a>
 
     <!-- ── Header — Version A : Split 2 colonnes ────────────────────────── -->
-    <header class="grid grid-cols-1 md:grid-cols-[1fr_200px] items-stretch pb-12 mb-14 border-b border-white/[0.06]">
-
+    <header
+      class="grid grid-cols-1 md:grid-cols-[1fr_200px] items-stretch pb-12 mb-14 border-b border-white/[0.06]"
+    >
       <!-- Gauche : index + logo + tags -->
       <div class="flex flex-col items-start gap-5">
         <span class="font-mono text-[10px] text-[#a8a5ff] tracking-[0.15em]">
@@ -317,9 +366,11 @@
 
       <!-- Droite : rôle + année, ancrés en bas -->
       {#if project.role || project.year}
-        <div class="flex flex-row md:flex-col gap-6 md:gap-5
+        <div
+          class="flex flex-row md:flex-col gap-6 md:gap-5
                     md:justify-end md:pl-8 md:border-l md:border-white/[0.07]
-                    border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0">
+                    border-t border-white/[0.07] md:border-t-0 pt-5 md:pt-0 mt-5 md:mt-0"
+        >
           {#if project.role}
             <div>
               <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-1">Rôle</div>
@@ -338,16 +389,25 @@
 
     <!-- ── En bref ─────────────────────────────────────────────────────────── -->
     <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
-    <section aria-labelledby="en-bref-title"
-             class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6">
-      <h2 id="en-bref-title" class="text-[11px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-5">En bref</h2>
+    <section
+      aria-labelledby="en-bref-title"
+      class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
+    >
+      <h2
+        id="en-bref-title"
+        class="text-[11px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-5"
+      >
+        En bref
+      </h2>
       <dl class="grid gap-5 md:grid-cols-3 md:gap-8">
         <div>
           <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Contexte</dt>
           <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
         </div>
         <div>
-          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Stack &amp; méthodes</dt>
+          <dt class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">
+            Stack &amp; méthodes
+          </dt>
           <dd>
             <ul class="flex flex-wrap gap-2">
               {#each project.summary.stack as item}
@@ -358,7 +418,9 @@
         </div>
         <div>
           <dt class="text-[11px] uppercase tracking-[0.2em] text-[#a8a5ff] mb-2">Impact</dt>
-          <dd class="text-sm text-white/85 leading-relaxed font-medium">{project.summary.impact}</dd>
+          <dd class="text-sm text-white/85 leading-relaxed font-medium">
+            {project.summary.impact}
+          </dd>
         </div>
       </dl>
     </section>
@@ -375,7 +437,8 @@
         <div
           bind:this={carTrack}
           class="flex"
-          style="transform: translateX(-{carIndex * 100}%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
+          style="transform: translateX(-{carIndex *
+            100}%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
         >
           {#each slides as slide, i}
             <button
@@ -390,9 +453,12 @@
                   src={slide.src}
                   poster={slide.poster}
                   preload="none"
-                  loop muted playsinline
+                  loop
+                  muted
+                  playsinline
                   aria-hidden="true"
-                  width={slide.width} height={slide.height}
+                  width={slide.width}
+                  height={slide.height}
                   class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
                 ></video>
               {:else}
@@ -402,7 +468,8 @@
                   sizes="(min-width: 1024px) 1024px, 100vw"
                   alt={slide.caption ?? ''}
                   loading={i === 0 ? 'eager' : 'lazy'}
-                  width={slide.width} height={slide.height}
+                  width={slide.width}
+                  height={slide.height}
                   class="max-w-full max-h-[55vh] sm:max-h-[65vh] object-contain pointer-events-none"
                 />
               {/if}
@@ -412,14 +479,20 @@
 
         <!-- Badge slide x/n -->
         {#if slides.length > 1}
-          <div class="absolute top-4 right-4 font-mono text-[10px] text-white/55 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none">
+          <div
+            class="absolute top-4 right-4 font-mono text-[10px] text-white/55 bg-black/35 border border-white/[0.07] px-3 py-1 rounded-full pointer-events-none"
+          >
             {carIndex + 1} / {slides.length}
           </div>
         {/if}
 
         <!-- Plein écran hint (hover desktop) -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          <div class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white text-xs font-medium">
+        <div
+          class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        >
+          <div
+            class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white text-xs font-medium"
+          >
             <Icon name="Maximize2" size={13} /> Plein écran
           </div>
         </div>
@@ -432,7 +505,10 @@
                    flex items-center justify-center text-white/50
                    hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
                    transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-            onclick={(e) => { e.stopPropagation(); carPrev(); }}
+            onclick={(e) => {
+              e.stopPropagation();
+              carPrev();
+            }}
             aria-label="Précédent"
           >
             <Icon name="ArrowLeft" size={16} />
@@ -443,7 +519,10 @@
                    flex items-center justify-center text-white/50
                    hover:text-white hover:bg-[#706bfe]/30 hover:border-[#706bfe]/50
                    transition-all z-10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-            onclick={(e) => { e.stopPropagation(); carNext(); }}
+            onclick={(e) => {
+              e.stopPropagation();
+              carNext();
+            }}
             aria-label="Suivant"
           >
             <Icon name="ArrowRight" size={16} />
@@ -477,20 +556,22 @@
       {:else}
         <div class="mb-14"></div>
       {/if}
-
     {:else}
       <!-- Placeholder si aucun media -->
-      <div class="rounded-3xl bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07] min-h-[300px] flex items-center justify-center mb-14">
+      <div
+        class="rounded-3xl bg-gradient-to-br from-[#14102a] to-[#0b091a] border border-white/[0.07] min-h-[300px] flex items-center justify-center mb-14"
+      >
         <span class="text-xs uppercase tracking-[0.4em] text-white/50 font-medium">Bientôt</span>
       </div>
     {/if}
 
     <!-- ── Contexte ────────────────────────────────────────────────────────── -->
     <div class="mb-14 flex flex-col gap-10">
-
       <!-- Description principale -->
       <div class="pl-5 border-l border-white/[0.1]">
-        <h2 class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">Contexte</h2>
+        <h2 class="text-[9px] uppercase tracking-[0.25em] text-white/60 font-semibold mb-4">
+          Contexte
+        </h2>
         <p class="project-text text-white/65 text-base md:text-[1.05rem] leading-[1.85]">
           {@html md(project.description)}
         </p>
@@ -510,19 +591,26 @@
       <!-- Challenge -->
       {#if project.challenge}
         <div class="pl-5 border-l-2 border-[#706bfe]/50">
-          <h2 class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">Challenge</h2>
-          <p class="project-text text-white/60 text-base leading-[1.85]">{@html md(project.challenge)}</p>
+          <h2 class="text-[9px] uppercase tracking-[0.25em] text-[#a8a5ff] font-semibold mb-4">
+            Challenge
+          </h2>
+          <p class="project-text text-white/60 text-base leading-[1.85]">
+            {@html md(project.challenge)}
+          </p>
         </div>
       {/if}
 
       <!-- Résultat -->
       {#if project.outcome}
         <div class="pl-5 border-l-2 border-emerald-400/50">
-          <h2 class="text-[9px] uppercase tracking-[0.25em] text-emerald-400/70 font-semibold mb-4">Résultat</h2>
-          <p class="project-text text-white/60 text-base leading-[1.85]">{@html md(project.outcome)}</p>
+          <h2 class="text-[9px] uppercase tracking-[0.25em] text-emerald-400/70 font-semibold mb-4">
+            Résultat
+          </h2>
+          <p class="project-text text-white/60 text-base leading-[1.85]">
+            {@html md(project.outcome)}
+          </p>
         </div>
       {/if}
-
     </div>
 
     <!-- ── Prev / Next ─────────────────────────────────────────────────────── -->
@@ -536,10 +624,18 @@
                  flex-1 sm:flex-none sm:max-w-[240px] min-h-[60px]
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
-          <Icon name="ArrowLeft" size={15} className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0" />
+          <Icon
+            name="ArrowLeft"
+            size={15}
+            className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
+          />
           <div class="min-w-0">
             <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Précédent</div>
-            <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{prev.title}</div>
+            <div
+              class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
+            >
+              {prev.title}
+            </div>
           </div>
         </a>
       {:else}
@@ -557,15 +653,22 @@
         >
           <div class="min-w-0">
             <div class="text-[9px] text-white/60 uppercase tracking-[0.15em] mb-0.5">Suivant</div>
-            <div class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate">{next.title}</div>
+            <div
+              class="text-sm font-medium text-white/60 group-hover:text-white transition-colors truncate"
+            >
+              {next.title}
+            </div>
           </div>
-          <Icon name="ArrowRight" size={15} className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0" />
+          <Icon
+            name="ArrowRight"
+            size={15}
+            className="text-white/55 group-hover:text-white/80 transition-colors flex-shrink-0"
+          />
         </a>
       {:else}
         <div></div>
       {/if}
     </div>
-
   </div>
 </main>
 
@@ -574,7 +677,11 @@
     animation: lb-in 0.18s ease-out both;
   }
   @keyframes lb-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 </style>

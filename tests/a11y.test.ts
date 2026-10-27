@@ -5,7 +5,14 @@ import AxeBuilder from '@axe-core/playwright';
  * Audit automatisé sur les quatre gabarits. Cible la famille de régressions
  * trouvée en revue manuelle : huit valeurs de texte sous le seuil WCAG AA.
  */
-const ROUTES = ['/', '/a-propos', '/accompagnement', '/projects', '/projects/ofelia', '/projects/aldebaran'];
+const ROUTES = [
+  '/',
+  '/a-propos',
+  '/accompagnement',
+  '/projects',
+  '/projects/ofelia',
+  '/projects/aldebaran'
+];
 
 /**
  * Fait défiler toute la page par pas d'un écran pour déclencher chaque
@@ -46,10 +53,11 @@ test('revealed sections actually reach full opacity', async ({ page }) => {
   // opacity-0 serait invisible tout en passant les assertions de visibilité.
   await page.goto('/');
   await revealAll(page);
-  const faded = await page.evaluate(() =>
-    [...document.querySelectorAll('main *')].filter(
-      (el) => Number(getComputedStyle(el).opacity) === 0 && (el as HTMLElement).offsetHeight > 0
-    ).length
+  const faded = await page.evaluate(
+    () =>
+      [...document.querySelectorAll('main *')].filter(
+        (el) => Number(getComputedStyle(el).opacity) === 0 && (el as HTMLElement).offsetHeight > 0
+      ).length
   );
   expect(faded).toBe(0);
 });

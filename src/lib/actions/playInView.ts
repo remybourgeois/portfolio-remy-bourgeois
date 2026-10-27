@@ -17,7 +17,13 @@ export function playInView(node: HTMLVideoElement) {
 
   const showStillFrame = () => {
     node.preload = 'metadata';
-    node.addEventListener('loadeddata', () => { node.currentTime = 0.1; }, { once: true });
+    node.addEventListener(
+      'loadeddata',
+      () => {
+        node.currentTime = 0.1;
+      },
+      { once: true }
+    );
     node.load();
   };
 
@@ -39,5 +45,9 @@ export function playInView(node: HTMLVideoElement) {
   );
 
   obs.observe(node);
-  return { destroy() { obs.disconnect(); } };
+  return {
+    destroy() {
+      obs.disconnect();
+    }
+  };
 }

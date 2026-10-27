@@ -36,7 +36,8 @@
   use:sfx
   class="inline-flex items-center gap-2 text-white/60 hover:text-white text-xs uppercase tracking-wider transition-colors mb-10 min-h-[44px]"
 >
-  <Icon name="ArrowLeft" size={14} /> {backLabel}
+  <Icon name="ArrowLeft" size={14} />
+  {backLabel}
 </a>
 
 <header class="mb-14 pb-10 border-b border-white/10">
@@ -48,7 +49,9 @@
         boîte s'arrête sous la ligne de base et les jambages descendants, le
         « g » d'Accompagnement en tête, n'étaient tout simplement pas peints.
       -->
-      <h1 class="text-[clamp(1.9rem,7.5vw,3rem)] font-semibold tracking-tight leading-[1.2] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+      <h1
+        class="text-[clamp(1.9rem,7.5vw,3rem)] font-semibold tracking-tight leading-[1.2] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60"
+      >
         {title}
       </h1>
       {#if lede}
@@ -59,7 +62,9 @@
           pour que l'arrêt de ligne paraisse voulu, assez courte pour rester
           sous les 75 caractères.
         -->
-        <p class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-[46rem] [text-wrap:pretty]">
+        <p
+          class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-[46rem] [text-wrap:pretty]"
+        >
           {@render lede()}
         </p>
       {/if}

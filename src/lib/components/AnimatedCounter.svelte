@@ -2,7 +2,11 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
 
-  let { end, suffix = '', duration = 2000 }: {
+  let {
+    end,
+    suffix = '',
+    duration = 2000
+  }: {
     end: number;
     suffix?: string;
     duration?: number;
@@ -20,26 +24,30 @@
   onMount(() => {
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      count = end; return;
+      count = end;
+      return;
     }
     // Le retour à zéro n'a lieu que si JS tourne : sans JS, la valeur affichée
     // reste la bonne au lieu de rester bloquée à 0.
     count = 0;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      obs.disconnect();
-      let start: number | undefined;
-      const tick = (ts: number) => {
-        if (start === undefined) start = ts;
-        const p = Math.min((ts - start) / duration, 1);
-        // easeOutExpo — mais on stoppe dès que le chiffre affiché atteint end
-        const ease = p < 1 ? 1 - Math.pow(2, -10 * p) : 1;
-        count = Math.round(end * ease);
-        if (p < 1 && count < end) requestAnimationFrame(tick);
-        else count = end; // atterrissage propre, pas de dead zone
-      };
-      requestAnimationFrame(tick);
-    }, { threshold: 0.5 });
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        obs.disconnect();
+        let start: number | undefined;
+        const tick = (ts: number) => {
+          if (start === undefined) start = ts;
+          const p = Math.min((ts - start) / duration, 1);
+          // easeOutExpo — mais on stoppe dès que le chiffre affiché atteint end
+          const ease = p < 1 ? 1 - Math.pow(2, -10 * p) : 1;
+          count = Math.round(end * ease);
+          if (p < 1 && count < end) requestAnimationFrame(tick);
+          else count = end; // atterrissage propre, pas de dead zone
+        };
+        requestAnimationFrame(tick);
+      },
+      { threshold: 0.5 }
+    );
     obs.observe(el);
     return () => obs.disconnect();
   });

@@ -5,11 +5,11 @@ import { error } from '@sveltejs/kit';
 export const prerender = true;
 
 export function entries() {
-  return PROJECTS.map(p => ({ slug: p.slug }));
+  return PROJECTS.map((p) => ({ slug: p.slug }));
 }
 
 export function load({ params }: { params: { slug: string } }) {
-  const idx = PROJECTS.findIndex(p => p.slug === params.slug);
+  const idx = PROJECTS.findIndex((p) => p.slug === params.slug);
   if (idx === -1) throw error(404, 'Projet non trouvé');
   return {
     project: PROJECTS[idx],

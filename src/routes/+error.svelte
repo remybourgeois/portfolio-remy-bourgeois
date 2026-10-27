@@ -12,20 +12,25 @@
   <meta name="robots" content="noindex, follow" />
 </svelte:head>
 
-<main id="main-content" class="min-h-screen bg-[#020205] text-white flex items-center justify-center px-6 py-24">
+<main
+  id="main-content"
+  class="min-h-screen bg-[#020205] text-white flex items-center justify-center px-6 py-24"
+>
   <div class="w-full max-w-lg text-center flex flex-col items-center gap-6">
     <span class="font-mono text-xs tracking-[0.25em] text-[#a8a5ff] uppercase">
       Erreur {status}
     </span>
 
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-balance">
+    <h1
+      class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-balance"
+    >
       {isNotFound ? 'Cette page n’existe pas' : 'Quelque chose a mal tourné'}
     </h1>
 
     <p class="text-white/60 text-base leading-relaxed max-w-md">
       {#if isNotFound}
-        Le lien est peut-être obsolète, ou l’adresse comporte une faute de frappe.
-        Les projets sont tous accessibles depuis le portfolio.
+        Le lien est peut-être obsolète, ou l’adresse comporte une faute de frappe. Les projets sont
+        tous accessibles depuis le portfolio.
       {:else}
         {$page.error?.message ?? 'Une erreur inattendue est survenue.'}
       {/if}

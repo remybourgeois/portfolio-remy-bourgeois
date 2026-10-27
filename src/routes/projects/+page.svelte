@@ -5,7 +5,15 @@
   import PageCta from '$lib/components/PageCta.svelte';
   import Tag from '$lib/components/Tag.svelte';
   import { sfx } from '$lib/actions/sfx';
-  import { SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE, PERSON_ID, WEBSITE_ID, CONTENT_UPDATED } from '$lib/data/site';
+  import {
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    OG_IMAGE,
+    PERSON_ID,
+    WEBSITE_ID,
+    CONTENT_UPDATED
+  } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
@@ -14,13 +22,22 @@
 
 <svelte:head>
   <title>Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois</title>
-  <meta name="description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+  <meta
+    name="description"
+    content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés."
+  />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
-  <meta property="og:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+  <meta
+    property="og:title"
+    content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois"
+  />
+  <meta
+    property="og:description"
+    content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés."
+  />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -28,37 +45,44 @@
   <meta property="og:url" content="{SITE_URL}/projects" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois" />
-  <meta name="twitter:description" content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés." />
+  <meta
+    name="twitter:title"
+    content="Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois"
+  />
+  <meta
+    name="twitter:description"
+    content="Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés."
+  />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/projects" />
 
   {@html `<script type="application/ld+json">${jsonLd({
-    "@context": "https://schema.org",
-    "@graph": [
+    '@context': 'https://schema.org',
+    '@graph': [
       breadcrumb([
         { name: 'Accueil', path: '/' },
         { name: 'Projets', path: '/projects' }
       ]),
       {
-        "@type": "CollectionPage",
-        "@id": SITE_URL + "/projects#collection",
-        "url": SITE_URL + "/projects",
-        "name": "Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois",
-        "description": "Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés.",
-        "inLanguage": "fr-FR",
-        "isPartOf": { "@id": WEBSITE_ID },
-        "about": { "@id": PERSON_ID },
-        "dateModified": CONTENT_UPDATED,
-        "mainEntity": {
-          "@type": "ItemList",
-          "numberOfItems": PROJECTS.length,
-          "itemListElement": PROJECTS.map((p, i) => ({
-            "@type": "ListItem",
-            "position": i + 1,
-            "url": `${SITE_URL}/projects/${p.slug}`,
-            "name": p.title
+        '@type': 'CollectionPage',
+        '@id': SITE_URL + '/projects#collection',
+        url: SITE_URL + '/projects',
+        name: 'Projets, études de cas Design System, IA et SaaS B2B | Rémy Bourgeois',
+        description:
+          'Cinq études de cas détaillées : design systems multi-marques, assistants IA conversationnels, SaaS B2B et robotique humanoïde. 14 ans de pratique, documentés.',
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': WEBSITE_ID },
+        about: { '@id': PERSON_ID },
+        dateModified: CONTENT_UPDATED,
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: PROJECTS.length,
+          itemListElement: PROJECTS.map((p, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/projects/${p.slug}`,
+            name: p.title
           }))
         }
       }
@@ -68,7 +92,6 @@
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
-
     <PageHeader title="Projets">
       {#snippet lede()}
         Cinq études de cas détaillées : design systems multi-marques, assistants IA
@@ -89,7 +112,10 @@
                  focus-visible:ring-2 focus-visible:ring-[#706bfe]"
         >
           <div class="relative h-56 overflow-hidden">
-            <div class="mesh-gradient-bg opacity-0 group-hover:opacity-20 transition-opacity duration-500" aria-hidden="true"></div>
+            <div
+              class="mesh-gradient-bg opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+              aria-hidden="true"
+            ></div>
             {#if project.video}
               <video
                 src={project.video}
@@ -117,21 +143,30 @@
               />
             {:else}
               <div class="w-full h-full flex items-center justify-center">
-                <span class="text-xs uppercase tracking-[0.3em] text-white/50 font-medium">Bientôt</span>
+                <span class="text-xs uppercase tracking-[0.3em] text-white/50 font-medium"
+                  >Bientôt</span
+                >
               </div>
             {/if}
           </div>
           <div class="p-6">
             {#if project.logo}
               <div class="h-6 mb-3 opacity-70">
-                <img src={project.logo} alt="" class="h-full w-auto object-contain brightness-0 invert" loading="lazy" />
+                <img
+                  src={project.logo}
+                  alt=""
+                  class="h-full w-auto object-contain brightness-0 invert"
+                  loading="lazy"
+                />
               </div>
             {:else}
               <div class="h-6 mb-3 opacity-70 flex items-center">
                 <span class="text-sm font-semibold text-white/50">{project.client}</span>
               </div>
             {/if}
-            <h2 class="text-lg font-semibold text-white mb-3 group-hover:text-[#706bfe] transition-colors">
+            <h2
+              class="text-lg font-semibold text-white mb-3 group-hover:text-[#706bfe] transition-colors"
+            >
               {project.title}
             </h2>
             <div class="flex flex-wrap gap-2">
@@ -156,6 +191,5 @@
         {/snippet}
       </PageCta>
     </div>
-
   </div>
 </main>

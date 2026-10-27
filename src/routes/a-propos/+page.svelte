@@ -6,8 +6,14 @@
   import PageCta from '$lib/components/PageCta.svelte';
   import { sfx } from '$lib/actions/sfx';
   import {
-    SITE_URL, SITE_NAME, SITE_LOCALE, OG_IMAGE,
-    PERSON_ID, WEBSITE_ID, CONTENT_UPDATED, PROFILES
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    OG_IMAGE,
+    PERSON_ID,
+    WEBSITE_ID,
+    CONTENT_UPDATED,
+    PROFILES
   } from '$lib/data/site';
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
@@ -21,29 +27,25 @@
     {
       period: '2013 – 2020',
       title: 'Designer d’interaction, Aldebaran Robotics',
-      body:
-        'Sept ans à concevoir les comportements et les interactions de NAO et Pepper, les robots humanoïdes les plus déployés au monde. Applications embarquées sur des milliers de robots dans plus de 70 pays, en retail, en gare et en aéroport. Design conversationnel, scénarisation vocale et sound design, dix ans avant l’arrivée des LLM.',
+      body: 'Sept ans à concevoir les comportements et les interactions de NAO et Pepper, les robots humanoïdes les plus déployés au monde. Applications embarquées sur des milliers de robots dans plus de 70 pays, en retail, en gare et en aéroport. Design conversationnel, scénarisation vocale et sound design, dix ans avant l’arrivée des LLM.',
       slug: 'aldebaran'
     },
     {
       period: 'Déc. 2021 – nov. 2024',
       title: 'Lead UI et référent design system, Crédit Agricole',
-      body:
-        'Trois ans sur l’un des plus vastes écosystèmes digitaux d’Europe : site institutionnel, application « Ma Banque » et outils conseillers. Architecture de design tokens pour gérer la déclinaison multi-marques des caisses régionales. Design system adopté par plus de 15 équipes produit, application utilisée par plus de 30 millions de personnes chaque mois.',
+      body: 'Trois ans sur l’un des plus vastes écosystèmes digitaux d’Europe : site institutionnel, application « Ma Banque » et outils conseillers. Architecture de design tokens pour gérer la déclinaison multi-marques des caisses régionales. Design system adopté par plus de 15 équipes produit, application utilisée par plus de 30 millions de personnes chaque mois.',
       slug: 'credit-agricole'
     },
     {
       period: 'Sept. 2024 – août 2025',
       title: 'Lead Design System, iPify et Highlight',
-      body:
-        'Deux missions menées en parallèle, quelques jours par semaine chacune. Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
+      body: 'Deux missions menées en parallèle, quelques jours par semaine chacune. Chez iPify, plateforme LegalTech de gestion internationale de portefeuilles de brevets : refonte du design system et conception des premières briques IA, dont l’interrogation en langage naturel. Chez Highlight, architecture d’un design system multi-thème pour un SaaS distribué en marque blanche, ramenant le déploiement d’une nouvelle marque de plusieurs semaines à quelques jours.',
       slug: 'ipify'
     },
     {
       period: 'Mars 2025 – oct. 2026',
       title: 'Premier designer, Ofelia',
-      body:
-        'Seul designer d’une suite d’orchestration IA gouvernée, construite à partir d’une page blanche. Le produit, un assistant agentique, s’intègre directement dans Slack et Teams. C’est sur ce projet que le rôle a basculé vers le design engineering : plus de maquette statique, des Pull Requests ouvertes directement dans le dépôt et revues par un développeur front.',
+      body: 'Seul designer d’une suite d’orchestration IA gouvernée, construite à partir d’une page blanche. Le produit, un assistant agentique, s’intègre directement dans Slack et Teams. C’est sur ce projet que le rôle a basculé vers le design engineering : plus de maquette statique, des Pull Requests ouvertes directement dans le dépôt et revues par un développeur front.',
       slug: 'ofelia'
     }
   ];
@@ -60,7 +62,10 @@
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
   <meta property="og:title" content="À propos | Rémy Bourgeois, Lead Design System" />
-  <meta property="og:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit." />
+  <meta
+    property="og:description"
+    content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit."
+  />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -71,28 +76,31 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="À propos | Rémy Bourgeois, Lead Design System" />
-  <meta name="twitter:description" content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA." />
+  <meta
+    name="twitter:description"
+    content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA."
+  />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
   <meta name="twitter:url" content="{SITE_URL}/a-propos" />
 
   {@html `<script type="application/ld+json">${jsonLd({
-    "@context": "https://schema.org",
-    "@graph": [
+    '@context': 'https://schema.org',
+    '@graph': [
       breadcrumb([
-        { name: 'Accueil',   path: '/' },
-        { name: 'À propos',  path: '/a-propos' }
+        { name: 'Accueil', path: '/' },
+        { name: 'À propos', path: '/a-propos' }
       ]),
       {
-        "@type": "AboutPage",
-        "@id": SITE_URL + "/a-propos#webpage",
-        "url": SITE_URL + "/a-propos",
-        "name": "À propos | Rémy Bourgeois, Lead Design System à Lyon",
-        "inLanguage": "fr-FR",
-        "isPartOf": { "@id": WEBSITE_ID },
-        "about": { "@id": PERSON_ID },
-        "mainEntity": { "@id": PERSON_ID },
-        "dateModified": CONTENT_UPDATED
+        '@type': 'AboutPage',
+        '@id': SITE_URL + '/a-propos#webpage',
+        url: SITE_URL + '/a-propos',
+        name: 'À propos | Rémy Bourgeois, Lead Design System à Lyon',
+        inLanguage: 'fr-FR',
+        isPartOf: { '@id': WEBSITE_ID },
+        about: { '@id': PERSON_ID },
+        mainEntity: { '@id': PERSON_ID },
+        dateModified: CONTENT_UPDATED
       }
     ]
   })}<\/script>`}
@@ -100,7 +108,6 @@
 
 <main id="main-content" class="min-h-screen bg-[#020205] text-white">
   <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
-
     <!--
       Le portrait passe à DROITE du bloc de titre : devant, il décalait le H1
       et cette page était la seule dont le titre ne démarrait pas au bord du
@@ -110,9 +117,9 @@
     -->
     <PageHeader title="À propos">
       {#snippet lede()}
-        <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer
-        freelance, basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces
-        pour des produits complexes, et les implémente lui-même dans le dépôt.
+        <strong>Rémy Bourgeois</strong> est Lead Design System et Senior Product Designer freelance,
+        basé à <strong>Lyon</strong>. Il conçoit depuis 14 ans des interfaces pour des produits
+        complexes, et les implémente lui-même dans le dépôt.
       {/snippet}
       {#snippet media()}
         <img
@@ -128,44 +135,56 @@
 
     <!-- ── Le fil ───────────────────────────────────────────────────────── -->
     <section class="mb-20" aria-labelledby="fil-title">
-      <h2 id="fil-title" class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4">
+      <h2
+        id="fil-title"
+        class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4"
+      >
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Le fil conducteur
       </h2>
-      <div class="body-text flex flex-col gap-5 max-w-4xl text-white/70 text-base md:text-[1.05rem] leading-[1.85]">
+      <div
+        class="body-text flex flex-col gap-5 max-w-4xl text-white/70 text-base md:text-[1.05rem] leading-[1.85]"
+      >
         <p>
-          Le point de départ n'est pas un écran, c'est un <strong>robot</strong>. Pendant sept ans chez
-          Aldebaran, la question n'était pas « où placer ce bouton » mais « comment une machine peut-elle
-          se rendre compréhensible à quelqu'un qui ne l'a jamais vue ». Concevoir pour un corps dans
-          l'espace, dans une gare bruyante, oblige à penser l'interaction avant l'interface.
+          Le point de départ n'est pas un écran, c'est un <strong>robot</strong>. Pendant sept ans
+          chez Aldebaran, la question n'était pas « où placer ce bouton » mais « comment une machine
+          peut-elle se rendre compréhensible à quelqu'un qui ne l'a jamais vue ». Concevoir pour un
+          corps dans l'espace, dans une gare bruyante, oblige à penser l'interaction avant
+          l'interface.
         </p>
         <p>
-          Ce terrain a laissé deux héritages. Le premier est le <strong>design conversationnel</strong> :
-          les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se
-          trompe. Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second est le
-          <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est
-          resté une pratique personnelle, sous le même nom, en musique.
+          Ce terrain a laissé deux héritages. Le premier est le <strong
+            >design conversationnel</strong
+          >
+          : les états d'incertitude, la reprise en main humaine, ce qui se passe quand la machine se
+          trompe. Tout cela pratiqué bien avant que les LLM ne rendent le sujet courant. Le second
+          est le
+          <strong>son</strong> : la voix et le sound design faisaient partie du travail, et c'est resté
+          une pratique personnelle, sous le même nom, en musique.
         </p>
         <p>
           Les années suivantes ont ajouté l'échelle. Le Crédit Agricole a imposé la rigueur des
-          <strong>design systems</strong> opérés par des dizaines d'équipes. iPify et Highlight ont
-          ajouté la contrainte du SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle :
-          un assistant IA à concevoir de zéro, et un mode de travail où le design ne s'arrête plus
-          à la maquette.
+          <strong>design systems</strong> opérés par des dizaines d'équipes. iPify et Highlight ont ajouté
+          la contrainte du SaaS B2B dense et du multi-marques. Ofelia a fermé la boucle : un assistant
+          IA à concevoir de zéro, et un mode de travail où le design ne s'arrête plus à la maquette.
         </p>
         <p>
           C'est le point d'arrivée actuel : <strong>supprimer le hand-off</strong>. Les composants
-          sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le designer
-          et revues par un développeur front. Il n'y a plus de traduction entre l'intention et
-          l'implémentation, donc plus de perte. Je ne me présente pas pour autant comme
-          développeur : chacune de mes Pull Requests est relue avant la mise en production. Ce mode de travail ne convient pas à toutes les
-          équipes : il suppose un dépôt, une revue, et quelqu'un qui accepte de relire.
+          sont implémentés directement dans le dépôt, les Pull Requests sont ouvertes par le
+          designer et revues par un développeur front. Il n'y a plus de traduction entre l'intention
+          et l'implémentation, donc plus de perte. Je ne me présente pas pour autant comme
+          développeur : chacune de mes Pull Requests est relue avant la mise en production. Ce mode
+          de travail ne convient pas à toutes les équipes : il suppose un dépôt, une revue, et
+          quelqu'un qui accepte de relire.
         </p>
       </div>
     </section>
 
     <!-- ── Parcours ─────────────────────────────────────────────────────── -->
     <section class="mb-20" aria-labelledby="parcours-title">
-      <h2 id="parcours-title" class="text-xs uppercase tracking-widest text-white/50 mb-10 font-semibold flex items-center gap-4">
+      <h2
+        id="parcours-title"
+        class="text-xs uppercase tracking-widest text-white/50 mb-10 font-semibold flex items-center gap-4"
+      >
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Parcours
       </h2>
 
@@ -195,7 +214,10 @@
 
     <!-- ── Ailleurs ─────────────────────────────────────────────────────── -->
     <section class="mb-20" aria-labelledby="ailleurs-title">
-      <h2 id="ailleurs-title" class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4">
+      <h2
+        id="ailleurs-title"
+        class="text-xs uppercase tracking-widest text-white/50 mb-8 font-semibold flex items-center gap-4"
+      >
         <span class="w-8 h-px bg-white/20" aria-hidden="true"></span> Ailleurs sur le web
       </h2>
       <p class="text-white/65 text-sm leading-[1.85] mb-6">
@@ -233,6 +255,5 @@
         Un projet, une question, ou juste l'envie d'échanger sur le design d'interfaces IA.
       {/snippet}
     </PageCta>
-
   </div>
 </main>
