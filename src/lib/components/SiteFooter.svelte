@@ -9,9 +9,9 @@
 </script>
 
 <footer class="max-w-6xl mx-auto px-6 md:px-8 pb-10">
-  <p class="text-white/50 text-xs text-center flex flex-wrap justify-center gap-x-3 gap-y-1">
-    <span>© 2026 Rémy Bourgeois</span>
-    <span aria-hidden="true">·</span>
+  <p class="text-white/50 text-xs text-center">
+    © 2026 Rémy Bourgeois
+    <span aria-hidden="true" class="mx-2">·</span>
     <a
       href="/mentions-legales"
       class="hover:text-white transition-colors underline-offset-4 hover:underline py-3"

@@ -41,7 +41,9 @@
     aria-hidden="true"
   ></div>
 
-  <div class="relative bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
+  <div
+    class="relative bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 md:p-12 text-center"
+  >
     <h2 class="text-3xl md:text-4xl font-semibold text-white mb-4">{title}</h2>
 
     <!-- Mesure large et `text-wrap: pretty` : les accroches courtes tiennent

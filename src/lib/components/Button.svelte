@@ -37,7 +37,7 @@
 
   const base =
     'inline-flex items-center justify-center gap-3 rounded-full font-medium transition-colors focus:outline-none focus-visible:ring-2';
-  const sizes = { md: 'px-8 py-4 text-base', sm: 'px-5 py-3 text-sm' };
+  const sizes = { md: 'px-6 sm:px-8 py-4 text-base', sm: 'px-5 py-3 text-sm' };
   const variants = {
     primary: 'bg-primary-strong text-white hover:bg-primary-hover focus-visible:ring-white',
     secondary:
