@@ -127,10 +127,12 @@
     {/snippet}
     {#snippet media()}
       <img
-        src="/assets/remy-bourgeois.webp"
+        src="/assets/remy-bourgeois-320.webp"
+        srcset="/assets/remy-bourgeois-320.webp 320w, /assets/remy-bourgeois.webp 500w"
+        sizes="(min-width: 768px) 144px, 112px"
         alt="Portrait de Rémy Bourgeois"
-        width="500"
-        height="500"
+        width="320"
+        height="320"
         class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover shadow-lift"
         loading="eager"
       />

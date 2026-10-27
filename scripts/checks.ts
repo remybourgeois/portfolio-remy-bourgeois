@@ -25,7 +25,7 @@
 //   node scripts/checks.ts --staged     mode hook : l'index git
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
@@ -39,7 +39,8 @@ import {
   scanVersionPins,
   scanLiteralColors,
   scanSmallType,
-  scanEmphasis
+  scanEmphasis,
+  scanFaststart
 } from './rules.ts';
 
 const CONFIG = {
@@ -129,6 +130,17 @@ run('Version de Node', () =>
       .filter((f) => existsSync(join(root, f)))
       .map((f) => ({ file: f, text: read(f) }))
   )
+);
+
+run('Vidéo faststart', () =>
+  filesIn(['static/assets/'], ['.mp4']).flatMap((f) => {
+    // 64 Ko suffisent : avec faststart, `moov` suit immédiatement `ftyp`.
+    const fd = openSync(join(root, f), 'r');
+    const head = new Uint8Array(65536);
+    const n = readSync(fd, head, 0, head.length, 0);
+    closeSync(fd);
+    return scanFaststart(head.subarray(0, n), f);
+  })
 );
 
 run('Emphase', () => [

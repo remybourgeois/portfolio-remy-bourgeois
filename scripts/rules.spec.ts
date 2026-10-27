@@ -23,7 +23,8 @@ import {
   scanVersionPins,
   scanLiteralColors,
   scanSmallType,
-  scanEmphasis
+  scanEmphasis,
+  scanFaststart
 } from './rules.ts';
 
 /* ───────────────────────── blankComments ───────────────────────── */
@@ -370,4 +371,15 @@ test('scanEmphasis lit les <p> et les snippets lede des composants', () => {
     v.map((x) => x.line),
     [1, 5]
   );
+});
+
+/* ───────────────────────── Vidéo faststart ───────────────────────── */
+
+test('scanFaststart accepte moov avant mdat et refuse l’inverse', () => {
+  const enc = new TextEncoder();
+  const ok = enc.encode('\0\0\0\x18ftypisom\0\0\0\x08moov\0\0\0\x08mdat');
+  assert.deepEqual(scanFaststart(ok, 'a.mp4'), []);
+  const ko = enc.encode('\0\0\0\x18ftypisom\0\0\0\x08mdat');
+  assert.equal(scanFaststart(ko, 'b.mp4').length, 1);
+  assert.ok(scanFaststart(ko, 'b.mp4')[0].message.includes('faststart'));
 });
