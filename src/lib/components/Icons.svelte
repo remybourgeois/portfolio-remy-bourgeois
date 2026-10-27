@@ -12,7 +12,6 @@
     | 'Award'
     | 'BrainCircuit'
     | 'Briefcase'
-    | 'Calendar'
     | 'ChevronDown'
     | 'ChevronUp'
     | 'Code'
@@ -104,11 +103,6 @@
     <path d="M17.599 6.5a3 3 0 0 0 .399-1.375M6.003 5.125A3 3 0 0 0 6.401 6.5" />
     <path d="M3.477 10.896a4 4 0 0 1 .585-.396M19.938 10.5a4 4 0 0 1 .585.396" />
     <path d="M6 18a4 4 0 0 1-1.97-3.284M17.97 14.716A4 4 0 0 1 16 18" />
-  {:else if name === 'Calendar'}
-    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-    <line x1="16" x2="16" y1="2" y2="6" />
-    <line x1="8" x2="8" y1="2" y2="6" />
-    <line x1="3" x2="21" y1="10" y2="10" />
   {:else if name === 'Briefcase'}
     <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />

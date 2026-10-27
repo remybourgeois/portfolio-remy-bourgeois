@@ -6,14 +6,6 @@ export const OG_IMAGE = `${SITE_URL}/assets/og-cover.jpg`;
 export const EMAIL = 'remy.bourgeois@gmail.com';
 
 /**
- * Lien de prise de rendez-vous (Calendly, cal.com, Google Agenda). Tant qu'il
- * est vide, les blocs de contact gardent « M'écrire » en bouton principal ;
- * renseigné, il devient le premier bouton : un prospect qui arrive de LinkedIn
- * veut un créneau de trente minutes, pas rédiger un courriel.
- */
-export const BOOKING_URL = '';
-
-/**
  * Mentions légales. Données du registre du commerce (RCS Lyon), telles que
  * publiées : la page les affiche mot pour mot.
  */
