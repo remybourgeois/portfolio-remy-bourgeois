@@ -486,3 +486,28 @@ export function scanEmphasis(text: string, file: string, kind: 'svelte' | 'scrip
   }
   return out;
 }
+
+/**
+ * Un MP4 doit porter son index (`moov`) en tête de fichier. Placé à la fin,
+ * comme le laissent la plupart des encodeurs par défaut, il oblige le
+ * navigateur à demander la fin du fichier pour lire les métadonnées, puis à
+ * repartir du début : la vidéo du hero d'Ofelia était téléchargée deux fois,
+ * 4,7 Mo pour 2,4 Mo utiles. `ffmpeg -movflags +faststart` règle le fichier.
+ * Seuls les premiers kilo-octets sont lus : c'est une question d'ordre.
+ */
+export function scanFaststart(head: Uint8Array, file: string): Violation[] {
+  const text = new TextDecoder('latin1').decode(head);
+  const moov = text.indexOf('moov');
+  const mdat = text.indexOf('mdat');
+  const ok = moov !== -1 && (mdat === -1 || moov < mdat);
+  return ok
+    ? []
+    : [
+        {
+          file,
+          line: 1,
+          message:
+            "L'index (moov) n'est pas en tête du fichier : ffmpeg -i in.mp4 -c copy -movflags +faststart out.mp4"
+        }
+      ];
+}

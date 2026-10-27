@@ -69,6 +69,13 @@ Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
 - **Vidéos** : jamais d'`autoplay` (règle « Autoplay »). Utiliser `preload="none"`
   - `use:playInView` sur les cartes, et la lecture pilotée par `carIndex` dans la
     case study. Seule la lightbox déroge, puisqu'un clic du visiteur l'ouvre.
+    Tout MP4 porte son index en tête (`ffmpeg -movflags +faststart`, règle
+    « Vidéo faststart ») : sinon le navigateur télécharge le fichier deux fois.
+    Encoder en 30 i/s au plus, CRF 28 : une démo d'interface n'a pas besoin de
+    60 i/s, et le texte reste net.
+- **Images** : le portrait existe en 320 et 500 px, les avatars des témoignages
+  en 120 px, les logos à leur taille d'affichage. Une image est servie à la
+  taille où elle s'affiche (`srcset` et `sizes`), jamais en 4096 px pour 24 px.
 - **Contraste** : plancher à `text-white/50` pour tout texte sur le fond
   (règle « Contraste »). Pour un accent violet lisible sur fond sombre, le rôle
   est `accent`, pas `primary` dilué. `tests/a11y.test.ts` passe axe-core sur six
@@ -143,8 +150,9 @@ Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
 
 ## Reste à faire
 
-- **Ré-encoder `ofelia-2.mp4`** si besoin (1,9 Mo pour 22 s). `ofelia-3.mp4` est
-  déjà passé de 8,0 à 2,4 Mo (CRF 32, 24 fps, 1112×1080 en pixels carrés) ; en
-  descendre davantage dégrade visiblement le texte de l'interface montrée.
+- **Ré-encoder `ofelia-2.mp4`** si besoin (1,9 Mo pour 22 s, index remis en
+  tête). `ofelia.mp4` est passé de 2,4 à 1,5 Mo (30 i/s, CRF 28). `ofelia-3.mp4`
+  est déjà passé de 8,0 à 2,4 Mo (CRF 32, 24 fps, 1112×1080 en pixels carrés) ;
+  en descendre davantage dégrade visiblement le texte de l'interface montrée.
 - **Search Console / Bing Webmaster** : comptes à créer et sitemap à soumettre —
   à faire depuis les comptes de Rémy, non automatisable depuis le dépôt.

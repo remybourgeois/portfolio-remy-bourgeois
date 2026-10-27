@@ -91,8 +91,13 @@
   // sur la page, soit 12 Mo pour un seul visuel visible.
   $effect(() => {
     if (!carTrack) return;
+    // Économiseur de données actif : l'affiche suffit, la vidéo se joue dans
+    // la lightbox sur un geste du visiteur.
+    const saveData =
+      (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData ===
+      true;
     carTrack.querySelectorAll<HTMLVideoElement>('video').forEach((v, i) => {
-      if (i === carIndex) v.play().catch(() => {});
+      if (i === carIndex && !saveData) v.play().catch(() => {});
       else v.pause();
     });
   });

@@ -146,10 +146,10 @@
         <div class="max-w-[44rem]">
           <div class="flex items-center gap-4 mb-7 md:hidden">
             <img
-              src="/assets/remy-bourgeois.webp"
+              src="/assets/remy-bourgeois-320.webp"
               alt="Portrait de Rémy Bourgeois"
-              width="500"
-              height="500"
+              width="320"
+              height="320"
               class="w-[72px] h-[72px] rounded-full object-cover object-[50%_20%] border border-white/15 shadow-lift flex-shrink-0"
               loading="eager"
             />
@@ -203,13 +203,21 @@
           <div
             class="hero-portrait relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/10 shadow-lift"
           >
+            <!-- C'est l'élément LCP de l'accueil sur grand écran : priorité
+                 haute dès le HTML. Sous md le bloc est masqué et `sizes`
+                 tombe à 72 px : le navigateur prend alors la variante 320,
+                 déjà demandée par la vignette, donc aucune requête de plus. -->
             <img
               src="/assets/remy-bourgeois.webp"
+              srcset="/assets/remy-bourgeois-320.webp 320w, /assets/remy-bourgeois.webp 500w"
+              sizes="(min-width: 768px) 400px, 72px"
               alt=""
               width="500"
               height="500"
               class="w-full h-full object-cover object-[50%_20%]"
               loading="eager"
+              fetchpriority="high"
+              decoding="async"
             />
             <span class="hero-grain absolute inset-0 pointer-events-none" aria-hidden="true"></span>
             <span class="hero-vignette absolute inset-0 pointer-events-none" aria-hidden="true"
