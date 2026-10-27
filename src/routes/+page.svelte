@@ -364,7 +364,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {#each impacts as item (item.label)}
             <div
-              class="flex flex-col items-center text-center p-6 rounded-xl bg-white/5 border border-white/10"
+              class="flex flex-col items-center text-center p-4 sm:p-6 rounded-xl bg-white/5 border border-white/10"
             >
               <span class="text-4xl md:text-5xl font-bold text-white mb-2">
                 <AnimatedCounter end={item.value} suffix={item.suffix} />
@@ -494,7 +494,7 @@
           {#snippet extra()}
             <a
               href="/accompagnement"
-              class="text-accent hover:text-white underline underline-offset-4 transition-colors"
+              class="text-accent hover:text-white underline underline-offset-4 transition-colors py-3"
             >
               Voir les trois façons de travailler ensemble
             </a>

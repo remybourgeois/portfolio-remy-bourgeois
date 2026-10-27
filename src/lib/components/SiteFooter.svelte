@@ -14,7 +14,7 @@
     <span aria-hidden="true">·</span>
     <a
       href="/mentions-legales"
-      class="hover:text-white transition-colors underline-offset-4 hover:underline"
+      class="hover:text-white transition-colors underline-offset-4 hover:underline py-3"
       >Mentions légales</a
     >
   </p>

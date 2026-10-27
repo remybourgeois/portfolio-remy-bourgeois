@@ -64,13 +64,16 @@
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       {#if BOOKING_URL}
-        <Button href={BOOKING_URL} external iconLeft="Calendar">Réserver 30 minutes</Button>
+        <Button href={BOOKING_URL} external iconLeft="Calendar" class="w-full sm:w-auto">
+          Réserver 30 minutes
+        </Button>
       {:else}
-        <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
+        <Button href="mailto:{EMAIL}" iconLeft="Mail" class="w-full sm:w-auto">M'écrire</Button>
       {/if}
       <Button
         href={secondaryHref}
         variant="secondary"
+        class="w-full sm:w-auto"
         external={secondaryExternal}
         iconLeft={secondaryIcon === 'Linkedin' ? 'Linkedin' : undefined}
         iconRight={secondaryIcon === 'ArrowRight' ? 'ArrowRight' : undefined}
@@ -83,7 +86,7 @@
       ou directement à
       <a
         href="mailto:{EMAIL}"
-        class="text-accent hover:text-white underline underline-offset-4 transition-colors"
+        class="text-accent hover:text-white underline underline-offset-4 transition-colors py-3"
         >{EMAIL}</a
       >
     </p>

@@ -32,27 +32,29 @@
   <div class="max-w-[46rem] flex flex-col gap-14">
     <section aria-labelledby="editeur-title">
       <SectionTitle id="editeur-title" class="mb-6">Éditeur du site</SectionTitle>
-      <dl class="grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 text-sm">
+      <!-- Sous 640 px, libellé et valeur se superposent : en deux colonnes, le
+           SIRET en mono et l'adresse ne tenaient pas dans 360 px. -->
+      <dl class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-x-8 gap-y-1 sm:gap-y-3 text-sm">
         <dt class="text-white/60">Dénomination</dt>
-        <dd class="text-white/85">{LEGAL.company}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.company}</dd>
         <dt class="text-white/60">Forme juridique</dt>
-        <dd class="text-white/85">{LEGAL.form}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.form}</dd>
         <dt class="text-white/60">Siège social</dt>
-        <dd class="text-white/85">{LEGAL.address}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.address}</dd>
         <dt class="text-white/60">SIREN</dt>
-        <dd class="text-white/85 font-mono">{LEGAL.siren}</dd>
+        <dd class="text-white/85 font-mono min-w-0 break-words mb-3 sm:mb-0">{LEGAL.siren}</dd>
         <dt class="text-white/60">SIRET</dt>
-        <dd class="text-white/85 font-mono">{LEGAL.siret}</dd>
+        <dd class="text-white/85 font-mono min-w-0 break-words mb-3 sm:mb-0">{LEGAL.siret}</dd>
         <dt class="text-white/60">RCS</dt>
-        <dd class="text-white/85">{LEGAL.rcs}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.rcs}</dd>
         <dt class="text-white/60">TVA intracommunautaire</dt>
-        <dd class="text-white/85 font-mono">{LEGAL.vat}</dd>
+        <dd class="text-white/85 font-mono min-w-0 break-words mb-3 sm:mb-0">{LEGAL.vat}</dd>
         <dt class="text-white/60">Code APE</dt>
-        <dd class="text-white/85">{LEGAL.ape}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.ape}</dd>
         <dt class="text-white/60">Directeur de la publication</dt>
-        <dd class="text-white/85">{LEGAL.manager}</dd>
+        <dd class="text-white/85 min-w-0 break-words mb-3 sm:mb-0">{LEGAL.manager}</dd>
         <dt class="text-white/60">Contact</dt>
-        <dd>
+        <dd class="min-w-0 break-all">
           <a href="mailto:{EMAIL}" class="text-accent hover:text-white underline underline-offset-4"
             >{EMAIL}</a
           >
