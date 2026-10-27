@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Passe chaque commit d'un intervalle dans le hook commit-msg.
+# Usage : .githooks/commit-msg-range <base> [tête]
+# Le CI s'en sert pour vérifier tous les commits d'une PR d'un coup.
+set -euo pipefail
+
+base="${1:?usage: commit-msg-range <base> [tête]}"
+head_ref="${2:-HEAD}"
+root="$(git rev-parse --show-toplevel)"
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+
+status=0
+count=0
+while IFS= read -r sha; do
+  [ -z "$sha" ] && continue
+  count=$((count + 1))
+  git log -1 --format=%B "$sha" > "$tmp"
+  if ! "$root/.githooks/commit-msg" "$tmp"; then
+    echo "   ↑ commit $(git log -1 --format='%h %s' "$sha")"
+    status=1
+  fi
+done < <(git rev-list --no-merges "$base..$head_ref")
+
+echo ">> $count commit(s) vérifié(s) entre $base et $head_ref."
+exit $status

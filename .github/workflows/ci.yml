@@ -5,15 +5,30 @@ on:
     branches: [main]
   pull_request:
 
+# Une nouvelle poussée sur une PR annule le run précédent : il ne prouve plus
+# rien. Sur main, chaque commit garde son run, qui atteste de son propre arbre.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Les règles de diff de scripts/checks.ts ont besoin du merge-base, et
+          # .checks-ignore-revs doit pouvoir être résolu.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Source unique de la version de Node, lue aussi par Netlify et par le
+          # hook commit-msg. La règle « Version de Node » refuse un pin littéral.
+          node-version-file: .node-version
           cache: npm
 
       - run: npm ci
@@ -23,11 +38,77 @@ jobs:
         # jusqu'ici seulement en lançant npm audit à la main.
         run: npm audit --audit-level=high
 
+      - name: Formatage et lint
+        run: npm run lint
+
       - name: Type & a11y check
         run: npm run check
 
+      - name: Tests des règles
+        # Les règles décident si une PR est rouge : elles sont testées comme du code.
+        run: npm run check:rules
+
+      - name: Invariants du projet
+        env:
+          # Le merge-base, pas la pointe de main : sinon toute PR ouverte
+          # deviendrait rouge dès qu'une autre fusionne. Et la vraie tête de la
+          # PR, le checkout étant un commit de fusion synthétique.
+          DS_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+          DS_HEAD_REF: ${{ github.event.pull_request.head.sha }}
+        run: npm run rules
+
+      - name: Cache des navigateurs Playwright
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install Playwright browser
+        # Les dépendances système ne sont pas dans le cache : toujours les poser.
         run: npx playwright install --with-deps chromium
 
       - name: End-to-end tests
         run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  commits:
+    # Chaque commit de la PR passe dans le hook commit-msg, celui-là même que le
+    # poste du développeur exécute : un message qui passe en local passe ici.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - run: npm ci
+
+      - name: Conventional Commits
+        env:
+          CI: 'true'
+        run: >
+          .githooks/commit-msg-range
+          ${{ github.event.pull_request.base.sha }}
+          ${{ github.event.pull_request.head.sha }}
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier les workflows
+        # Analyse statique des workflows, shellcheck compris sur chaque bloc run.
+        uses: docker://rhysd/actionlint:1.7.7
+        with:
+          args: -color

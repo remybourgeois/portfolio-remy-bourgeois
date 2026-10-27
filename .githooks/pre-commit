@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Hook versionné. À activer une fois par clone :
+#   git config core.hooksPath .githooks
+#
+# Règle reprise du kit : un outil que le hook peut laisser au CI ne bloque pas,
+# il avertit. Prettier est l'exception, puisque le CI refuserait de toute façon
+# un fichier mal formaté. Écrit pour le bash 3.2 de macOS : pas de `mapfile`.
+set -e
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+staged=$(git diff --staged --name-only --diff-filter=d)
+[ -z "$staged" ] && exit 0
+
+prettier="$root/node_modules/.bin/prettier"
+if [ ! -x "$prettier" ]; then
+  echo "⚠ Prettier introuvable : lancez 'npm install' d'abord."
+  exit 1
+fi
+
+# Laisser Prettier décider de ce qu'il formate (--ignore-unknown) plutôt qu'une
+# liste d'extensions tenue à la main, qui dérive de ce que vérifie le CI.
+# --list-different : ne réindexer que ce qui a réellement changé.
+files=()
+while IFS= read -r f; do files+=("$f"); done <<< "$staged"
+changed=$("$prettier" --ignore-unknown --list-different "${files[@]}" || true)
+if [ -n "$changed" ]; then
+  echo ">> Formatage (Prettier) :"
+  rewritten=()
+  while IFS= read -r f; do rewritten+=("$f"); echo "   $f"; done <<< "$changed"
+  "$prettier" --ignore-unknown --write "${rewritten[@]}" >/dev/null
+  git add "${rewritten[@]}"
+fi
+
+# Invariants du projet, sur l'index. Même script que le CI, en mode --staged.
+if echo "$staged" | grep -qE '\.(svelte|ts|css|js)$|^netlify\.toml$|^src/app\.html$'; then
+  if [ ! -f scripts/checks.ts ]; then
+    : # branche sans les règles (par exemple un main antérieur) : rien à vérifier
+  elif command -v node >/dev/null 2>&1; then
+    echo ">> Invariants du projet (indexés) :"
+    node scripts/checks.ts --staged
+  else
+    echo "⚠ node introuvable : invariants non vérifiés en local (le CI les vérifiera)."
+  fi
+fi
