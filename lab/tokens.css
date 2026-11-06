@@ -1,0 +1,35 @@
+/* lab/tokens.css
+   FICHIER GÉNÉRÉ, ne pas modifier à la main : `npm run lab:tokens`.
+   Copie du bloc @theme de src/app.css. Le Lab est un site statique sans
+   Tailwind : il lit les mêmes rôles sous forme de variables CSS, et la règle
+   « Tokens du Lab » de scripts/checks.ts refuse tout écart avec la source. */
+:root {
+  /* Fond du site. */
+  --color-canvas: #020205;
+  /* Fond des surfaces opaques posées au-dessus du contenu (lightbox). */
+  --color-overlay: #060609;
+  /* Dégradé des panneaux média (carousel, lightbox). */
+  --color-panel-from: #14102a;
+  --color-panel-to: #0b091a;
+
+  /* Violet de marque : accents décoratifs, halos, bordures actives. */
+  --color-primary: #706bfe;
+  /* Fond du bouton principal, et son survol. */
+  --color-primary-strong: #5a55e0;
+  --color-primary-hover: #4a45d0;
+  /* Violet lisible : termes mis en avant et libellés sur fond sombre.
+     `primary` dilué ne passe pas le contraste en texte, celui-ci oui. */
+  --color-accent: #a8a5ff;
+  /* Couleurs secondaires des dégradés et de la scène WebGL. */
+  --color-secondary: #a78bfa;
+  --color-tertiary: #38bdf8;
+
+  /* Halos. Le violet y est mélangé à la transparence plutôt que recopié en
+     rgba() : la valeur suit le rôle. */
+  --shadow-glow-primary: 0 0 15px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --shadow-glow-card: 0 0 40px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --shadow-glow-accent: 0 0 8px color-mix(in srgb, var(--color-accent) 90%, transparent);
+  --shadow-glow-emerald: 0 0 8px color-mix(in srgb, var(--color-emerald-400) 80%, transparent);
+  /* Portée d'un portrait ou d'une vignette posés sur le fond. */
+  --shadow-lift: 0 20px 40px rgb(0 0 0 / 0.45);
+}
