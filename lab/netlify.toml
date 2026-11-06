@@ -6,9 +6,9 @@
 [build]
   publish = "."
   command = ""
-  # Pas de redéploiement du Lab quand seul le portfolio change : Netlify saute
-  # le build si rien n'a bougé dans ce dossier (code de sortie 0 = ignorer).
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ."
+  # Pas de règle `ignore` : avec un base directory, Netlify saute déjà le build
+  # quand rien n'a changé dans ce dossier. Une règle maison fondée sur
+  # CACHED_COMMIT_REF risquait de sauter aussi le tout premier build.
 
 # Les expériences n'ont pas toutes de <link rel="icon"> : le navigateur
 # demande alors /favicon.ico, servi par le favicon du portfolio.
