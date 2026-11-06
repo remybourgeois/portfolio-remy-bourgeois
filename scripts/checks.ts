@@ -40,7 +40,8 @@ import {
   scanLiteralColors,
   scanSmallType,
   scanEmphasis,
-  scanFaststart
+  scanFaststart,
+  scanLabTokens
 } from './rules.ts';
 
 const CONFIG = {
@@ -152,6 +153,28 @@ run('Couleur littérale', () =>
   svelteFiles
     .filter((f) => !CONFIG.literalColorExempt.includes(f))
     .flatMap((f) => scanLiteralColors(read(f), f, CONFIG.markers.color))
+);
+
+// Le Lab (lab.remybourgeois.com) est un site statique à part, sans Tailwind.
+// Ses pages d'accueil suivent le design system par les variables de
+// lab/tokens.css, copie générée du bloc @theme ; les expériences, dans leurs
+// sous-dossiers, sont des prototypes autonomes et ne sont pas scannées.
+const labTokensFile = 'lab/tokens.css';
+const labPages = filesIn(['lab/'], ['.html', '.css']).filter((f) => !f.slice(4).includes('/'));
+
+run('Tokens du Lab', () =>
+  scanLabTokens(
+    read('src/app.css'),
+    existsSync(join(root, labTokensFile)) ? read(labTokensFile) : null,
+    labTokensFile
+  )
+);
+
+run('Lab : rédaction et police', () =>
+  labPages.flatMap((f) => [
+    ...scanGoogleFonts(read(f), f),
+    ...(f.endsWith('.html') ? scanEmDash(read(f), f, 'svelte') : [])
+  ])
 );
 
 run('Pas de typo sous 12 px', () =>

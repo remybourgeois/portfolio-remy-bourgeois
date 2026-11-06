@@ -24,7 +24,10 @@ import {
   scanLiteralColors,
   scanSmallType,
   scanEmphasis,
-  scanFaststart
+  scanFaststart,
+  extractTheme,
+  labTokensCss,
+  scanLabTokens
 } from './rules.ts';
 
 /* ───────────────────────── blankComments ───────────────────────── */
@@ -382,4 +385,35 @@ test('scanFaststart accepte moov avant mdat et refuse l’inverse', () => {
   const ko = enc.encode('\0\0\0\x18ftypisom\0\0\0\x08mdat');
   assert.equal(scanFaststart(ko, 'b.mp4').length, 1);
   assert.ok(scanFaststart(ko, 'b.mp4')[0].message.includes('faststart'));
+});
+
+/* ───────────────────────── Tokens du Lab ───────────────────────── */
+
+const APP_CSS = [
+  "@import 'tailwindcss';",
+  '@theme {',
+  '  --color-primary: #706bfe;',
+  '  --shadow-x: 0 0 1px color-mix(in srgb, var(--color-primary) 20%, transparent);',
+  '}',
+  '@utility eyebrow { font-weight: 600; }'
+].join('\n');
+
+test('extractTheme prend tout le bloc @theme et rien après', () => {
+  const body = extractTheme(APP_CSS) ?? '';
+  assert.match(body, /--color-primary: #706bfe;/);
+  assert.match(body, /--shadow-x/);
+  assert.doesNotMatch(body, /eyebrow/);
+  assert.equal(extractTheme('body { color: red; }'), null);
+});
+
+test('scanLabTokens accepte la copie exacte, refuse un écart ou un fichier absent', () => {
+  const good = labTokensCss(APP_CSS);
+  assert.ok(good?.includes(':root {'));
+  assert.equal(scanLabTokens(APP_CSS, good, 'lab/tokens.css').length, 0);
+  assert.equal(
+    scanLabTokens(APP_CSS, good!.replace('#706bfe', '#000000'), 'lab/tokens.css').length,
+    1
+  );
+  assert.match(scanLabTokens(APP_CSS, null, 'lab/tokens.css')[0].message, /absent/);
+  assert.equal(scanLabTokens('body {}', good, 'lab/tokens.css')[0].file, 'src/app.css');
 });

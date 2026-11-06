@@ -511,3 +511,62 @@ export function scanFaststart(head: Uint8Array, file: string): Violation[] {
         }
       ];
 }
+
+/* ───────────────────────── Tokens du Lab ───────────────────────── */
+
+/** En-tête de `lab/tokens.css` : le fichier dit d'où il vient et comment le refaire. */
+const LAB_TOKENS_HEADER = [
+  '/* lab/tokens.css',
+  '   FICHIER GÉNÉRÉ, ne pas modifier à la main : `npm run lab:tokens`.',
+  '   Copie du bloc @theme de src/app.css. Le Lab est un site statique sans',
+  '   Tailwind : il lit les mêmes rôles sous forme de variables CSS, et la règle',
+  '   « Tokens du Lab » de scripts/checks.ts refuse tout écart avec la source. */'
+].join('\n');
+
+/**
+ * Le corps du bloc `@theme { … }` de `src/app.css`, accolades équilibrées.
+ * Renvoie null s'il n'y a pas de bloc : le générateur et la règle échouent
+ * alors franchement au lieu de produire un fichier vide.
+ */
+export function extractTheme(css: string): string | null {
+  const start = css.search(/^@theme\s*\{/m);
+  if (start === -1) return null;
+  const open = css.indexOf('{', start);
+  let depth = 0;
+  for (let i = open; i < css.length; i++) {
+    if (css[i] === '{') depth++;
+    else if (css[i] === '}' && --depth === 0) return css.slice(open + 1, i);
+  }
+  return null;
+}
+
+/** Le contenu attendu de `lab/tokens.css` pour un `src/app.css` donné. */
+export function labTokensCss(appCss: string): string | null {
+  const body = extractTheme(appCss);
+  if (body === null) return null;
+  return `${LAB_TOKENS_HEADER}\n:root {${body}}\n`;
+}
+
+/**
+ * `lab/tokens.css` doit être exactement la copie du bloc @theme : le Lab suit
+ * le design system du portfolio par construction, pas par discipline.
+ */
+export function scanLabTokens(appCss: string, labCss: string | null, file: string): Violation[] {
+  const expected = labTokensCss(appCss);
+  if (expected === null) {
+    return [
+      { file: 'src/app.css', line: 1, message: 'Pas de bloc @theme : rien à copier dans le Lab.' }
+    ];
+  }
+  if (labCss === expected) return [];
+  return [
+    {
+      file,
+      line: 1,
+      message:
+        labCss === null
+          ? 'Fichier absent : lancer `npm run lab:tokens`.'
+          : 'Désynchronisé de src/app.css : lancer `npm run lab:tokens`.'
+    }
+  ];
+}

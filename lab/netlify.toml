@@ -1,0 +1,44 @@
+# Projet Netlify du Lab (lab.remybourgeois.com), distinct de celui du portfolio.
+# Dans Netlify, ce projet a pour « Base directory » le dossier `lab` : ce
+# fichier est donc lu à sa place, et le netlify.toml de la racine ne l'est pas.
+# Les pages sont servies telles quelles, sans étape de build.
+
+[build]
+  publish = "."
+  command = ""
+  # Pas de règle `ignore` : avec un base directory, Netlify saute déjà le build
+  # quand rien n'a changé dans ce dossier. Une règle maison fondée sur
+  # CACHED_COMMIT_REF risquait de sauter aussi le tout premier build.
+
+# Les expériences n'ont pas toutes de <link rel="icon"> : le navigateur
+# demande alors /favicon.ico, servi par le favicon du portfolio.
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.png"
+  status = 200
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# En-têtes communs. Pas de Content-Security-Policy ici : Netlify cumule les
+# blocs qui correspondent à une URL, et deux CSP s'appliquent ensemble (la plus
+# stricte gagne), ce qui bloquerait les expériences. Les pages d'accueil portent
+# leur CSP dans une balise <meta>, chaque expérience a la sienne ci-dessous.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# Les expériences sont des fichiers HTML autonomes, avec leurs scripts et
+# styles inlinés, et le visage charge Google Fonts : CSP élargie à ces seules
+# sources pour elles.
+[[headers]]
+  for = "/visage/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; base-uri 'self'; form-action 'self'; object-src 'none'"

@@ -3,6 +3,8 @@ export const SITE_URL = 'https://remybourgeois.com';
 export const SITE_NAME = 'Portfolio de Rémy Bourgeois';
 export const SITE_LOCALE = 'fr_FR';
 export const OG_IMAGE = `${SITE_URL}/assets/og-cover.jpg`;
+/** Le Lab : prototypes et expériences, servis par un projet Netlify distinct. */
+export const LAB_URL = 'https://lab.remybourgeois.com';
 export const EMAIL = 'remy.bourgeois@gmail.com';
 
 /**

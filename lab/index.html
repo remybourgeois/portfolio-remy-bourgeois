@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'"
+    />
+    <title>Lab | Rémy Bourgeois</title>
+    <meta
+      name="description"
+      content="Le Lab de Rémy Bourgeois : prototypes et expériences interactives autour des interfaces, de l'animation et de la robotique."
+    />
+    <link rel="canonical" href="https://lab.remybourgeois.com/" />
+    <meta name="theme-color" content="#020205" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="Lab | Rémy Bourgeois" />
+    <meta
+      property="og:description"
+      content="Prototypes et expériences interactives autour des interfaces, de l'animation et de la robotique."
+    />
+    <meta property="og:url" content="https://lab.remybourgeois.com/" />
+    <meta property="og:image" content="https://remybourgeois.com/assets/og-cover.jpg" />
+    <link
+      rel="preload"
+      href="/fonts/dm-sans-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/favicon.png" />
+    <link rel="stylesheet" href="/tokens.css" />
+    <link rel="stylesheet" href="/lab.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container">
+        <a class="brand" href="/">Rémy Bourgeois&nbsp;<span>/ Lab</span></a>
+        <a class="back" href="https://remybourgeois.com">Retour au portfolio</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero" aria-labelledby="titre">
+        <p class="eyebrow">Lab</p>
+        <h1 id="titre">Prototypes et <span>expériences</span></h1>
+        <p>
+          Un espace pour tester des idées en dehors des projets clients : interfaces, animation,
+          robotique. Chaque expérience tient en une page et s'ouvre directement dans le navigateur.
+        </p>
+      </section>
+
+      <section aria-labelledby="experiences">
+        <h2 id="experiences" class="section-title eyebrow">Expériences</h2>
+
+        <!--
+          Ajouter une expérience : créer son dossier (lab/<nom>/index.html),
+          puis copier un bloc <li class="card"> ci-dessous, le plus récent en
+          premier. Titre, une ligne de description, un lien.
+        -->
+        <ul class="projects">
+          <li class="card">
+            <span class="tag eyebrow">Animation</span>
+            <h3>Visage de robot expressif</h3>
+            <p>
+              Un simulateur d'avatar : un visage de robot animé qui passe d'une expression à
+              l'autre, avec ses réglages en direct.
+            </p>
+            <a href="/visage/">
+              Ouvrir l'expérience
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </li>
+          <li class="card soon" aria-label="Prochaines expériences">
+            <p class="eyebrow">Bientôt</p>
+            <p>D'autres expériences arrivent.</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <span>Lab de Rémy Bourgeois</span>
+        <a href="https://remybourgeois.com">remybourgeois.com</a>
+      </div>
+    </footer>
+  </body>
+</html>

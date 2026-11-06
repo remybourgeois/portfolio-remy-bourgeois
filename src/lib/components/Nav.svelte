@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import Icon from '$lib/components/Icons.svelte';
   import IntroCta from '$lib/components/IntroCta.svelte';
+  import { LAB_URL } from '$lib/data/site';
 
   let menuOpen = $state(false);
   let currentPath = $derived($page.url.pathname);
@@ -16,7 +17,10 @@
     { href: '/', label: 'Accueil', exact: true },
     { href: '/projects', label: 'Projets', exact: false },
     { href: '/accompagnement', label: 'Accompagnement', exact: true },
-    { href: '/a-propos', label: 'À propos', exact: true }
+    { href: '/a-propos', label: 'À propos', exact: true },
+    // Le Lab est un site à part (lab.remybourgeois.com, dossier `lab/`) : lien
+    // absolu, jamais « actif », ouvert dans le même onglet comme les autres.
+    { href: LAB_URL, label: 'Lab', exact: true }
   ];
 
   const isActive = (href: string, exact: boolean) =>

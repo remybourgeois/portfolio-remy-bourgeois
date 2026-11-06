@@ -52,6 +52,15 @@ test('the top bar names the site owner and carries no sound control', async ({ p
   await expect(nav.getByRole('button', { name: /son/i })).toHaveCount(0);
 });
 
+test('the top bar links to the Lab subdomain', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const nav = page.getByRole('navigation', { name: 'Navigation principale' });
+  await expect(nav.getByRole('link', { name: 'Lab', exact: true })).toHaveAttribute(
+    'href',
+    'https://lab.remybourgeois.com'
+  );
+});
+
 test('the hero offers a way to get in touch above the fold', async ({ page }) => {
   // Le premier lien vers l'e-mail était en bas d'une page de 6 000 px.
   const write = page.getByRole('link', { name: "M'écrire" }).first();

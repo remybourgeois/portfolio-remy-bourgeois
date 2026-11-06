@@ -12,3 +12,9 @@ static/
 # Le CHANGELOG et les rapports générés n'ont pas de style à tenir.
 *.min.js
 *.min.css
+
+# Lab : tokens.css est généré (npm run lab:tokens) et comparé octet pour octet
+# à sa source ; les expériences des sous-dossiers sont des prototypes autonomes
+# servis tels quels, que le formatage ne doit pas réécrire.
+lab/tokens.css
+lab/*/

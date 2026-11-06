@@ -1,0 +1,338 @@
+/* lab/lab.css
+   Styles des pages d'accueil du Lab. Les couleurs et les halos viennent
+   uniquement des variables de tokens.css (rôles du design system du
+   portfolio) : aucune valeur de couleur n'est écrite ici en dur, sauf le
+   blanc et ses opacités, comme les classes `text-white/60` du portfolio. */
+
+@font-face {
+  font-family: 'DM Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 1000;
+  src: url('/fonts/dm-sans-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'DM Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 1000;
+  src: url('/fonts/dm-sans-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-canvas);
+  color: white;
+  font-family:
+    'DM Sans Variable',
+    'DM Sans',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Équivalent de l'utilitaire `eyebrow` du portfolio. */
+.eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+}
+
+.container {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Barre du haut : même hauteur, même flou et même filet que la nav du portfolio. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgb(255 255 255 / 0.05);
+}
+
+.topbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.75rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.brand span {
+  color: var(--color-accent);
+}
+
+.brand:hover {
+  color: var(--color-accent);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(255 255 255 / 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.back:hover {
+  color: white;
+}
+
+/* En-tête de page, sur le modèle de PageHeader. */
+.hero {
+  position: relative;
+  padding-block: 6rem 3rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 50%;
+  width: min(40rem, 100%);
+  height: 20rem;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--color-primary) 18%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+}
+
+.hero .eyebrow {
+  color: var(--color-accent);
+  margin: 0 0 1rem;
+}
+
+.hero h1 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.hero h1 span {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  max-width: 38rem;
+  margin: 0;
+  font-size: 1.125rem;
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* Titre de section, sur le modèle de SectionTitle (variante gauche). */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.section-title::before {
+  content: '';
+  width: 2rem;
+  height: 1px;
+  background: rgb(255 255 255 / 0.2);
+}
+
+/* Grille des expériences : une carte par projet, ajoutée dans index.html. */
+.projects {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 1.75rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgb(255 255 255 / 0.07);
+  background: linear-gradient(135deg, var(--color-panel-from), var(--color-panel-to));
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s,
+    transform 0.3s;
+}
+
+.card:has(a:hover),
+.card:has(a:focus-visible) {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  box-shadow: var(--shadow-glow-card);
+  transform: translateY(-2px);
+}
+
+/* Pastille, sur le modèle de Tag. */
+.tag {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-accent);
+}
+
+.tag::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.card h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.card p {
+  margin: 0;
+  color: rgb(255 255 255 / 0.65);
+}
+
+/* Le lien couvre toute la carte (pseudo-élément), le texte reste le nom accessible. */
+.card a {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.card a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.card a svg {
+  transition: transform 0.2s;
+}
+
+.card a:hover svg {
+  transform: translateX(3px);
+}
+
+/* Emplacement vide : annonce les prochaines expériences sans lien mort. */
+.card.soon {
+  background: transparent;
+  border-style: dashed;
+  border-color: rgb(255 255 255 / 0.15);
+  justify-content: center;
+}
+
+.card.soon p {
+  color: rgb(255 255 255 / 0.5);
+}
+
+footer {
+  margin-top: 6rem;
+  border-top: 1px solid rgb(255 255 255 / 0.05);
+}
+
+footer .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 2rem;
+  font-size: 0.875rem;
+  color: rgb(255 255 255 / 0.5);
+}
+
+footer a {
+  color: rgb(255 255 255 / 0.7);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
