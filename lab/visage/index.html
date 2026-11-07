@@ -494,15 +494,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   });
 
   // ---------- Regard ----------
+  // Regard autonome : il ne suit pas la souris, seules les saccades aléatoires
+  // (boucle d'animation) et les scènes le pilotent.
   let lastPointer = -1e9, nextSaccade = 0, nextAuto = 0;
-  window.addEventListener('pointermove', ev => {
-    if (ev.pointerType === 'touch' || show) return;
-    const r = canvas.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    G.tx = clamp((ev.clientX - cx) / (r.width * 0.9), -1, 1);
-    G.ty = clamp((ev.clientY - cy) / (r.height * 0.8), -1, 1);
-    lastPointer = performance.now();
-  });
   function saccadeKick() { S.sx.v += 1.4; S.sy.v -= 1.0; }
 
   // ---------- Séquence « Tout seul » ----------
