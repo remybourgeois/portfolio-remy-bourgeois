@@ -671,7 +671,7 @@
     <PageCta
       title="Un projet qui ressemble à celui-là ?"
       secondaryHref="/accompagnement"
-      secondaryLabel="Accompagnement design system"
+      secondaryLabel="Voir l'accompagnement"
       secondaryIcon="ArrowRight"
     >
       {#snippet lede()}
