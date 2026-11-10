@@ -24,6 +24,12 @@ export interface Project {
    * affichait « …une suite logicielle d ».
    */
   seoDescription: string;
+  /**
+   * Sujet de l'étude de cas, rédigé à la main. Il ouvre le <title> et complète
+   * le H1 : sans lui, la page ne nommait que le client et le rôle, et ne
+   * pouvait ressortir que sur le nom du client.
+   */
+  subject: string;
   image?: string;
   video?: string;
   /** Dimensions du média d'ouverture quand c'est une vidéo (elles ne sont pas en 16:9). */
@@ -78,6 +84,7 @@ export const PROJECTS: Project[] = [
     },
     seoDescription:
       "Premier designer d'Ofelia : design system créé de zéro dans le code et UX d'un assistant IA agentique intégré à Slack et Teams.",
+    subject: 'Design system pour assistant IA',
     client: 'Ofelia',
     logo: '/assets/ofelia.svg',
     title: 'Ofelia',
@@ -129,6 +136,7 @@ export const PROJECTS: Project[] = [
     },
     seoDescription:
       "Refonte du design system et conception des briques IA d'iPify, plateforme SaaS B2B LegalTech de gestion internationale de portefeuilles de brevets.",
+    subject: 'Refonte de design system SaaS B2B',
     client: 'iPify',
     logo: '/assets/ipify.png',
     title: 'iPify',
@@ -177,6 +185,7 @@ export const PROJECTS: Project[] = [
     },
     seoDescription:
       "7 ans de design d'interaction homme-robot chez Aldebaran sur NAO et Pepper : UX embarquée, design conversationnel et sound design, dans 70+ pays.",
+    subject: "Design d'interaction homme-robot",
     client: 'Aldebaran',
     logo: '/assets/aldebaran.svg',
     title: 'Aldebaran Robotics',
@@ -204,6 +213,7 @@ export const PROJECTS: Project[] = [
     },
     seoDescription:
       'Lead UI et référent Design System au Crédit Agricole : design tokens multi-marques et app Ma Banque, utilisée par plus de 30 millions de personnes.',
+    subject: 'Design system multi-marques',
     client: 'Crédit Agricole',
     logo: '/assets/ca.png',
     title: 'Crédit Agricole',
@@ -252,6 +262,7 @@ export const PROJECTS: Project[] = [
     },
     seoDescription:
       "Design system multi-thème pour Highlight, SaaS B2B en marque blanche : une architecture de tokens qui ramène l'intégration d'une marque à quelques jours.",
+    subject: 'Design system multi-thème',
     client: 'Highlight',
     logo: '/assets/highlight.png',
     title: 'Highlight',
