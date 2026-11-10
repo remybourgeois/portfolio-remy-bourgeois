@@ -1,0 +1,132 @@
+{
+  "url": "https://remybourgeois.com/projects/highlight",
+  "status": 200,
+  "final_url": "https://remybourgeois.com/projects/highlight",
+  "redirect_chain": [],
+  "redirect_target": null,
+  "first_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "x_robots_tag": null,
+  "in_sitemap": true,
+  "bytes": 24372,
+  "title": "Highlight, Architecte design system | Rémy Bourgeois",
+  "title_count": 1,
+  "meta_robots": null,
+  "meta_description": "Design system multi-thème pour Highlight, SaaS B2B en marque blanche : une architecture de tokens qui ramène l'intégration d'une marque à quelques jours.",
+  "canonical": "https://remybourgeois.com/projects/highlight",
+  "html_lang": "fr",
+  "hreflang": [],
+  "h1_count": 1,
+  "h1": ["Highlight"],
+  "h2": ["En bref", "Contexte", "Challenge", "Résultat", "Un projet qui ressemble à celui-là ?"],
+  "og_title": "Highlight | Rémy Bourgeois",
+  "og_image": "https://remybourgeois.com/assets/og-cover.jpg",
+  "jsonld_types": [
+    "BreadcrumbList",
+    "ListItem",
+    "ListItem",
+    "ListItem",
+    "CreativeWork",
+    "Organization"
+  ],
+  "img_count": 2,
+  "img_missing_alt_attr": 0,
+  "img_empty_alt": 1,
+  "has_main": true,
+  "external_links": [
+    {
+      "href_raw": "https://lab.remybourgeois.com",
+      "url": "https://lab.remybourgeois.com",
+      "anchor": "Lab",
+      "region": "nav",
+      "rel": ""
+    }
+  ],
+  "internal_links": [
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Rémy Bourgeois",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Accueil",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Projets",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/accompagnement",
+      "url": "https://remybourgeois.com/accompagnement",
+      "anchor": "Accompagnement",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/a-propos",
+      "url": "https://remybourgeois.com/a-propos",
+      "anchor": "À propos",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/intro",
+      "url": "https://remybourgeois.com/intro",
+      "anchor": "Vivre l'expérience Expérience",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Accueil",
+      "region": "main-nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Projets",
+      "region": "main-nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/credit-agricole",
+      "url": "https://remybourgeois.com/projects/credit-agricole",
+      "anchor": "Précédent Crédit Agricole",
+      "region": "main-nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/accompagnement",
+      "url": "https://remybourgeois.com/accompagnement",
+      "anchor": "Voir comment je travaille",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/mentions-legales",
+      "url": "https://remybourgeois.com/mentions-legales",
+      "anchor": "Mentions légales",
+      "region": "footer",
+      "rel": ""
+    }
+  ],
+  "word_count_main": 373,
+  "template": "case-study",
+  "title_chars": 52,
+  "title_px_liberation_sans_20": 474,
+  "meta_description_chars": 153,
+  "canonical_self": true,
+  "indexable": true,
+  "found_by": ["sitemap", "link"]
+}

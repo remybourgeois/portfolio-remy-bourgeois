@@ -1,0 +1,104 @@
+{
+  "url": "https://remybourgeois.com/intro",
+  "status": 200,
+  "final_url": "https://remybourgeois.com/intro",
+  "redirect_chain": [],
+  "redirect_target": null,
+  "first_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "x_robots_tag": null,
+  "in_sitemap": false,
+  "bytes": 10594,
+  "title": "L'expérience | Rémy Bourgeois",
+  "title_count": 1,
+  "meta_robots": "noindex, follow",
+  "meta_description": "Intro interactive du portfolio de Rémy Bourgeois, Lead Design System et Senior Product Designer.",
+  "canonical": "https://remybourgeois.com/intro",
+  "html_lang": "fr",
+  "hreflang": [],
+  "h1_count": 1,
+  "h1": ["DESIGNING INTENTIONS"],
+  "h2": [],
+  "og_title": null,
+  "og_image": null,
+  "jsonld_types": [],
+  "img_count": 0,
+  "img_missing_alt_attr": 0,
+  "img_empty_alt": 0,
+  "has_main": false,
+  "external_links": [
+    {
+      "href_raw": "https://lab.remybourgeois.com",
+      "url": "https://lab.remybourgeois.com",
+      "anchor": "Lab",
+      "region": "nav",
+      "rel": ""
+    }
+  ],
+  "internal_links": [
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Accéder au portfolio",
+      "region": "other",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Rémy Bourgeois",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Accueil",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Projets",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/accompagnement",
+      "url": "https://remybourgeois.com/accompagnement",
+      "anchor": "Accompagnement",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/a-propos",
+      "url": "https://remybourgeois.com/a-propos",
+      "anchor": "À propos",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/intro",
+      "url": "https://remybourgeois.com/intro",
+      "anchor": "Vivre l'expérience Expérience",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Passer l'intro",
+      "region": "other",
+      "rel": ""
+    }
+  ],
+  "word_count_main": 33,
+  "template": "intro",
+  "title_chars": 29,
+  "title_px_liberation_sans_20": 277,
+  "meta_description_chars": 96,
+  "canonical_self": true,
+  "indexable": false,
+  "found_by": ["link"]
+}

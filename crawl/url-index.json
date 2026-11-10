@@ -1,0 +1,207 @@
+{
+  "url": "https://remybourgeois.com/",
+  "status": 200,
+  "final_url": "https://remybourgeois.com/",
+  "redirect_chain": [],
+  "redirect_target": null,
+  "first_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "x_robots_tag": null,
+  "in_sitemap": true,
+  "bytes": 60675,
+  "title": "Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois",
+  "title_count": 1,
+  "meta_robots": null,
+  "meta_description": "Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon.",
+  "canonical": "https://remybourgeois.com/",
+  "html_lang": "fr",
+  "hreflang": [],
+  "h1_count": 1,
+  "h1": ["Rémy Bourgeois Lead Design System & Senior Product Designer"],
+  "h2": ["Recommandations", "Expertises", "Impact", "Projets", "Démarrons un projet"],
+  "og_title": "Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois",
+  "og_image": "https://remybourgeois.com/assets/og-cover.jpg",
+  "jsonld_types": [
+    "WebSite",
+    "ProfilePage",
+    "Person",
+    "ImageObject",
+    "PostalAddress",
+    "Occupation",
+    "City",
+    "Review",
+    "Person",
+    "Organization",
+    "Review",
+    "Person",
+    "Organization",
+    "Review",
+    "Person",
+    "Organization",
+    "Review",
+    "Person",
+    "Organization",
+    "Review",
+    "Person",
+    "Organization",
+    "Review",
+    "Person",
+    "Organization"
+  ],
+  "img_count": 51,
+  "img_missing_alt_attr": 0,
+  "img_empty_alt": 38,
+  "has_main": true,
+  "external_links": [
+    {
+      "href_raw": "https://lab.remybourgeois.com",
+      "url": "https://lab.remybourgeois.com",
+      "anchor": "Lab",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "https://www.linkedin.com/in/remy-bourgeois/",
+      "url": "https://www.linkedin.com/in/remy-bourgeois/",
+      "anchor": "LinkedIn",
+      "region": "main",
+      "rel": "noopener noreferrer"
+    }
+  ],
+  "internal_links": [
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Rémy Bourgeois",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/",
+      "url": "https://remybourgeois.com/",
+      "anchor": "Accueil",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Projets",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/accompagnement",
+      "url": "https://remybourgeois.com/accompagnement",
+      "anchor": "Accompagnement",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/a-propos",
+      "url": "https://remybourgeois.com/a-propos",
+      "anchor": "À propos",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/intro",
+      "url": "https://remybourgeois.com/intro",
+      "anchor": "Vivre l'expérience Expérience",
+      "region": "nav",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Voir les projets",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/ofelia",
+      "url": "https://remybourgeois.com/projects/ofelia",
+      "anchor": "",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/ofelia",
+      "url": "https://remybourgeois.com/projects/ofelia",
+      "anchor": "Ofelia",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/ipify",
+      "url": "https://remybourgeois.com/projects/ipify",
+      "anchor": "[img alt] ",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/ipify",
+      "url": "https://remybourgeois.com/projects/ipify",
+      "anchor": "iPify",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/aldebaran",
+      "url": "https://remybourgeois.com/projects/aldebaran",
+      "anchor": "[img alt] ",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/aldebaran",
+      "url": "https://remybourgeois.com/projects/aldebaran",
+      "anchor": "Aldebaran Robotics",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/credit-agricole",
+      "url": "https://remybourgeois.com/projects/credit-agricole",
+      "anchor": "[img alt] ",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects/credit-agricole",
+      "url": "https://remybourgeois.com/projects/credit-agricole",
+      "anchor": "Crédit Agricole",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/projects",
+      "url": "https://remybourgeois.com/projects",
+      "anchor": "Découvrir tous les projets",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/accompagnement",
+      "url": "https://remybourgeois.com/accompagnement",
+      "anchor": "Voir les trois façons de travailler ensemble",
+      "region": "main",
+      "rel": ""
+    },
+    {
+      "href_raw": "/mentions-legales",
+      "url": "https://remybourgeois.com/mentions-legales",
+      "anchor": "Mentions légales",
+      "region": "footer",
+      "rel": ""
+    }
+  ],
+  "word_count_main": 1002,
+  "template": "home",
+  "title_chars": 69,
+  "title_px_liberation_sans_20": 659,
+  "meta_description_chars": 159,
+  "canonical_self": true,
+  "indexable": true,
+  "found_by": ["sitemap", "link"]
+}
