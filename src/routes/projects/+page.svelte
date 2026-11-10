@@ -183,7 +183,7 @@
     <PageCta
       title="Un projet qui ressemble à ceux-là ?"
       secondaryHref="/accompagnement"
-      secondaryLabel="Voir comment je travaille"
+      secondaryLabel="Voir l'accompagnement"
       secondaryIcon="ArrowRight"
     >
       {#snippet lede()}

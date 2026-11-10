@@ -498,7 +498,7 @@
               href="/accompagnement"
               class="text-accent hover:text-white underline underline-offset-4 transition-colors py-3"
             >
-              Voir les trois façons de travailler ensemble
+              Voir les trois formules d'accompagnement design system
             </a>
           {/snippet}
         </PageCta>

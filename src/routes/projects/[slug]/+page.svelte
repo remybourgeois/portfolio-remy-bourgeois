@@ -175,7 +175,7 @@
 />
 
 <svelte:head>
-  <title>{project.title}, {project.role} | Rémy Bourgeois</title>
+  <title>{project.subject} : étude de cas {project.client}</title>
   <meta name="description" content={project.seoDescription} />
 
   <meta property="og:type" content="article" />
@@ -207,7 +207,7 @@
         '@id': `${SITE_URL}/projects/${project.slug}#work`,
         url: `${SITE_URL}/projects/${project.slug}`,
         name: project.title,
-        headline: `${project.title}, ${project.role}`,
+        headline: `${project.subject} : étude de cas ${project.client}`,
         description: project.seoDescription,
         abstract: `${project.summary.context} Impact : ${project.summary.impact}`,
         inLanguage: 'fr-FR',
@@ -361,6 +361,9 @@
 
       <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.05]">
         {project.title}
+        <span class="block mt-3 text-xl md:text-2xl font-medium text-white/70 tracking-normal">
+          {project.subject}
+        </span>
       </h1>
 
       {#if project.tags.length > 0}
@@ -668,7 +671,7 @@
     <PageCta
       title="Un projet qui ressemble à celui-là ?"
       secondaryHref="/accompagnement"
-      secondaryLabel="Voir comment je travaille"
+      secondaryLabel="Voir l'accompagnement"
       secondaryIcon="ArrowRight"
     >
       {#snippet lede()}
