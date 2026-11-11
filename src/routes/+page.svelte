@@ -30,7 +30,12 @@
   const marqueeItems = [...CLIENTS, ...CLIENTS];
 
   let expandedTestimonial = $state<number | null>(null);
+  // Hauteur mesurée du témoignage ouvert : `max-height` ne s'anime pas vers
+  // `auto`, il lui faut une valeur en pixels.
+  let expandedHeight = $state(0);
   let showTopBtn = $state(false);
+  // Part de la page déjà parcourue, de 0 à 1 : dessine l'anneau du bouton.
+  let scrollProgress = $state(0);
   let topSentinel: HTMLDivElement;
 
   const impacts = [
@@ -50,13 +55,51 @@
       { rootMargin: '0px' }
     );
     io.observe(topSentinel);
-    return () => io.disconnect();
+
+    // Une mesure par image au plus : le scroll ne fait que demander un rafraîchissement.
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        scrollProgress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(frame);
+    };
   });
+
+  function testimonialHeight(id: number) {
+    return document.getElementById(`testimonial-${id}`)?.scrollHeight ?? 0;
+  }
+
+  function toggleTestimonial(id: number) {
+    if (expandedTestimonial === id) {
+      expandedTestimonial = null;
+      return;
+    }
+    expandedHeight = testimonialHeight(id);
+    expandedTestimonial = id;
+  }
 
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
+
+<!-- Le texte se recompose quand la largeur change : la hauteur ouverte aussi. -->
+<svelte:window
+  onresize={() => {
+    if (expandedTestimonial !== null) expandedHeight = testimonialHeight(expandedTestimonial);
+  }}
+/>
 
 <svelte:head>
   <title>Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois</title>
@@ -272,10 +315,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {#each TESTIMONIALS as t, i (t.id)}
             <div
-              class="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 h-fit {i ===
+              class="reveal-item flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all duration-300 h-fit {i ===
                 1 || i === 4
                 ? 'lg:mt-10'
                 : ''}"
+              style:--i={Math.min(i, 5)}
             >
               <div class="flex justify-between items-start gap-3 mb-4">
                 <div class="flex items-center gap-3">
@@ -307,17 +351,23 @@
                   />
                 </div>
               </div>
-              <p
-                id="testimonial-{t.id}"
-                lang={t.lang}
-                class="text-gray-300 text-sm leading-relaxed {expandedTestimonial === t.id
-                  ? ''
-                  : 'line-clamp-4'}"
+              <!-- Replié, le texte s'arrête à quatre lignes et la dernière
+                   s'estompe ; ouvert, la hauteur s'anime et le voile se lève
+                   (app.css, « Témoignage »). -->
+              <div
+                class="testimonial-clip {expandedTestimonial === t.id ? 'is-open' : ''}"
+                style:max-height={expandedTestimonial === t.id ? `${expandedHeight}px` : undefined}
               >
-                {t.text}
-              </p>
+                <p
+                  id="testimonial-{t.id}"
+                  lang={t.lang}
+                  class="text-gray-300 text-sm leading-relaxed"
+                >
+                  {t.text}
+                </p>
+              </div>
               <button
-                onclick={() => (expandedTestimonial = expandedTestimonial === t.id ? null : t.id)}
+                onclick={() => toggleTestimonial(t.id)}
                 aria-expanded={expandedTestimonial === t.id}
                 aria-controls="testimonial-{t.id}"
                 class="mt-3 text-accent hover:text-white text-xs flex items-center gap-1 transition-colors self-start min-h-[44px]"
@@ -335,9 +385,10 @@
       <div class="w-full mb-20">
         <SectionTitle align="center" class="mb-16">Expertises</SectionTitle>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-          {#each EXPERTISES as exp (exp.id)}
+          {#each EXPERTISES as exp, i (exp.id)}
             <div
-              class="group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
+              style:--i={Math.min(i, 5)}
+              class="reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
                 class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
@@ -365,9 +416,10 @@
         ></div>
         <SectionTitle align="center" class="mb-16">Impact</SectionTitle>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {#each impacts as item (item.label)}
+          {#each impacts as item, i (item.label)}
             <div
-              class="flex flex-col items-center text-center p-4 sm:p-6 rounded-xl bg-white/5 border border-white/10"
+              style:--i={i}
+              class="reveal-item flex flex-col items-center text-center p-4 sm:p-6 rounded-xl bg-white/5 border border-white/10"
             >
               <span class="text-4xl md:text-5xl font-bold text-white mb-2">
                 <AnimatedCounter end={item.value} suffix={item.suffix} />
@@ -414,7 +466,7 @@
                         aria-hidden="true"
                         width={heroSize(project).width}
                         height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl"
+                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
                       ></video>
                     {:else if project.image || project.media?.length}
                       <img
@@ -424,12 +476,20 @@
                         alt=""
                         width={heroSize(project).width}
                         height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl"
+                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
                         loading="lazy"
                       />
                     {:else}
                       <span class="eyebrow text-white/50">Bientôt</span>
                     {/if}
+                    <!-- Invitation au survol. Le lien entier est déjà masqué
+                         aux lecteurs d'écran : le titre porte le lien accessible. -->
+                    <span
+                      class="absolute left-4 bottom-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-canvas/80 px-3 py-1.5 text-sm font-medium text-white opacity-0 translate-y-2 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:translate-y-0"
+                    >
+                      Voir l'étude de cas
+                      <Icon name="ArrowRight" size={14} />
+                    </span>
                   </a>
                 </div>
                 <div
@@ -443,6 +503,7 @@
                         src={project.logo}
                         alt=""
                         class="h-full object-contain brightness-0 invert"
+                        style:view-transition-name="project-logo-{project.slug}"
                         loading="lazy"
                       />
                     {:else}
@@ -452,7 +513,8 @@
                   <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
                     <a
                       href="/projects/{project.slug}"
-                      class="text-left hover:text-accent transition-colors focus-visible:underline focus:outline-none"
+                      class="inline-block text-left hover:text-accent transition-colors focus-visible:underline focus:outline-none"
+                      style:view-transition-name="project-title-{project.slug}"
                     >
                       {project.title}
                     </a>
@@ -511,8 +573,28 @@
     <button
       onclick={scrollToTop}
       aria-label="Remonter en haut"
-      class="fixed bottom-8 right-8 z-[100] p-3 rounded-full bg-primary/20 border border-primary/40 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm min-h-[44px] min-w-[44px] flex items-center justify-center"
+      class="fixed bottom-8 right-8 z-[100] h-11 w-11 rounded-full bg-primary/20 border border-white/10 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm flex items-center justify-center"
     >
+      <!-- Anneau de progression : `pathLength="1"` ramène le périmètre à 1,
+           le décalage du tiret est donc directement la part restante. -->
+      <svg
+        class="absolute inset-0 h-full w-full -rotate-90 text-accent pointer-events-none"
+        viewBox="0 0 44 44"
+        fill="none"
+        aria-hidden="true"
+      >
+        <circle
+          cx="22"
+          cy="22"
+          r="21"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          pathLength="1"
+          stroke-dasharray="1"
+          style:stroke-dashoffset={1 - scrollProgress}
+        />
+      </svg>
       <Icon name="ChevronUp" size={20} />
     </button>
   {/if}

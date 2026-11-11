@@ -156,6 +156,7 @@
                 src={project.logo}
                 alt=""
                 class="h-full w-auto object-contain brightness-0 invert"
+                style:view-transition-name="project-logo-{project.slug}"
                 loading="lazy"
               />
             </div>
@@ -167,7 +168,9 @@
           <h2
             class="text-lg font-semibold text-white mb-3 group-hover:text-accent transition-colors"
           >
-            {project.title}
+            <span class="inline-block" style:view-transition-name="project-title-{project.slug}">
+              {project.title}
+            </span>
           </h2>
           <div class="flex flex-wrap gap-2">
             {#each project.tags as tag (tag)}

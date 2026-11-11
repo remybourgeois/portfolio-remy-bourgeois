@@ -56,7 +56,12 @@ test('revealed sections actually reach full opacity', async ({ page }) => {
   const faded = await page.evaluate(
     () =>
       [...document.querySelectorAll('main *')].filter(
-        (el) => Number(getComputedStyle(el).opacity) === 0 && (el as HTMLElement).offsetHeight > 0
+        (el) =>
+          Number(getComputedStyle(el).opacity) === 0 &&
+          (el as HTMLElement).offsetHeight > 0 &&
+          // L'invitation au survol des cartes projet est invisible au repos par
+          // construction, et vit dans un lien masqué aux lecteurs d'écran.
+          !el.closest('[aria-hidden="true"]')
       ).length
   );
   expect(faded).toBe(0);
