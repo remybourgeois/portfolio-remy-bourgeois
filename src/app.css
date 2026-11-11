@@ -182,9 +182,11 @@ body {
   transform: translate3d(0, 0, 0);
 }
 /* Bandeau de logos : au survol le défilement s'arrête, le logo visé reste
-   plein et les autres s'estompent. Réservé aux pointeurs : au doigt, `:hover`
-   reste collé après un toucher et le bandeau ne repartirait plus. */
-@media (hover: hover) {
+   plein et les autres s'estompent. Réservé à la souris : au doigt, `:hover`
+   reste collé après un toucher, le bandeau se figeait et les logos restaient
+   estompés. `hover: hover` seul ne suffit pas, certains navigateurs mobiles
+   l'annoncent ; `pointer: fine` écarte tout écran tactile. */
+@media (hover: hover) and (pointer: fine) {
   .marquee-track img {
     transition: opacity 0.3s ease;
   }
