@@ -60,6 +60,7 @@
   l'animation, donc le prérendu ne contenait rien pour un lecteur d'écran.
 -->
 <span bind:this={el}>
-  <span aria-hidden="true">{count}{suffix}</span>
+  <!-- Chiffres à largeur fixe : le nombre ne tremble pas pendant qu'il compte. -->
+  <span aria-hidden="true" class="tabular-nums">{count}{suffix}</span>
   <span class="sr-only">{end}{suffix}</span>
 </span>

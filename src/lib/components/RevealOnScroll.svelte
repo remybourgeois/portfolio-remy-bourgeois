@@ -46,8 +46,14 @@
   et Expertises, dont les grilles remplissaient déjà la largeur disponible.
   Le wrapper d'animation ne doit pas décider de la largeur de la section.
 -->
+<!--
+  `data-reveal` n'existe que si la section s'anime : les enfants marqués
+  `reveal-item` montent alors l'un après l'autre (app.css, « Cascade »). Sans
+  JS ou en mouvement réduit l'attribut est absent et rien n'est masqué.
+-->
 <div
   bind:this={el}
+  data-reveal={animate ? (visible ? 'shown' : 'hidden') : undefined}
   class="w-full {animate ? 'transition-[opacity,transform] duration-700 ease-out' : ''} {visible
     ? 'opacity-100 translate-y-0'
     : 'opacity-0 translate-y-10'}"
