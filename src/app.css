@@ -181,24 +181,6 @@ body {
   filter: brightness(0) invert(1);
   transform: translate3d(0, 0, 0);
 }
-/* Bandeau de logos : au survol le défilement s'arrête, le logo visé reste
-   plein et les autres s'estompent. Réservé aux pointeurs : au doigt, `:hover`
-   reste collé après un toucher et le bandeau ne repartirait plus. */
-@media (hover: hover) {
-  .marquee-track img {
-    transition: opacity 0.3s ease;
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-  .marquee-track:hover img {
-    opacity: 0.3;
-  }
-  .marquee-track:hover img:hover {
-    opacity: 1;
-  }
-}
-
 /* ── Cascade ──
    Dans une section révélée par RevealOnScroll, les éléments `reveal-item`
    montent l'un après l'autre (`--i` est leur rang). `backwards` et non
@@ -240,15 +222,6 @@ body {
 .testimonial-clip.is-open {
   -webkit-mask-size: 100% 220%;
   mask-size: 100% 220%;
-}
-
-/* ── Transition vers une étude de cas ──
-   Le logo et le nom du projet portent le même `view-transition-name` sur la
-   carte et dans l'en-tête de l'étude de cas : le navigateur les fait voyager
-   de l'un à l'autre. */
-::view-transition-group(*) {
-  animation-duration: 0.45s;
-  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .animate-spin-slow {

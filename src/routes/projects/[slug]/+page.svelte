@@ -353,7 +353,6 @@
           src={project.logo}
           alt={project.client}
           class="h-7 w-auto object-contain brightness-0 invert opacity-80"
-          style:view-transition-name="project-logo-{project.slug}"
           loading="eager"
         />
       {:else}
@@ -361,9 +360,7 @@
       {/if}
 
       <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.05]">
-        <span class="inline-block" style:view-transition-name="project-title-{project.slug}">
-          {project.title}
-        </span>
+        {project.title}
         <span class="block mt-3 text-xl md:text-2xl font-medium text-white/70 tracking-normal">
           {project.subject}
         </span>
