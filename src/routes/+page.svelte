@@ -503,7 +503,6 @@
                         src={project.logo}
                         alt=""
                         class="h-full object-contain brightness-0 invert"
-                        style:view-transition-name="project-logo-{project.slug}"
                         loading="lazy"
                       />
                     {:else}
@@ -513,8 +512,7 @@
                   <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
                     <a
                       href="/projects/{project.slug}"
-                      class="inline-block text-left hover:text-accent transition-colors focus-visible:underline focus:outline-none"
-                      style:view-transition-name="project-title-{project.slug}"
+                      class="text-left hover:text-accent transition-colors focus-visible:underline focus:outline-none"
                     >
                       {project.title}
                     </a>
