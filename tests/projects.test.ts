@@ -57,3 +57,40 @@ test.describe('on a touch device', () => {
     expect(box!.width).toBeGreaterThan(390 * 0.75);
   });
 });
+
+test('a project card fans out its screens on hover', async ({ page }) => {
+  await page.goto('/projects');
+  const card = page.getByRole('link', { name: 'Voir le projet Crédit Agricole' });
+  // Trois écrans : le visuel d'ouverture et deux feuilles derrière lui.
+  await expect(card.locator('.fan-sheet')).toHaveCount(3);
+  await expect(card).not.toHaveAttribute('data-fan-open', '');
+  await card.hover();
+  await expect(card).toHaveAttribute('data-fan-open', '');
+  // Les deux feuilles du dessous finissent de part et d'autre du visuel.
+  await expect(async () => {
+    const [left, front, right] = await Promise.all(
+      ['.fan-sheet-l', '.fan-sheet-front', '.fan-sheet-r'].map((s) => card.locator(s).boundingBox())
+    );
+    expect(left!.x).toBeLessThan(front!.x - 20);
+    expect(right!.x + right!.width).toBeGreaterThan(front!.x + front!.width + 20);
+  }).toPass({ timeout: 5000 });
+});
+
+test('the project video only plays while its card is open', async ({ page }) => {
+  const videos: string[] = [];
+  page.on('request', (r) => {
+    if (/\.mp4(\?|$)/.test(r.url())) videos.push(new URL(r.url()).pathname);
+  });
+  await page.goto('/projects');
+  await page.waitForLoadState('networkidle');
+  expect(videos).toEqual([]);
+  const card = page.getByRole('link', { name: 'Voir le projet Ofelia' });
+  await card.hover();
+  await expect
+    .poll(() => card.locator('video').evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(false);
+  await page.mouse.move(0, 0);
+  await expect
+    .poll(() => card.locator('video').evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(true);
+});

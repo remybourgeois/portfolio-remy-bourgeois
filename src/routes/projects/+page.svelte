@@ -1,6 +1,6 @@
 <!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
-  import { PROJECTS, heroSize } from '$lib/data/projects';
+  import { PROJECTS, heroSize, fanSheets } from '$lib/data/projects';
   import PageShell from '$lib/components/PageShell.svelte';
   import PageHeader from '$lib/components/PageHeader.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
@@ -17,7 +17,7 @@
   import { breadcrumb } from '$lib/data/person';
   import { jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
-  import { playInView } from '$lib/actions/playInView';
+  import { fanCard } from '$lib/actions/fanCard';
 
   const CRUMBS = [
     { name: 'Accueil', path: '/' },
@@ -102,11 +102,22 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {#each PROJECTS as project (project.slug)}
+      {@const sheets = fanSheets(project)}
+      {@const hasVisual = Boolean(project.video || project.image || project.media?.length)}
+      <!--
+        Éventail : les autres écrans du projet sont empilés derrière le visuel
+        et s'écartent à l'ouverture de la carte (action `fanCard`, app.css).
+        `data-fan` porte le nombre de feuilles, la géométrie en dépend : à deux,
+        la paire se répartit de part et d'autre de l'axe.
+      -->
       <a
         href="/projects/{project.slug}"
         aria-label="Voir le projet {project.title}"
+        use:fanCard
+        data-fan={sheets.length + 1}
         class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
                hover:bg-white/[0.08] hover:border-white/20 hover:shadow-glow-card
+               data-[fan-open]:bg-white/[0.08] data-[fan-open]:border-white/20 data-[fan-open]:shadow-glow-card
                transition-all duration-500 text-left
                focus-visible:ring-2 focus-visible:ring-primary"
       >
@@ -115,34 +126,52 @@
             class="mesh-gradient-bg opacity-0 group-hover:opacity-20 transition-opacity duration-500"
             aria-hidden="true"
           ></div>
-          {#if project.video}
-            <!-- Lecture au survol sur un appareil à pointeur : la première
-                 carte est au-dessus de la ligne de flottaison, et 2,4 Mo
-                 partaient au chargement sans que personne ne l'ait demandé. -->
-            <video
-              src={project.video}
-              poster={project.videoPoster}
-              use:playInView={{ hover: true }}
-              preload="none"
-              loop
-              muted
-              playsinline
-              aria-hidden="true"
-              width={heroSize(project).width}
-              height={heroSize(project).height}
-              class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-            ></video>
-          {:else if project.image || project.media?.length}
-            <img
-              src={project.image || project.media![0].src}
-              srcset={projectSrcset(project.image || project.media![0].src)}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              alt=""
-              width={heroSize(project).width}
-              height={heroSize(project).height}
-              class="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-              loading="lazy"
-            />
+          {#if hasVisual}
+            {#each sheets as sheet, i (sheet.src)}
+              <div class="fan-sheet {i === 0 ? 'fan-sheet-l' : 'fan-sheet-r'}" aria-hidden="true">
+                <img
+                  src={sheet.src}
+                  srcset={projectSrcset(sheet.src)}
+                  sizes="260px"
+                  alt=""
+                  width={sheet.width}
+                  height={sheet.height}
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                />
+              </div>
+            {/each}
+            <div class="fan-sheet fan-sheet-front">
+              {#if project.video}
+                <!-- Lue par `fanCard` à l'ouverture de la carte, jamais au
+                     chargement : la première carte est au-dessus de la ligne
+                     de flottaison, et la vidéo partait sans que personne ne
+                     l'ait demandée. -->
+                <video
+                  src={project.video}
+                  poster={project.videoPoster}
+                  preload="none"
+                  loop
+                  muted
+                  playsinline
+                  aria-hidden="true"
+                  width={heroSize(project).width}
+                  height={heroSize(project).height}
+                  class="w-full h-full object-cover object-top"
+                ></video>
+              {:else}
+                <img
+                  src={project.image || project.media![0].src}
+                  srcset={projectSrcset(project.image || project.media![0].src)}
+                  sizes="260px"
+                  alt=""
+                  width={heroSize(project).width}
+                  height={heroSize(project).height}
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                />
+              {/if}
+            </div>
           {:else}
             <div class="w-full h-full flex items-center justify-center">
               <span class="eyebrow text-white/50">Bientôt</span>

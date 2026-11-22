@@ -296,5 +296,27 @@ export function heroSize(p: Project): { width: number; height: number } {
   return { width: first?.width ?? 1920, height: first?.height ?? 1080 };
 }
 
+export interface FanSheet {
+  src: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * Écrans glissés derrière le visuel d'une carte de /projects : deux au plus,
+ * pris dans `media` en écartant celui qui sert déjà de visuel d'ouverture. Une
+ * vidéo y figure par son poster, seule la vidéo d'ouverture est lue.
+ */
+export function fanSheets(p: Project): FanSheet[] {
+  const hero = p.video ? undefined : (p.image ?? p.media?.[0]?.src);
+  const sheets: FanSheet[] = [];
+  for (const m of p.media ?? []) {
+    const src = m.type === 'video' ? m.poster : m.src;
+    if (!src || src === hero) continue;
+    sheets.push({ src, width: m.width, height: m.height });
+  }
+  return sheets.slice(0, 2);
+}
+
 /** Projets mis en avant sur la home (/), dans l'ordre de déclaration. */
 export const FEATURED_PROJECTS: Project[] = PROJECTS.filter((p) => p.featured);

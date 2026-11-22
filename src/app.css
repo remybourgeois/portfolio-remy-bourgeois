@@ -244,6 +244,83 @@ body {
     opacity 0.2s ease;
 }
 
+/* ── Éventail des cartes projet ──
+   Chaque feuille est centrée dans le visuel de la carte puis déplacée par ses
+   variables : au repos la pile laisse dépasser les écrans du dessous, à
+   l'ouverture (`data-fan-open`, posé par l'action `fanCard`) ils s'écartent.
+   Une seule propriété animée, `transform`. */
+.fan-sheet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(52%, 260px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  border: 1px solid color-mix(in srgb, white 20%, transparent);
+  background: var(--color-panel-to);
+  box-shadow: var(--shadow-lift);
+  transform: translate(-50%, -50%) translate(var(--tx, 0%), var(--ty, 0%)) rotate(var(--r, 0deg))
+    scale(var(--s, 1));
+  transition: transform 0.62s var(--ease-spring);
+}
+.fan-sheet-l {
+  --tx: -5%;
+  --r: -3deg;
+  --s: 0.93;
+}
+.fan-sheet-r {
+  --tx: 5%;
+  --r: 3deg;
+  --s: 0.93;
+  transition-delay: 40ms;
+}
+.fan-sheet-front {
+  transition-delay: 80ms;
+}
+[data-fan-open] .fan-sheet-l {
+  --tx: -42%;
+  --ty: 5%;
+  --r: -9deg;
+  --s: 0.9;
+}
+[data-fan-open] .fan-sheet-r {
+  --tx: 42%;
+  --ty: 5%;
+  --r: 9deg;
+  --s: 0.9;
+}
+[data-fan-open] .fan-sheet-front {
+  --ty: -5%;
+  --s: 1.04;
+}
+/* Deux feuilles : une de chaque côté de l'axe, pour que la paire reste centrée. */
+[data-fan='2'] .fan-sheet-l {
+  --tx: -4%;
+  --r: -2deg;
+  --s: 0.96;
+}
+[data-fan='2'] .fan-sheet-front {
+  --tx: 4%;
+  --r: 2deg;
+}
+[data-fan='2'][data-fan-open] .fan-sheet-l {
+  --tx: -24%;
+  --ty: 2%;
+  --r: -7deg;
+  --s: 0.96;
+}
+[data-fan='2'][data-fan-open] .fan-sheet-front {
+  --tx: 24%;
+  --ty: -2%;
+  --r: 7deg;
+  --s: 1;
+}
+/* Une seule feuille : rien à écarter, elle avance simplement. */
+[data-fan='1'][data-fan-open] .fan-sheet-front {
+  --ty: 0%;
+}
+
 /* ── Témoignage ──
    Replié : quatre lignes de `text-sm leading-relaxed` (4 × 22,75 px), la
    dernière estompée par un masque. Ouvert : la hauteur vient du composant, et
@@ -426,6 +503,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .testimonial-clip,
+  .fan-sheet,
   .nav-indicator.is-ready {
     transition: none;
   }
