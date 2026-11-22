@@ -1,6 +1,6 @@
 // src/lib/stores/audio.ts
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 // MP3 is universally supported (Chrome, Firefox, Safari, iOS) — no detection needed
 const BGM_URL = '/assets/music-background.mp3';

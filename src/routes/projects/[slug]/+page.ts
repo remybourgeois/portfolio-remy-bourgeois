@@ -1,5 +1,5 @@
 // src/routes/projects/[slug]/+page.ts
-import { PROJECTS } from '$lib/data/projects';
+import { PROJECTS } from '#lib/data/projects.ts';
 import { error } from '@sveltejs/kit';
 
 export const prerender = true;

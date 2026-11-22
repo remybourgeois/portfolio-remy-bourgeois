@@ -1,9 +1,9 @@
 <!-- src/routes/+error.svelte -->
 <script lang="ts">
-  import { page } from '$app/stores';
-  import Button from '$lib/components/Button.svelte';
+  import { page } from '$app/state';
+  import Button from '#lib/components/Button.svelte';
 
-  const status = $derived($page.status);
+  const status = $derived(page.status);
   const isNotFound = $derived(status === 404);
 </script>
 
@@ -30,7 +30,7 @@
         Le lien est peut-être obsolète, ou l’adresse comporte une faute de frappe. Les projets sont
         tous accessibles depuis le portfolio.
       {:else}
-        {$page.error?.message ?? 'Une erreur inattendue est survenue.'}
+        {page.error?.message ?? 'Une erreur inattendue est survenue.'}
       {/if}
     </p>
 

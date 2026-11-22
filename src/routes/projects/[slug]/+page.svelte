@@ -1,12 +1,12 @@
 <!-- src/routes/projects/[slug]/+page.svelte -->
 <script lang="ts">
   import type { PageData } from './$types';
-  import Icon from '$lib/components/Icons.svelte';
-  import Tag from '$lib/components/Tag.svelte';
-  import Button from '$lib/components/Button.svelte';
-  import PageShell from '$lib/components/PageShell.svelte';
-  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
-  import PageCta from '$lib/components/PageCta.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import Tag from '#lib/components/Tag.svelte';
+  import Button from '#lib/components/Button.svelte';
+  import PageShell from '#lib/components/PageShell.svelte';
+  import Breadcrumb from '#lib/components/Breadcrumb.svelte';
+  import PageCta from '#lib/components/PageCta.svelte';
   import {
     SITE_URL,
     SITE_NAME,
@@ -15,11 +15,11 @@
     PERSON_ID,
     WEBSITE_ID,
     CONTENT_UPDATED
-  } from '$lib/data/site';
-  import { breadcrumb } from '$lib/data/person';
-  import { md, jsonLd } from '$lib/utils/text';
-  import { projectSrcset } from '$lib/utils/img';
-  import { heroSize } from '$lib/data/projects';
+  } from '#lib/data/site.ts';
+  import { breadcrumb } from '#lib/data/person.ts';
+  import { md, jsonLd } from '#lib/utils/text.ts';
+  import { projectSrcset } from '#lib/utils/img.ts';
+  import { heroSize } from '#lib/data/projects.ts';
 
   const { data }: { data: PageData } = $props();
   const project = $derived(data.project);

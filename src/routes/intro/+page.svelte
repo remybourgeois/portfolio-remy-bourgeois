@@ -1,6 +1,6 @@
 <!-- src/routes/intro/+page.svelte -->
 <script lang="ts">
-  import IntroScene from '$lib/components/IntroScene.svelte';
+  import IntroScene from '#lib/components/IntroScene.svelte';
 </script>
 
 <svelte:head>

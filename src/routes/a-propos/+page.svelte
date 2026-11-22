@@ -1,11 +1,11 @@
 <!-- src/routes/a-propos/+page.svelte -->
 <script lang="ts">
-  import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import PageShell from '$lib/components/PageShell.svelte';
-  import PageHeader from '$lib/components/PageHeader.svelte';
-  import SectionTitle from '$lib/components/SectionTitle.svelte';
-  import PageCta from '$lib/components/PageCta.svelte';
+  import RevealOnScroll from '#lib/components/RevealOnScroll.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import PageShell from '#lib/components/PageShell.svelte';
+  import PageHeader from '#lib/components/PageHeader.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
+  import PageCta from '#lib/components/PageCta.svelte';
   import {
     SITE_URL,
     SITE_NAME,
@@ -15,9 +15,9 @@
     WEBSITE_ID,
     CONTENT_UPDATED,
     PROFILES
-  } from '$lib/data/site';
-  import { breadcrumb } from '$lib/data/person';
-  import { jsonLd } from '$lib/utils/text';
+  } from '#lib/data/site.ts';
+  import { breadcrumb } from '#lib/data/person.ts';
+  import { jsonLd } from '#lib/utils/text.ts';
 
   /**
    * Repères datés. Chaque entrée est une affirmation autonome et vérifiable :

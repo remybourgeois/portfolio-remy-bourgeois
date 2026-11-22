@@ -1,6 +1,6 @@
 // Sitemap généré depuis les données projet — reste à jour automatiquement.
-import { PROJECTS } from '$lib/data/projects';
-import { SITE_URL, CONTENT_UPDATED } from '$lib/data/site';
+import { PROJECTS } from '#lib/data/projects.ts';
+import { SITE_URL, CONTENT_UPDATED } from '#lib/data/site.ts';
 
 export const prerender = true;
 

@@ -107,3 +107,31 @@ test('a tall section reveals as soon as it enters the viewport on mobile', async
   );
   await expect(wrapper).toHaveClass(/opacity-100/, { timeout: 1000 });
 });
+
+test('the logo strip has its final width before the logos load', async ({ page }) => {
+  // Logos retenus : c'est l'état d'une première visite, cache vide. La piste
+  // défile sur 50 % de sa largeur, une largeur qui change la fait sauter.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.route(/\/assets\/[a-z]+\.(png|svg|webp)$/, async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const track = page.locator('.marquee-track');
+  const width = () => track.evaluate((el) => el.scrollWidth);
+  const before = await width();
+  expect(before).toBeGreaterThan(2000);
+  release();
+  await page.waitForLoadState('load');
+  expect(await width()).toBe(before);
+});
+
+test('the logo strip carries no filter on its moving track', async ({ page }) => {
+  // Le filtre qui blanchit les logos est porté par chaque image. Posé sur la
+  // piste, il obligeait Safari à filtrer d'un bloc un calque animé de plus de
+  // 3 000 px de large, qui restait vide sur iPhone.
+  const track = page.locator('.marquee-track');
+  await expect(track).toHaveCSS('filter', 'none');
+  await expect(track.locator('img').first()).toHaveCSS('filter', 'brightness(0) invert(1)');
+});

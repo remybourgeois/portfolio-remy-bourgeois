@@ -1,12 +1,12 @@
 <!-- src/lib/components/Nav.svelte -->
 <script lang="ts">
-  import { page } from '$app/stores';
-  import Icon from '$lib/components/Icons.svelte';
-  import IntroCta from '$lib/components/IntroCta.svelte';
-  import { LAB_URL } from '$lib/data/site';
+  import { page } from '$app/state';
+  import Icon from '#lib/components/Icons.svelte';
+  import IntroCta from '#lib/components/IntroCta.svelte';
+  import { LAB_URL } from '#lib/data/site.ts';
 
   let menuOpen = $state(false);
-  let currentPath = $derived($page.url.pathname);
+  let currentPath = $derived(page.url.pathname);
   /**
    * La barre vit partout sauf sur /intro, où elle recouvrirait la scène WebGL
    * et où la seule sortie utile est déjà le lien « Passer l'intro ».

@@ -1,5 +1,5 @@
 // src/lib/data/expertises.ts
-import type { IconName } from '$lib/components/Icons.svelte';
+import type { IconName } from '#lib/components/Icons.svelte';
 
 export interface Expertise {
   id: number;
