@@ -64,7 +64,10 @@ export function playInView(node: HTMLVideoElement, options: { hover?: boolean } 
   }
 
   const obs = new IntersectionObserver(
-    ([entry]) => {
+    // L'état courant est le dernier signal du lot : un navigateur occupé en
+    // livre plusieurs d'un coup pour le même élément.
+    (entries) => {
+      const entry = entries[entries.length - 1];
       if (!entry.isIntersecting) {
         node.pause();
         return;

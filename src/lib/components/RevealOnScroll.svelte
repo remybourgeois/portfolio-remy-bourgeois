@@ -26,8 +26,11 @@
     // Projets (≈4 000 px de haut sur mobile) attendait 400 px à l'écran avant
     // d'apparaître, soit une demi-hauteur d'écran restée noire au scroll.
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+      // Tout le lot, pas seulement son premier signal : un navigateur occupé
+      // livre « hors écran » puis « à l'écran » d'un seul coup, et ne lire que
+      // le premier laissait la section invisible.
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
           visible = true;
           obs.disconnect();
         }

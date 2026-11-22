@@ -58,10 +58,15 @@ export function fanCard(node: HTMLElement, options: { watch?: string; video?: bo
 
   if (reduced || typeof IntersectionObserver === 'undefined') return;
 
-  const obs = new IntersectionObserver(([entry]) => set(entry.isIntersecting), {
-    // Bande centrale : 24 % de la hauteur de l'écran.
-    rootMargin: '-38% 0px -38% 0px'
-  });
+  // L'état courant est le dernier signal du lot : un navigateur occupé en
+  // livre plusieurs d'un coup pour le même élément.
+  const obs = new IntersectionObserver(
+    (entries) => set(entries[entries.length - 1].isIntersecting),
+    {
+      // Bande centrale : 24 % de la hauteur de l'écran.
+      rootMargin: '-38% 0px -38% 0px'
+    }
+  );
   const watched = options.watch ? node.querySelector(options.watch) : node.firstElementChild;
   obs.observe(watched ?? node);
   return {

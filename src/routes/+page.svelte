@@ -51,8 +51,10 @@
     // Bouton « back-to-top » : visible une fois la sentinelle (~400px) dépassée.
     // IntersectionObserver plutôt qu'un listener scroll déclenché à chaque frame.
     const io = new IntersectionObserver(
-      ([entry]) => {
-        showTopBtn = !entry.isIntersecting;
+      // L'état courant est le dernier signal du lot : un navigateur occupé en
+      // livre plusieurs d'un coup, et lire le premier laissait le bouton caché.
+      (entries) => {
+        showTopBtn = !entries[entries.length - 1].isIntersecting;
       },
       { rootMargin: '0px' }
     );
