@@ -27,6 +27,7 @@
   import { fanCard } from '#lib/actions/fanCard.ts';
   import { tapFeedback } from '#lib/actions/tapFeedback.ts';
   import { seen } from '#lib/actions/seen.ts';
+  import { appearText } from '#lib/actions/appearText.ts';
 
   // Le titre du hero, découpé en mots dans le gabarit pour son animation.
   const HERO_TITLE = 'Lead Design System & Senior Product Designer';
@@ -196,7 +197,11 @@
     aria-hidden="true"
   ></div>
 
+  <!-- `appearText` : comme sur les pages intérieures, le texte situé sous
+       l'écran se révèle au fil de la lecture, titre après paragraphe. Les
+       cartes gardent leur propre entrée, leur texte arrive juste après. -->
   <main
+    use:appearText
     id="main-content"
     class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40"
   >

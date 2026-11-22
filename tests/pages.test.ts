@@ -61,6 +61,7 @@ test.describe('text appearing while reading', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
   for (const route of [
+    '/',
     '/accompagnement',
     '/a-propos',
     '/projects',
@@ -121,4 +122,15 @@ test('an inner page opens in a cascade, without waiting for scripts', async ({ b
   await expect(title).toHaveCSS('opacity', '1');
   await expect(page.locator('#conception')).toBeVisible();
   await context.close();
+});
+
+test('text jumped over by a scroll leap is not left hidden', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/accompagnement');
+  const pending = page.locator('[data-appear="pending"]');
+  await expect.poll(() => pending.count()).toBeGreaterThan(3);
+  // Un bond jusqu'en bas, comme un lien d'ancre : tout ce qui est passé
+  // au-dessus de l'écran sans y avoir été vu doit quand même être révélé.
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect(pending).toHaveCount(0);
 });

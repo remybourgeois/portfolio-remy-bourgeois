@@ -29,9 +29,9 @@ const STAGGER = 60;
  * touché : le masquer pour le révéler aussitôt ferait clignoter le haut de la
  * page.
  *
- * Un seul observateur pour toute la page. Il lit tout le lot de signaux :
- * un navigateur occupé en livre plusieurs d'un coup, et n'en lire qu'un
- * laisserait du texte invisible.
+ * Deux observateurs pour toute la page, pas un par élément. Ils lisent tout
+ * le lot de signaux : un navigateur occupé en livre plusieurs d'un coup, et
+ * n'en lire qu'un laisserait du texte invisible.
  *
  * Sans JavaScript ou en mouvement réduit, rien n'est masqué.
  */
@@ -39,21 +39,32 @@ export function appearText(node: HTMLElement) {
   if (typeof IntersectionObserver === 'undefined') return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const obs = new IntersectionObserver(
-    (entries) => {
-      const arriving = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      arriving.forEach((entry, rank) => {
-        const el = entry.target as HTMLElement;
-        obs.unobserve(el);
-        el.style.setProperty('--appear-delay', `${Math.min(rank, 5) * STAGGER}ms`);
-        el.setAttribute('data-appear', 'in');
-      });
-    },
-    // Dès que le haut de l'élément dépasse la bande basse de l'écran.
-    { threshold: 0, rootMargin: '0px 0px -8% 0px' }
-  );
+  const reveal = (entries: IntersectionObserverEntry[]) => {
+    const arriving = entries
+      .filter((entry) => entry.isIntersecting && entry.target.getAttribute('data-appear') !== 'in')
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    arriving.forEach((entry, rank) => {
+      const el = entry.target as HTMLElement;
+      obs.unobserve(el);
+      whole.unobserve(el);
+      el.style.setProperty('--appear-delay', `${Math.min(rank, 5) * STAGGER}ms`);
+      el.setAttribute('data-appear', 'in');
+    });
+  };
+
+  // Observateur principal : l'élément se révèle dès que son haut dépasse la
+  // bande basse de l'écran. La zone s'étend très loin vers le haut : un
+  // élément qu'un bond de défilement (lien d'ancre, glissement rapide) fait
+  // passer d'un coup au-dessus de l'écran y entre quand même, au lieu de
+  // rester masqué jusqu'à ce qu'on remonte.
+  const obs = new IntersectionObserver(reveal, {
+    threshold: 0,
+    rootMargin: '100000px 0px -8% 0px'
+  });
+  // Filet pour le bas de page : un élément entièrement à l'écran se révèle
+  // même s'il reste dans la bande basse, que le défilement ne peut plus lui
+  // faire quitter une fois la page arrivée en bout de course.
+  const whole = new IntersectionObserver(reveal, { threshold: 1 });
 
   const taken = new Set<Element>();
   for (const el of node.querySelectorAll<HTMLElement>(TARGETS)) {
@@ -77,11 +88,13 @@ export function appearText(node: HTMLElement) {
     if (el.getBoundingClientRect().top <= window.innerHeight + LOAD_SHIFT) continue;
     el.setAttribute('data-appear', 'pending');
     obs.observe(el);
+    whole.observe(el);
   }
 
   return {
     destroy() {
       obs.disconnect();
+      whole.disconnect();
     }
   };
 }
