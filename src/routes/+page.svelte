@@ -293,13 +293,19 @@
           class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-canvas to-transparent z-10 pointer-events-none"
         ></div>
         <div class="flex w-max animate-marquee items-center marquee-track" aria-hidden="true">
+          <!-- `width` et `height` réservent la place de chaque logo avant son
+               chargement : la piste a sa largeur finale dès le premier rendu.
+               Pas de `loading="lazy"` sur la seconde moitié : elle reprend les
+               mêmes fichiers, il n'y a rien à économiser, et un logo arrivé en
+               retard y changeait la largeur de la piste en plein défilement. -->
           {#each marqueeItems as client, i (i)}
             <div class="mx-5 sm:mx-8 md:mx-10 flex items-center justify-center">
               <img
                 src={client.logo}
                 alt=""
-                class="h-6 w-auto object-contain opacity-70"
-                loading={i < CLIENTS.length ? 'eager' : 'lazy'}
+                width={client.width}
+                height={client.height}
+                class="h-6 w-auto object-contain opacity-70 brightness-0 invert"
                 decoding="async"
               />
             </div>

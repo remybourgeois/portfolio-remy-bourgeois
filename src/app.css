@@ -177,8 +177,11 @@ body {
 .animate-marquee {
   animation: marquee 15s linear infinite;
 }
+/* La piste ne porte que son déplacement. Le filtre qui blanchit les logos est
+   sur chaque image (`brightness-0 invert`) : posé ici, il s'appliquait d'un
+   bloc à un calque animé de plus de 3 000 px de large, que Safari sur iPhone
+   laissait vide. */
 .marquee-track {
-  filter: brightness(0) invert(1);
   transform: translate3d(0, 0, 0);
 }
 /* ── Cascade ──
