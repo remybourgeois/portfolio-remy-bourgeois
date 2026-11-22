@@ -36,6 +36,36 @@
   --shadow-glow-emerald: 0 0 8px color-mix(in srgb, var(--color-emerald-400) 80%, transparent);
   /* Portée d'un portrait ou d'une vignette posés sur le fond. */
   --shadow-lift: 0 20px 40px rgb(0 0 0 / 0.45);
+
+  /* Ressort sous-amorti : la valeur dépasse sa cible d'environ 9 % puis s'y
+     pose. Donne `ease-spring` et `var(--ease-spring)`. Un navigateur qui ne
+     connaît pas `linear()` ignore la déclaration et garde son `ease`. */
+  --ease-spring: linear(
+    0,
+    0.05,
+    0.18,
+    0.35,
+    0.53,
+    0.7,
+    0.84,
+    0.95,
+    1.03,
+    1.075,
+    1.095,
+    1.095,
+    1.083,
+    1.065,
+    1.046,
+    1.029,
+    1.015,
+    1.005,
+    0.999,
+    0.996,
+    0.995,
+    0.996,
+    0.998,
+    1
+  );
 }
 
 /* Libellé de section et de champ : le seul petit texte du site. 12 px est le
@@ -198,6 +228,20 @@ body {
 [data-reveal='shown'] .reveal-item {
   animation: reveal-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* ── Repère de la barre de navigation ──
+   Un seul trait, déplacé sous le lien de la page courante. `is-ready` n'arrive
+   qu'après la première mesure : sans ça le trait traverserait la barre depuis
+   la gauche à chaque chargement. */
+.nav-indicator {
+  transition: opacity 0.2s ease;
+}
+.nav-indicator.is-ready {
+  transition:
+    transform 0.62s var(--ease-spring),
+    width 0.62s var(--ease-spring),
+    opacity 0.2s ease;
 }
 
 /* ── Témoignage ──
@@ -381,7 +425,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .testimonial-clip {
+  .testimonial-clip,
+  .nav-indicator.is-ready {
     transition: none;
   }
 }

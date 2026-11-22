@@ -107,3 +107,17 @@ test('a tall section reveals as soon as it enters the viewport on mobile', async
   );
   await expect(wrapper).toHaveClass(/opacity-100/, { timeout: 1000 });
 });
+
+test('the top bar marks the current page with a single indicator', async ({ page }) => {
+  await page.goto('/projects');
+  const bar = page.getByRole('navigation', { name: 'Navigation principale' });
+  const link = bar.getByRole('link', { name: 'Projets', exact: true });
+  const indicator = bar.locator('.nav-indicator');
+  await expect(indicator).toHaveCSS('opacity', '1');
+  // Le trait arrive avec un ressort : on attend qu'il soit posé sous le lien.
+  await expect(async () => {
+    const [a, b] = await Promise.all([link.boundingBox(), indicator.boundingBox()]);
+    expect(Math.abs(a!.x - b!.x)).toBeLessThan(1);
+    expect(Math.abs(a!.width - b!.width)).toBeLessThan(1);
+  }).toPass({ timeout: 5000 });
+});
