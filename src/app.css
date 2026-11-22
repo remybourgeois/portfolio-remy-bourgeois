@@ -207,8 +207,11 @@ body {
 .animate-marquee {
   animation: marquee 15s linear infinite;
 }
+/* La piste ne porte que son déplacement. Le filtre qui blanchit les logos est
+   sur chaque image (`brightness-0 invert`) : posé ici, il s'appliquait d'un
+   bloc à un calque animé de plus de 3 000 px de large, que Safari sur iPhone
+   laissait vide. */
 .marquee-track {
-  filter: brightness(0) invert(1);
   transform: translate3d(0, 0, 0);
 }
 /* ── Cascade ──
@@ -228,6 +231,20 @@ body {
 [data-reveal='shown'] .reveal-item {
   animation: reveal-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* ── Repère de la barre de navigation ──
+   Un seul trait, déplacé sous le lien de la page courante. `is-ready` n'arrive
+   qu'après la première mesure : sans ça le trait traverserait la barre depuis
+   la gauche à chaque chargement. */
+.nav-indicator {
+  transition: opacity 0.2s ease;
+}
+.nav-indicator.is-ready {
+  transition:
+    transform 0.62s var(--ease-spring),
+    width 0.62s var(--ease-spring),
+    opacity 0.2s ease;
 }
 
 /* ── Éventail des cartes projet ──
@@ -307,6 +324,103 @@ body {
 /* Une seule feuille : rien à écarter, elle avance simplement. */
 [data-fan='1'][data-fan-open] .fan-sheet-front {
   --ty: 0%;
+}
+
+/* ── Halo de section ──
+   Lueur violette derrière les sections Impact et contact. C'était un
+   rectangle plein passé dans `blur(100px)` : le résultat est le même à l'œil,
+   mais un flou de cette taille se recalcule à chaque image tant que la
+   section s'anime à l'apparition, et Safari sur iPhone y passait plusieurs
+   secondes. Un dégradé radial ne coûte rien à peindre. */
+.section-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 64rem;
+  height: var(--halo-h, 28rem);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 62% 50% at 50% 50%,
+    color-mix(in srgb, var(--color-primary) 6%, transparent) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, transparent) 35%,
+    color-mix(in srgb, var(--color-primary) 1.5%, transparent) 70%,
+    transparent 100%
+  );
+}
+
+/* ── Compteur ──
+   Chaque chiffre est une colonne 0-9 vue par une fenêtre d'une hauteur de
+   ligne. `--d` est le rang visé, `--k` le rang de la colonne dans le nombre :
+   les colonnes partent l'une après l'autre et se posent avec le ressort. */
+.counter-digit {
+  display: inline-block;
+  height: 1lh;
+  overflow: hidden;
+  vertical-align: top;
+}
+.counter-strip {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--d, 0) * -1lh));
+  transition: transform var(--counter-ms, 950ms) var(--ease-spring);
+  transition-delay: calc(var(--k, 0) * var(--counter-stagger, 80ms));
+}
+.counter-strip > span {
+  display: block;
+  height: 1lh;
+}
+
+/* ── Icônes des expertises ──
+   Dans une section révélée, chaque icône se visse en place après sa carte.
+   `backwards` : l'animation rend la main une fois jouée, et la rotation du
+   survol continue de fonctionner. Sans section révélée (mouvement réduit,
+   section déjà à l'écran), rien ne s'applique et l'icône est simplement là. */
+@keyframes icon-settle {
+  from {
+    opacity: 0.5;
+    transform: scale(0.55) rotate(-35deg);
+  }
+}
+[data-reveal='shown'] .icon-settle {
+  animation: icon-settle 0.8s var(--ease-spring) backwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+
+/* ── Bouton ──
+   `data-pressed` est posé par Button.svelte tant que le doigt ou la souris
+   appuie. L'aller est court et sans ressort, le retour se fait avec. La flèche
+   n'avance au survol qu'avec un pointeur fin : au toucher, `:hover` reste
+   collé après un tap. */
+.btn-press {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.62s var(--ease-spring);
+}
+.btn-press .btn-icon {
+  transition: transform 0.62s var(--ease-spring);
+}
+.btn-press[data-pressed] {
+  transform: scale(0.94);
+  transition-duration: 0.15s, 0.15s, 0.15s, 90ms;
+  transition-timing-function: ease, ease, ease, ease-out;
+}
+.btn-press[data-pressed] .btn-icon {
+  transition: transform 90ms ease-out;
+}
+.btn-press[data-pressed] .btn-icon-right {
+  transform: translateX(5px);
+}
+.btn-press[data-pressed] .btn-icon-left {
+  transform: translateY(-2px) rotate(-8deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-press:hover .btn-icon-right {
+    transform: translateX(4px);
+  }
 }
 
 /* ── Témoignage ──
@@ -491,8 +605,17 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .testimonial-clip,
-  .fan-sheet {
+  .fan-sheet,
+  .nav-indicator.is-ready {
     transition: none;
+  }
+  /* Le changement de couleur reste, c'est le déplacement qu'on retire. */
+  .btn-press,
+  .btn-press[data-pressed],
+  .btn-press .btn-icon,
+  .btn-press[data-pressed] .btn-icon,
+  .btn-press:hover .btn-icon-right {
+    transform: none;
   }
 }
 

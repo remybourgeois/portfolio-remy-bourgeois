@@ -219,7 +219,7 @@ test('scanHtmlSources refuse un gabarit qui recompose du HTML à la main', () =>
 /* ───────────────────────── IntroScene ───────────────────────── */
 
 test("scanIntroSceneImport n'accepte l'import que sous /intro", () => {
-  const line = "  import IntroScene from '$lib/components/IntroScene.svelte';";
+  const line = "  import IntroScene from '#lib/components/IntroScene.svelte';";
   assert.deepEqual(
     scanIntroSceneImport(line, 'src/routes/intro/+page.svelte', 'src/routes/intro/'),
     []

@@ -123,3 +123,58 @@ test('a featured project fans out its screens on hover', async ({ page }) => {
     expect(right!.x + right!.width).toBeGreaterThan(front!.x + front!.width + 20);
   }).toPass({ timeout: 5000 });
 });
+
+test('the logo strip has its final width before the logos load', async ({ page }) => {
+  // Logos retenus : c'est l'état d'une première visite, cache vide. La piste
+  // défile sur 50 % de sa largeur, une largeur qui change la fait sauter.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.route(/\/assets\/[a-z]+\.(png|svg|webp)$/, async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const track = page.locator('.marquee-track');
+  const width = () => track.evaluate((el) => el.scrollWidth);
+  const before = await width();
+  expect(before).toBeGreaterThan(2000);
+  release();
+  await page.waitForLoadState('load');
+  expect(await width()).toBe(before);
+});
+
+test('the logo strip carries no filter on its moving track', async ({ page }) => {
+  // Le filtre qui blanchit les logos est porté par chaque image. Posé sur la
+  // piste, il obligeait Safari à filtrer d'un bloc un calque animé de plus de
+  // 3 000 px de large, qui restait vide sur iPhone.
+  const track = page.locator('.marquee-track');
+  await expect(track).toHaveCSS('filter', 'none');
+  await expect(track.locator('img').first()).toHaveCSS('filter', 'brightness(0) invert(1)');
+});
+
+test('the top bar marks the current page with a single indicator', async ({ page }) => {
+  await page.goto('/projects');
+  const bar = page.getByRole('navigation', { name: 'Navigation principale' });
+  const link = bar.getByRole('link', { name: 'Projets', exact: true });
+  const indicator = bar.locator('.nav-indicator');
+  await expect(indicator).toHaveCSS('opacity', '1');
+  // Le trait arrive avec un ressort : on attend qu'il soit posé sous le lien.
+  await expect(async () => {
+    const [a, b] = await Promise.all([link.boundingBox(), indicator.boundingBox()]);
+    expect(Math.abs(a!.x - b!.x)).toBeLessThan(1);
+    expect(Math.abs(a!.width - b!.width)).toBeLessThan(1);
+  }).toPass({ timeout: 5000 });
+});
+
+test('a button sinks while pressed and comes back when released', async ({ page }) => {
+  const button = page.getByRole('link', { name: 'Voir les projets', exact: true });
+  const box = (await button.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect(button).toHaveAttribute('data-pressed', '');
+  await expect.poll(async () => (await button.boundingBox())!.width).toBeLessThan(box.width - 2);
+  // On quitte le bouton sans relâcher dessus : relâcher suivrait le lien.
+  await page.mouse.move(0, 0);
+  await expect(button).not.toHaveAttribute('data-pressed', '');
+  await page.mouse.up();
+});

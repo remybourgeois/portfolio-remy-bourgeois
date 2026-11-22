@@ -1,8 +1,8 @@
 <!-- src/lib/components/Tag.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import type { IconName } from '$lib/components/Icons.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import type { IconName } from '#lib/components/Icons.svelte';
 
   /**
    * Un tag porte une information, jamais une action. D'où le `rounded-lg` :

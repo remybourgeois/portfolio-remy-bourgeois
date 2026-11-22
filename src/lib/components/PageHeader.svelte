@@ -1,7 +1,7 @@
 <!-- src/lib/components/PageHeader.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+  import Breadcrumb from '#lib/components/Breadcrumb.svelte';
 
   /**
    * En-tête commun à Projets, Accompagnement et À propos. Les trois pages

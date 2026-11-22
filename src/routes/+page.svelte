@@ -1,17 +1,17 @@
 <!-- src/routes/+page.svelte — page d'accueil et page indexable principale -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
-  import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import Tag from '$lib/components/Tag.svelte';
-  import Button from '$lib/components/Button.svelte';
-  import SectionTitle from '$lib/components/SectionTitle.svelte';
-  import PageCta from '$lib/components/PageCta.svelte';
-  import { FEATURED_PROJECTS, heroSize, fanSheets } from '$lib/data/projects';
-  import { TESTIMONIALS } from '$lib/data/testimonials';
-  import { EXPERTISES } from '$lib/data/expertises';
-  import { CLIENTS } from '$lib/data/clients';
+  import RevealOnScroll from '#lib/components/RevealOnScroll.svelte';
+  import AnimatedCounter from '#lib/components/AnimatedCounter.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import Tag from '#lib/components/Tag.svelte';
+  import Button from '#lib/components/Button.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
+  import PageCta from '#lib/components/PageCta.svelte';
+  import { FEATURED_PROJECTS, heroSize, fanSheets } from '#lib/data/projects.ts';
+  import { TESTIMONIALS } from '#lib/data/testimonials.ts';
+  import { EXPERTISES } from '#lib/data/expertises.ts';
+  import { CLIENTS } from '#lib/data/clients.ts';
   import {
     SITE_URL,
     SITE_NAME,
@@ -19,12 +19,12 @@
     OG_IMAGE,
     CONTENT_UPDATED,
     EMAIL
-  } from '$lib/data/site';
-  import { personNode, reviewNodes, websiteNode } from '$lib/data/person';
-  import { md, jsonLd } from '$lib/utils/text';
-  import { projectSrcset } from '$lib/utils/img';
-  import { playInView } from '$lib/actions/playInView';
-  import { fanCard } from '$lib/actions/fanCard';
+  } from '#lib/data/site.ts';
+  import { personNode, reviewNodes, websiteNode } from '#lib/data/person.ts';
+  import { md, jsonLd } from '#lib/utils/text.ts';
+  import { projectSrcset } from '#lib/utils/img.ts';
+  import { playInView } from '#lib/actions/playInView.ts';
+  import { fanCard } from '#lib/actions/fanCard.ts';
 
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
@@ -294,13 +294,19 @@
           class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-canvas to-transparent z-10 pointer-events-none"
         ></div>
         <div class="flex w-max animate-marquee items-center marquee-track" aria-hidden="true">
+          <!-- `width` et `height` réservent la place de chaque logo avant son
+               chargement : la piste a sa largeur finale dès le premier rendu.
+               Pas de `loading="lazy"` sur la seconde moitié : elle reprend les
+               mêmes fichiers, il n'y a rien à économiser, et un logo arrivé en
+               retard y changeait la largeur de la piste en plein défilement. -->
           {#each marqueeItems as client, i (i)}
             <div class="mx-5 sm:mx-8 md:mx-10 flex items-center justify-center">
               <img
                 src={client.logo}
                 alt=""
-                class="h-6 w-auto object-contain opacity-70"
-                loading={i < CLIENTS.length ? 'eager' : 'lazy'}
+                width={client.width}
+                height={client.height}
+                class="h-6 w-auto object-contain opacity-70 brightness-0 invert"
                 decoding="async"
               />
             </div>
@@ -392,13 +398,9 @@
               class="reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
-                class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
+                class="icon-settle mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
               >
-                <Icon
-                  name={exp.icon}
-                  size={24}
-                  className="text-white group-hover:text-tertiary transition-colors"
-                />
+                <Icon name={exp.icon} size={24} className="text-tertiary" />
               </div>
               <h3 class="text-lg font-semibold mb-2">{exp.title}</h3>
               <p class="text-sm text-white/70">{exp.desc}</p>
@@ -411,10 +413,7 @@
     <!-- Impact counters -->
     <RevealOnScroll>
       <div class="w-full mb-24 py-10 relative">
-        <div
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-32 bg-primary opacity-10 blur-[100px] rounded-full pointer-events-none"
-          aria-hidden="true"
-        ></div>
+        <div class="section-halo" aria-hidden="true"></div>
         <SectionTitle align="center" class="mb-16">Impact</SectionTitle>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {#each impacts as item, i (item.label)}
