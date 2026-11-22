@@ -35,10 +35,7 @@
 </script>
 
 <div class="w-full relative">
-  <div
-    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-40 bg-primary opacity-10 blur-[120px] rounded-full pointer-events-none"
-    aria-hidden="true"
-  ></div>
+  <div class="section-halo [--halo-h:32rem]" aria-hidden="true"></div>
 
   <div
     class="relative bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 md:p-12 text-center"

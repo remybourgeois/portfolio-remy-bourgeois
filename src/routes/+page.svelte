@@ -410,10 +410,7 @@
     <!-- Impact counters -->
     <RevealOnScroll>
       <div class="w-full mb-24 py-10 relative">
-        <div
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-32 bg-primary opacity-10 blur-[100px] rounded-full pointer-events-none"
-          aria-hidden="true"
-        ></div>
+        <div class="section-halo" aria-hidden="true"></div>
         <SectionTitle align="center" class="mb-16">Impact</SectionTitle>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {#each impacts as item, i (item.label)}

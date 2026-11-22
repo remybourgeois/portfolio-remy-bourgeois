@@ -200,6 +200,30 @@ body {
   animation-delay: calc(var(--i, 0) * 80ms);
 }
 
+/* ── Halo de section ──
+   Lueur violette derrière les sections Impact et contact. C'était un
+   rectangle plein passé dans `blur(100px)` : le résultat est le même à l'œil,
+   mais un flou de cette taille se recalcule à chaque image tant que la
+   section s'anime à l'apparition, et Safari sur iPhone y passait plusieurs
+   secondes. Un dégradé radial ne coûte rien à peindre. */
+.section-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 64rem;
+  height: var(--halo-h, 28rem);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 62% 50% at 50% 50%,
+    color-mix(in srgb, var(--color-primary) 6%, transparent) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, transparent) 35%,
+    color-mix(in srgb, var(--color-primary) 1.5%, transparent) 70%,
+    transparent 100%
+  );
+}
+
 /* ── Témoignage ──
    Replié : quatre lignes de `text-sm leading-relaxed` (4 × 22,75 px), la
    dernière estompée par un masque. Ouvert : la hauteur vient du composant, et
