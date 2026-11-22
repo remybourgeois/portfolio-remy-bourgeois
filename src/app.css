@@ -343,6 +343,22 @@ body {
   height: 1lh;
 }
 
+/* ── Icônes des expertises ──
+   Dans une section révélée, chaque icône se visse en place après sa carte.
+   `backwards` : l'animation rend la main une fois jouée, et la rotation du
+   survol continue de fonctionner. Sans section révélée (mouvement réduit,
+   section déjà à l'écran), rien ne s'applique et l'icône est simplement là. */
+@keyframes icon-settle {
+  from {
+    opacity: 0.5;
+    transform: scale(0.55) rotate(-35deg);
+  }
+}
+[data-reveal='shown'] .icon-settle {
+  animation: icon-settle 0.8s var(--ease-spring) backwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+
 /* ── Témoignage ──
    Replié : quatre lignes de `text-sm leading-relaxed` (4 × 22,75 px), la
    dernière estompée par un masque. Ouvert : la hauteur vient du composant, et

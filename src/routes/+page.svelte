@@ -391,13 +391,9 @@
               class="reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
-                class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
+                class="icon-settle mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
               >
-                <Icon
-                  name={exp.icon}
-                  size={24}
-                  className="text-white group-hover:text-tertiary transition-colors"
-                />
+                <Icon name={exp.icon} size={24} className="text-tertiary" />
               </div>
               <h3 class="text-lg font-semibold mb-2">{exp.title}</h3>
               <p class="text-sm text-white/70">{exp.desc}</p>
