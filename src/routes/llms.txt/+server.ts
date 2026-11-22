@@ -1,7 +1,7 @@
 // Généré depuis les mêmes données que le site : un llms.txt écrit à la main
 // diverge du contenu réel dès la première mise à jour de projets.ts.
-import { PROJECTS } from '$lib/data/projects';
-import { SITE_URL, PROFILES } from '$lib/data/site';
+import { PROJECTS } from '#lib/data/projects.ts';
+import { SITE_URL, PROFILES } from '#lib/data/site.ts';
 
 export const prerender = true;
 

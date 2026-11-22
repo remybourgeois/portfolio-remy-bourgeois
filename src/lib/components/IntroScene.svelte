@@ -4,9 +4,9 @@
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import * as THREE from 'three';
-  import { audioStore, SFX_SUCCESS, SFX_CLICKS } from '$lib/stores/audio';
-  import { POETIC_PHRASES } from '$lib/data/phrases';
-  import Icon from '$lib/components/Icons.svelte';
+  import { audioStore, SFX_SUCCESS, SFX_CLICKS } from '#lib/stores/audio.ts';
+  import { POETIC_PHRASES } from '#lib/data/phrases.ts';
+  import Icon from '#lib/components/Icons.svelte';
 
   const PRIMARY = '#706bfe';
   const SECONDARY = '#a78bfa';

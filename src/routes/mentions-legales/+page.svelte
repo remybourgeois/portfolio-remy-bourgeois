@@ -1,9 +1,9 @@
 <!-- src/routes/mentions-legales/+page.svelte -->
 <script lang="ts">
-  import PageShell from '$lib/components/PageShell.svelte';
-  import PageHeader from '$lib/components/PageHeader.svelte';
-  import SectionTitle from '$lib/components/SectionTitle.svelte';
-  import { SITE_URL, EMAIL, LEGAL } from '$lib/data/site';
+  import PageShell from '#lib/components/PageShell.svelte';
+  import PageHeader from '#lib/components/PageHeader.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
+  import { SITE_URL, EMAIL, LEGAL } from '#lib/data/site.ts';
 
   const CRUMBS = [
     { name: 'Accueil', path: '/' },

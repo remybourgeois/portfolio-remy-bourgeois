@@ -1,17 +1,17 @@
 <!-- src/routes/+page.svelte — page d'accueil et page indexable principale -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import RevealOnScroll from '$lib/components/RevealOnScroll.svelte';
-  import AnimatedCounter from '$lib/components/AnimatedCounter.svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import Tag from '$lib/components/Tag.svelte';
-  import Button from '$lib/components/Button.svelte';
-  import SectionTitle from '$lib/components/SectionTitle.svelte';
-  import PageCta from '$lib/components/PageCta.svelte';
-  import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
-  import { TESTIMONIALS } from '$lib/data/testimonials';
-  import { EXPERTISES } from '$lib/data/expertises';
-  import { CLIENTS } from '$lib/data/clients';
+  import RevealOnScroll from '#lib/components/RevealOnScroll.svelte';
+  import AnimatedCounter from '#lib/components/AnimatedCounter.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import Tag from '#lib/components/Tag.svelte';
+  import Button from '#lib/components/Button.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
+  import PageCta from '#lib/components/PageCta.svelte';
+  import { FEATURED_PROJECTS, heroSize } from '#lib/data/projects.ts';
+  import { TESTIMONIALS } from '#lib/data/testimonials.ts';
+  import { EXPERTISES } from '#lib/data/expertises.ts';
+  import { CLIENTS } from '#lib/data/clients.ts';
   import {
     SITE_URL,
     SITE_NAME,
@@ -19,11 +19,11 @@
     OG_IMAGE,
     CONTENT_UPDATED,
     EMAIL
-  } from '$lib/data/site';
-  import { personNode, reviewNodes, websiteNode } from '$lib/data/person';
-  import { md, jsonLd } from '$lib/utils/text';
-  import { projectSrcset } from '$lib/utils/img';
-  import { playInView } from '$lib/actions/playInView';
+  } from '#lib/data/site.ts';
+  import { personNode, reviewNodes, websiteNode } from '#lib/data/person.ts';
+  import { md, jsonLd } from '#lib/utils/text.ts';
+  import { projectSrcset } from '#lib/utils/img.ts';
+  import { playInView } from '#lib/actions/playInView.ts';
 
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.

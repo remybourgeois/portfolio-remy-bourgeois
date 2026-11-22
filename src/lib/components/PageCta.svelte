@@ -1,9 +1,9 @@
 <!-- src/lib/components/PageCta.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Button from '$lib/components/Button.svelte';
-  import Tag from '$lib/components/Tag.svelte';
-  import { EMAIL } from '$lib/data/site';
+  import Button from '#lib/components/Button.svelte';
+  import Tag from '#lib/components/Tag.svelte';
+  import { EMAIL } from '#lib/data/site.ts';
 
   /**
    * Bloc de fin commun à l'accueil, aux trois pages intérieures et aux études

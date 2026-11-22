@@ -1,10 +1,10 @@
 <!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
-  import { PROJECTS, heroSize } from '$lib/data/projects';
-  import PageShell from '$lib/components/PageShell.svelte';
-  import PageHeader from '$lib/components/PageHeader.svelte';
-  import PageCta from '$lib/components/PageCta.svelte';
-  import Tag from '$lib/components/Tag.svelte';
+  import { PROJECTS, heroSize } from '#lib/data/projects.ts';
+  import PageShell from '#lib/components/PageShell.svelte';
+  import PageHeader from '#lib/components/PageHeader.svelte';
+  import PageCta from '#lib/components/PageCta.svelte';
+  import Tag from '#lib/components/Tag.svelte';
   import {
     SITE_URL,
     SITE_NAME,
@@ -13,11 +13,11 @@
     PERSON_ID,
     WEBSITE_ID,
     CONTENT_UPDATED
-  } from '$lib/data/site';
-  import { breadcrumb } from '$lib/data/person';
-  import { jsonLd } from '$lib/utils/text';
-  import { projectSrcset } from '$lib/utils/img';
-  import { playInView } from '$lib/actions/playInView';
+  } from '#lib/data/site.ts';
+  import { breadcrumb } from '#lib/data/person.ts';
+  import { jsonLd } from '#lib/utils/text.ts';
+  import { projectSrcset } from '#lib/utils/img.ts';
+  import { playInView } from '#lib/actions/playInView.ts';
 
   const CRUMBS = [
     { name: 'Accueil', path: '/' },

@@ -1,8 +1,8 @@
 <!-- src/lib/components/Button.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Icon from '$lib/components/Icons.svelte';
-  import type { IconName } from '$lib/components/Icons.svelte';
+  import Icon from '#lib/components/Icons.svelte';
+  import type { IconName } from '#lib/components/Icons.svelte';
 
   /**
    * Le bouton du site, sous ses deux formes : pilule pleine pour l'action

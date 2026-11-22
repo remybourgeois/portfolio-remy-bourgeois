@@ -2,17 +2,17 @@
 <script lang="ts">
   import '../app.css';
   import '@fontsource-variable/dm-sans'; // DM Sans auto-hébergée (plus de Google Fonts)
-  import Nav from '$lib/components/Nav.svelte';
-  import SiteFooter from '$lib/components/SiteFooter.svelte';
-  import { audioStore } from '$lib/stores/audio';
-  import { browser } from '$app/environment';
+  import Nav from '#lib/components/Nav.svelte';
+  import SiteFooter from '#lib/components/SiteFooter.svelte';
+  import { audioStore } from '#lib/stores/audio.ts';
+  import { browser } from '$app/env';
   import { onNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { SITE_URL } from '$lib/data/site';
+  import { page } from '$app/state';
+  import { SITE_URL } from '#lib/data/site.ts';
 
   let { children } = $props();
-  const isIntro = $derived($page.url.pathname === '/intro');
+  const isIntro = $derived(page.url.pathname === '/intro');
 
   onMount(() => {
     if (!browser) return;
@@ -35,6 +35,8 @@
 
   // View Transitions API + BGM shutdown when leaving the intro
   onNavigate((navigation) => {
+    if (navigation.shallow && navigation.type === 'goto') return;
+
     // Cut BGM as soon as we leave the intro page (/intro)
     if (navigation.from?.url.pathname === '/intro') {
       audioStore.engine?.disableBGM();
@@ -55,7 +57,7 @@
 
 <svelte:head>
   <meta name="author" content="Rémy Bourgeois" />
-  <link rel="canonical" href="{SITE_URL}{$page.url.pathname}" />
+  <link rel="canonical" href="{SITE_URL}{page.url.pathname}" />
 </svelte:head>
 
 <!-- Skip link : sur l'intro (pas de #main-content) on saute directement au portfolio -->
