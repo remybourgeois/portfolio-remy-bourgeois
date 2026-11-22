@@ -26,7 +26,13 @@
   import { playInView } from '#lib/actions/playInView.ts';
   import { fanCard } from '#lib/actions/fanCard.ts';
   import { tapFeedback } from '#lib/actions/tapFeedback.ts';
+  import { seen } from '#lib/actions/seen.ts';
 
+  // Le titre du hero, découpé en mots dans le gabarit pour son animation.
+  const HERO_TITLE = 'Lead Design System & Senior Product Designer';
+  // L'espace entre deux mots, écrite ici : dans le gabarit, Svelte la
+  // supprimerait en bord de bloc et les mots se toucheraient.
+  const SPACE = ' ';
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
   const marqueeItems = [...CLIENTS, ...CLIENTS];
@@ -93,8 +99,25 @@
     expandedTestimonial = id;
   }
 
-  function scrollToTop() {
+  function scrollToTop(event: MouseEvent) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // La flèche décolle par le haut du bouton et revient par le bas : le
+    // toucher est confirmé avant même que la page ne commence à remonter.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const button = event.currentTarget as HTMLElement;
+    button.animate([{ transform: 'scale(0.88)' }, { transform: 'scale(1)' }], {
+      duration: 420,
+      easing: 'ease-out'
+    });
+    button.querySelector('.top-arrow')?.animate(
+      [
+        { transform: 'translateY(0)', offset: 0 },
+        { transform: 'translateY(-34px)', offset: 0.45 },
+        { transform: 'translateY(34px)', offset: 0.46 },
+        { transform: 'translateY(0)', offset: 1 }
+      ],
+      { duration: 620, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }
+    );
   }
 </script>
 
@@ -205,10 +228,16 @@
 
           <h1 class="leading-tight mb-6">
             <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
+            <!-- Chaque mot monte derrière un cache à l'ouverture de la page
+                 (app.css, « Titre d'accueil »). Le texte reste entier dans le
+                 HTML, mot après mot, séparés par de vraies espaces. -->
             <span
               class="block text-4xl md:text-[3.25rem] lg:text-[3.75rem] font-bold text-white tracking-tight leading-[1.04] [text-wrap:balance]"
-              >Lead Design System &amp; Senior Product Designer</span
             >
+              {#each HERO_TITLE.split(' ') as word, k (k)}
+                <span class="hero-word"><span style:--k={k}>{word}</span></span>{SPACE}
+              {/each}
+            </span>
           </h1>
 
           <!--
@@ -216,7 +245,7 @@
             blanc, puis un paragraphe en gris sans aucun mot en gras. L'ancien
             hero mettait douze mots en violet et rien ne gagnait.
           -->
-          <p class="text-xl md:text-2xl font-medium text-white leading-snug mb-5">
+          <p class="hero-follow text-xl md:text-2xl font-medium text-white leading-snug mb-5">
             Je supprime le décalage entre le design et le code.
           </p>
           <p class="text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]">
@@ -455,6 +484,7 @@
             -->
             <div
               use:fanCard={{ watch: '.fan-stage', video: false }}
+              use:seen
               data-fan={sheets.length + 1}
               class="w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/[0.07] transition-all duration-500 group"
             >
@@ -552,7 +582,7 @@
                       {project.title}
                     </a>
                   </h3>
-                  <div class="flex flex-wrap gap-2 mb-6">
+                  <div class="tag-cascade flex flex-wrap gap-2 mb-6">
                     {#each project.tags as tag (tag)}
                       <Tag>{tag}</Tag>
                     {/each}
@@ -606,7 +636,7 @@
     <button
       onclick={scrollToTop}
       aria-label="Remonter en haut"
-      class="fixed bottom-8 right-8 z-[100] h-11 w-11 rounded-full bg-primary/20 border border-white/10 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm flex items-center justify-center"
+      class="fixed bottom-8 right-8 z-[100] h-11 w-11 overflow-hidden rounded-full bg-primary/20 border border-white/10 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm flex items-center justify-center"
     >
       <!-- Anneau de progression : `pathLength="1"` ramène le périmètre à 1,
            le décalage du tiret est donc directement la part restante. -->
@@ -628,7 +658,7 @@
           style:stroke-dashoffset={1 - scrollProgress}
         />
       </svg>
-      <Icon name="ChevronUp" size={20} />
+      <span class="top-arrow flex"><Icon name="ChevronUp" size={20} /></span>
     </button>
   {/if}
 </div>

@@ -1,12 +1,15 @@
 <!-- src/lib/components/Nav.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { slide } from 'svelte/transition';
   import { page } from '$app/state';
-  import Icon from '#lib/components/Icons.svelte';
   import IntroCta from '#lib/components/IntroCta.svelte';
   import { LAB_URL } from '#lib/data/site.ts';
 
   let menuOpen = $state(false);
+  // Durée d'ouverture et de fermeture du menu mobile. Ramenée à zéro au
+  // montage si le visiteur demande moins de mouvement.
+  let menuMs = $state(300);
   let currentPath = $derived(page.url.pathname);
   /**
    * La barre vit partout sauf sur /intro, où elle recouvrirait la scène WebGL
@@ -50,6 +53,7 @@
   });
 
   onMount(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) menuMs = 0;
     if (!linksEl) return;
     // La largeur des liens change quand DM Sans remplace la police de repli,
     // et la barre apparaît ou disparaît au passage des 1024 px.
@@ -129,21 +133,29 @@
         aria-expanded={menuOpen}
         aria-controls="mobile-menu"
       >
-        <Icon name={menuOpen ? 'X' : 'Menu'} size={20} />
+        <!-- Trois barres qui se croisent à l'ouverture (app.css, « Menu
+             mobile ») : le bouton se transforme au lieu de changer d'icône. -->
+        <span class="burger {menuOpen ? 'is-open' : ''}" aria-hidden="true"
+          ><i></i><i></i><i></i></span
+        >
       </button>
     </div>
   </div>
 
   {#if menuOpen}
+    <!-- Le panneau se déplie, puis les liens arrivent l'un après l'autre
+         (`--k` est leur rang). -->
     <div
       id="mobile-menu"
+      transition:slide={{ duration: menuMs }}
       class="lg:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-2 bg-canvas/95"
     >
-      {#each LINKS as link (link.href)}
+      {#each LINKS as link, k (link.href)}
         <a
           href={link.href}
           aria-current={isActive(link.href, link.exact) ? 'page' : undefined}
-          class="flex items-center gap-3 text-sm transition-colors py-3 min-h-[44px]
+          style:--k={k}
+          class="menu-item flex items-center gap-3 text-sm transition-colors py-3 min-h-[44px]
                  {isActive(link.href, link.exact)
             ? 'text-white font-medium'
             : 'text-white/70 hover:text-white'}"

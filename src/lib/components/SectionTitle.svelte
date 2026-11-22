@@ -24,13 +24,15 @@
 
 <h2
   {id}
-  class="eyebrow text-white/50 flex items-center gap-4 {align === 'center'
+  class="section-title eyebrow text-white/50 flex items-center gap-4 {align === 'center'
     ? 'justify-center'
     : ''} {className}"
 >
-  <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
+  <!-- Dans une section révélée, les filets se tirent depuis le libellé
+       (app.css, « Titre de section »). -->
+  <span class="section-title-line w-8 h-px bg-white/20" aria-hidden="true"></span>
   {@render children()}
   {#if align === 'center'}
-    <span class="w-8 h-px bg-white/20" aria-hidden="true"></span>
+    <span class="section-title-line w-8 h-px bg-white/20" aria-hidden="true"></span>
   {/if}
 </h2>

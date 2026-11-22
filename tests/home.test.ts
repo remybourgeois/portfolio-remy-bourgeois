@@ -200,3 +200,46 @@ test('an expertise card reacts to a tap without replaying its reveal', async ({ 
     .toBe(0);
   await expect(card).toHaveCSS('opacity', '1');
 });
+
+test('the hero title keeps its words apart for readers and crawlers', async ({ page, request }) => {
+  // Le titre est découpé en mots pour son animation : il doit rester une
+  // phrase, avec ses espaces, à l'écran comme dans le HTML prérendu.
+  await expect(
+    page.getByRole('heading', { level: 1, name: /Lead Design System & Senior Product Designer/ })
+  ).toBeVisible();
+  const html = await (await request.get('/')).text();
+  const text = html
+    .match(/<h1[\s\S]*?<\/h1>/)![0]
+    .replace(/<[^>]*>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ');
+  expect(text).toContain('Lead Design System & Senior Product Designer');
+});
+
+test.describe('on a phone', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('the menu button turns into a cross and the links come in', async ({ page }) => {
+    const bar = page.getByRole('navigation', { name: 'Navigation principale' });
+    const toggle = bar.getByRole('button', { name: 'Menu' });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await toggle.tap();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(toggle.locator('.burger')).toHaveClass(/is-open/);
+    const link = bar.locator('#mobile-menu').getByRole('link', { name: 'Projets', exact: true });
+    await expect(link).toBeVisible();
+    // Une fois l'entrée jouée, le lien est pleinement lisible.
+    await expect(link).toHaveCSS('opacity', '1');
+    await toggle.tap();
+    await expect(bar.locator('#mobile-menu')).toHaveCount(0);
+  });
+
+  test('the tags of a project card come in when the card is seen', async ({ page }) => {
+    const title = page.getByRole('link', { name: 'iPify', exact: true });
+    const card = page.locator('[data-fan]').filter({ has: title });
+    await expect(card).not.toHaveAttribute('data-seen', '');
+    await title.scrollIntoViewIfNeeded();
+    await expect(card).toHaveAttribute('data-seen', '');
+    await expect(card.locator('.tag-cascade > *').last()).toHaveCSS('opacity', '1');
+  });
+});

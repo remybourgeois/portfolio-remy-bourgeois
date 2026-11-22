@@ -397,6 +397,141 @@ body {
   animation-delay: calc(var(--i, 0) * 110ms + 200ms);
 }
 
+/* ── Titre de section ──
+   Dans une section révélée, les filets se tirent depuis le libellé et celui-ci
+   se resserre jusqu'à son interlettrage. Hors section révélée, rien ne joue. */
+@keyframes title-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes title-label {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+}
+[data-reveal='shown'] .section-title {
+  animation: title-label 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+[data-reveal='shown'] .section-title-line {
+  transform-origin: right center;
+  animation: title-line 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+[data-reveal='shown'] .section-title-line:last-child {
+  transform-origin: left center;
+}
+
+/* ── Menu mobile ──
+   Le bouton : trois barres, celle du milieu s'efface et les deux autres se
+   croisent. Les liens : ils arrivent l'un après l'autre à l'ouverture. */
+.burger {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 14px;
+}
+.burger i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 0.52s var(--ease-spring),
+    opacity 0.16s ease;
+}
+.burger i:nth-child(1) {
+  top: 0;
+}
+.burger i:nth-child(2) {
+  top: 6px;
+}
+.burger i:nth-child(3) {
+  top: 12px;
+}
+.burger.is-open i:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.burger.is-open i:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.3);
+}
+.burger.is-open i:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+.menu-item {
+  animation: menu-item-in 0.5s var(--ease-spring) backwards;
+  animation-delay: calc(var(--k, 0) * 55ms + 80ms);
+}
+
+/* ── Titre d'accueil ──
+   Chaque mot monte derrière un cache à l'ouverture de la page. Le cache laisse
+   un peu de place sous la ligne de base, sinon il coupe les jambages. */
+@keyframes hero-word-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes hero-follow {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.hero-word > span {
+  display: inline-block;
+  animation: hero-word-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--k, 0) * 70ms);
+}
+.hero-follow {
+  animation: hero-follow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s backwards;
+}
+
+/* ── Étiquettes ──
+   Les étiquettes d'une carte projet apparaissent l'une après l'autre quand la
+   carte entre à l'écran (`data-seen`, posé par l'action `seen`). Sans
+   l'attribut, elles sont simplement là. */
+@keyframes tag-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+}
+[data-seen] .tag-cascade > * {
+  animation: tag-pop 0.52s var(--ease-spring) backwards;
+  animation-delay: calc(var(--k, 0) * 60ms + 120ms);
+}
+.tag-cascade > :nth-child(2) {
+  --k: 1;
+}
+.tag-cascade > :nth-child(3) {
+  --k: 2;
+}
+.tag-cascade > :nth-child(4) {
+  --k: 3;
+}
+.tag-cascade > :nth-child(5) {
+  --k: 4;
+}
+.tag-cascade > :nth-child(n + 6) {
+  --k: 5;
+}
+
 /* ── Carte touchée ──
    Les animations du toucher sont lancées par l'action `tapFeedback` et non
    d'ici : voir son commentaire. Il ne reste en CSS que l'anneau qui s'échappe
@@ -634,6 +769,17 @@ body {
   .fan-sheet,
   .nav-indicator.is-ready {
     transition: none;
+  }
+  .burger i {
+    transition: none;
+  }
+  .section-title,
+  .section-title-line,
+  .menu-item,
+  .hero-word > span,
+  .hero-follow,
+  [data-seen] .tag-cascade > * {
+    animation: none !important;
   }
   /* Le changement de couleur reste, c'est le déplacement qu'on retire. */
   .btn-press,

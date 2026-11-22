@@ -18,6 +18,7 @@
   import { jsonLd } from '#lib/utils/text.ts';
   import { projectSrcset } from '#lib/utils/img.ts';
   import { fanCard } from '#lib/actions/fanCard.ts';
+  import { seen } from '#lib/actions/seen.ts';
 
   const CRUMBS = [
     { name: 'Accueil', path: '/' },
@@ -114,6 +115,7 @@
         href="/projects/{project.slug}"
         aria-label="Voir le projet {project.title}"
         use:fanCard
+        use:seen
         data-fan={sheets.length + 1}
         class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
                hover:bg-white/[0.08] hover:border-white/20 hover:shadow-glow-card
@@ -198,7 +200,7 @@
           >
             {project.title}
           </h2>
-          <div class="flex flex-wrap gap-2">
+          <div class="tag-cascade flex flex-wrap gap-2">
             {#each project.tags as tag (tag)}
               <Tag>{tag}</Tag>
             {/each}
