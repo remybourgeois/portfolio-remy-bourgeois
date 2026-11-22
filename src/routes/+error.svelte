@@ -17,15 +17,17 @@
   class="min-h-[80vh] bg-canvas text-white flex items-center justify-center px-6 py-24"
 >
   <div class="w-full max-w-lg text-center flex flex-col items-center gap-6">
-    <span class="font-mono eyebrow text-accent">Erreur {status}</span>
+    <!-- Même ouverture en cascade que le reste du site (app.css,
+         « Ouverture de page »). -->
+    <span class="load-step [--load-rank:0] font-mono eyebrow text-accent">Erreur {status}</span>
 
     <h1
-      class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-balance"
+      class="load-step [--load-rank:1] text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-balance"
     >
       {isNotFound ? 'Cette page n’existe pas' : 'Quelque chose a mal tourné'}
     </h1>
 
-    <p class="text-white/60 text-base leading-relaxed max-w-md">
+    <p class="load-step [--load-rank:2] text-white/60 text-base leading-relaxed max-w-md">
       {#if isNotFound}
         Le lien est peut-être obsolète, ou l’adresse comporte une faute de frappe. Les projets sont
         tous accessibles depuis le portfolio.
@@ -34,7 +36,9 @@
       {/if}
     </p>
 
-    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center pt-2">
+    <div
+      class="load-step [--load-rank:3] flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center pt-2"
+    >
       <Button href="/">Retour au portfolio</Button>
       <Button href="/projects" variant="secondary" iconRight="ArrowRight">Voir les projets</Button>
     </div>

@@ -245,3 +245,21 @@ test.describe('on a phone', () => {
     await expect(tags.locator('> *').last()).toHaveCSS('opacity', '1');
   });
 });
+
+test('the home page opens in the same cascade as the inner pages', async ({ browser }) => {
+  // JavaScript coupé : la cascade est en CSS et doit jouer quand même.
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('/');
+  const name = page.locator('h1 .load-step');
+  const actions = page.getByRole('link', { name: 'Voir les projets', exact: true }).locator('..');
+  await expect(name).toHaveCSS('animation-name', 'load-rise');
+  await expect(actions).toHaveCSS('animation-name', 'load-rise');
+  const delay = (el: typeof name) =>
+    el.evaluate((node) => parseFloat(getComputedStyle(node).animationDelay));
+  // Les boutons arrivent après le nom, en fin de cascade.
+  expect(await delay(actions)).toBeGreaterThan(await delay(name));
+  await expect(name).toHaveCSS('opacity', '1');
+  await expect(actions).toHaveCSS('opacity', '1');
+  await context.close();
+});

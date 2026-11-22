@@ -398,9 +398,10 @@ body {
 }
 
 /* ── Ouverture de page ──
-   À l'ouverture d'une page intérieure, le haut arrive en cascade : le fil
-   d'Ariane, puis les éléments de l'en-tête marqués `load-step`, puis le
-   contenu. `--load-rank` est le rang de chacun. Tout est en CSS, pour partir
+   À l'ouverture d'une page, le haut arrive en cascade. Sur les pages
+   intérieures (`page-cascade`) : le fil d'Ariane, puis les éléments de
+   l'en-tête marqués `load-step`, puis le contenu. Sur l'accueil et la page
+   d'erreur, qui n'ont pas ce conteneur, chaque bloc porte `load-step`. `--load-rank` est le rang de chacun. Tout est en CSS, pour partir
    au premier affichage : attendre le JavaScript montrerait le contenu, le
    ferait disparaître, puis le ferait revenir. Un bloc situé sous l'écran joue
    cette entrée sans qu'on la voie, et son texte se révèle ensuite au
@@ -413,7 +414,7 @@ body {
 }
 .page-cascade > nav,
 .page-cascade > header ~ *,
-.page-cascade .load-step {
+.load-step {
   animation: load-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   animation-delay: calc(var(--load-rank, 0) * 90ms);
 }
@@ -529,12 +530,6 @@ body {
     transform: translateY(105%);
   }
 }
-@keyframes hero-follow {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
 .hero-word {
   display: inline-block;
   overflow: hidden;
@@ -545,10 +540,8 @@ body {
 .hero-word > span {
   display: inline-block;
   animation: hero-word-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
-  animation-delay: calc(var(--k, 0) * 70ms);
-}
-.hero-follow {
-  animation: hero-follow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s backwards;
+  /* 180 ms : le titre part au rang 2 de l'ouverture de page, après le nom. */
+  animation-delay: calc(180ms + var(--k, 0) * 70ms);
 }
 
 /* ── Étiquettes ──
@@ -1003,11 +996,10 @@ body {
   .section-title-line,
   .menu-item,
   .hero-word > span,
-  .hero-follow,
   [data-appear],
   .page-cascade > nav,
   .page-cascade > header ~ *,
-  .page-cascade .load-step,
+  .load-step,
   .terrain-step,
   .terrain-step::after,
   .tag-cascade > *,

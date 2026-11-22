@@ -214,7 +214,11 @@
         class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,320px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] gap-10 lg:gap-16 items-start mb-20"
       >
         <div class="max-w-[44rem]">
-          <div class="flex items-center gap-4 mb-7 md:hidden">
+          <!-- Ouverture en cascade, comme sur les pages intérieures : chaque
+               bloc du hero porte `load-step` et son rang (app.css,
+               « Ouverture de page »). Le titre garde ses mots qui montent un
+               par un, calés entre le nom et l'accroche. -->
+          <div class="load-step [--load-rank:0] flex items-center gap-4 mb-7 md:hidden">
             <img
               src="/assets/remy-bourgeois-320.webp"
               alt="Portrait de Rémy Bourgeois"
@@ -227,7 +231,9 @@
           </div>
 
           <h1 class="leading-tight mb-6">
-            <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
+            <span class="load-step [--load-rank:1] block eyebrow text-accent mb-3"
+              >Rémy Bourgeois</span
+            >
             <!-- Chaque mot monte derrière un cache à l'ouverture de la page
                  (app.css, « Titre d'accueil »). Le texte reste entier dans le
                  HTML, mot après mot, séparés par de vraies espaces. -->
@@ -245,16 +251,20 @@
             blanc, puis un paragraphe en gris sans aucun mot en gras. L'ancien
             hero mettait douze mots en violet et rien ne gagnait.
           -->
-          <p class="hero-follow text-xl md:text-2xl font-medium text-white leading-snug mb-5">
+          <p
+            class="load-step [--load-rank:6] text-xl md:text-2xl font-medium text-white leading-snug mb-5"
+          >
             Je supprime le décalage entre le design et le code.
           </p>
-          <p class="text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]">
+          <p
+            class="load-step [--load-rank:7] text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]"
+          >
             14 ans de design produit, dont 7 ans en robotique humanoïde. Je conçois des design
             systems et des produits IA directement dans le code, avec les équipes qui vont les faire
             vivre. Un développeur senior relit chacune de mes Pull Requests.
           </p>
 
-          <div class="flex flex-wrap gap-3 mt-9">
+          <div class="load-step [--load-rank:8] flex flex-wrap gap-3 mt-9">
             <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
             <Button href="/projects" variant="secondary" iconRight="ArrowRight">
               Voir les projets
@@ -271,7 +281,7 @@
           hero »), rien ne dépend de la position de la souris, et le repos
           reste la version qu'on voit au toucher.
         -->
-        <div class="hidden md:block relative md:mt-1">
+        <div class="load-step [--load-rank:2] hidden md:block relative md:mt-1">
           <span
             class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none bg-primary/20"
             aria-hidden="true"
@@ -312,7 +322,7 @@
 
     <!-- Client marquee. Le défilement est décoratif : c'est la liste hors
          écran qu'un lecteur d'écran lit à sa place. -->
-    <section class="w-full mb-20" aria-label="Clients et partenaires">
+    <section class="load-step [--load-rank:9] w-full mb-20" aria-label="Clients et partenaires">
       <ul class="sr-only">
         {#each CLIENTS as client (client.name)}
           <li>{client.name}</li>
