@@ -397,6 +397,33 @@ body {
   animation-delay: calc(var(--i, 0) * 110ms + 200ms);
 }
 
+/* ── Ouverture de page ──
+   À l'ouverture d'une page intérieure, le haut arrive en cascade : le fil
+   d'Ariane, puis les éléments de l'en-tête marqués `load-step`, puis le
+   contenu. `--load-rank` est le rang de chacun. Tout est en CSS, pour partir
+   au premier affichage : attendre le JavaScript montrerait le contenu, le
+   ferait disparaître, puis le ferait revenir. Un bloc situé sous l'écran joue
+   cette entrée sans qu'on la voie, et son texte se révèle ensuite au
+   défilement. */
+@keyframes load-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.page-cascade > nav,
+.page-cascade > header ~ *,
+.page-cascade .load-step {
+  animation: load-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--load-rank, 0) * 90ms);
+}
+.page-cascade > header ~ * {
+  --load-rank: 3;
+}
+.page-cascade > header ~ * ~ * {
+  --load-rank: 4;
+}
+
 /* ── Texte qui apparaît ──
    Sur les pages intérieures, l'action `appearText` marque presque chaque
    titre et chaque paragraphe : `pending` tant qu'il attend sous l'écran, `in`
@@ -409,10 +436,12 @@ body {
     transform: translateY(14px);
   }
 }
-[data-appear='pending'] {
+/* `.page-cascade` devant : ces règles doivent l'emporter sur l'ouverture de
+   page pour un texte qui serait enfant direct du conteneur. */
+.page-cascade [data-appear='pending'] {
   opacity: 0;
 }
-[data-appear='in'] {
+.page-cascade [data-appear='in'] {
   animation: appear-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   animation-delay: var(--appear-delay, 0ms);
 }
@@ -976,6 +1005,9 @@ body {
   .hero-word > span,
   .hero-follow,
   [data-appear],
+  .page-cascade > nav,
+  .page-cascade > header ~ *,
+  .page-cascade .load-step,
   .terrain-step,
   .terrain-step::after,
   .tag-cascade > *,

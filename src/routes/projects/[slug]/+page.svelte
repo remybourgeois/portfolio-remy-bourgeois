@@ -404,7 +404,7 @@
     class="grid grid-cols-1 md:grid-cols-[1fr_200px] items-end pb-12 mb-14 border-b border-white/[0.06]"
   >
     <div class="flex flex-col items-start gap-5">
-      <span class="font-mono text-xs text-accent tracking-[0.15em]">
+      <span class="load-step [--load-rank:1] font-mono text-xs text-accent tracking-[0.15em]">
         {String(index + 1).padStart(3, '0')}
       </span>
 
@@ -412,14 +412,16 @@
         <img
           src={project.logo}
           alt={project.client}
-          class="h-7 w-auto object-contain brightness-0 invert opacity-80"
+          class="load-step [--load-rank:1] h-7 w-auto object-contain brightness-0 invert opacity-80"
           loading="eager"
         />
       {:else}
-        <span class="eyebrow text-white/60">{project.client}</span>
+        <span class="load-step [--load-rank:1] eyebrow text-white/60">{project.client}</span>
       {/if}
 
-      <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.05]">
+      <h1
+        class="load-step [--load-rank:2] text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.05]"
+      >
         {project.title}
         <span class="block mt-3 text-xl md:text-2xl font-medium text-white/70 tracking-normal">
           {project.subject}

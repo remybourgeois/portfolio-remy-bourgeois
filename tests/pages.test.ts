@@ -103,3 +103,22 @@ test.describe('text appearing while reading', () => {
     });
   }
 });
+
+test('an inner page opens in a cascade, without waiting for scripts', async ({ browser }) => {
+  // JavaScript coupé : la cascade d'ouverture est en CSS, elle doit jouer
+  // quand même, et tout doit finir pleinement visible.
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('/accompagnement');
+  const title = page.getByRole('heading', { level: 1 });
+  const crumbs = page.getByRole('navigation', { name: "Fil d'Ariane" });
+  await expect(title).toHaveCSS('animation-name', 'load-rise');
+  await expect(crumbs).toHaveCSS('animation-name', 'load-rise');
+  // Le titre part après le fil d'Ariane.
+  const delay = (el: typeof title) =>
+    el.evaluate((node) => parseFloat(getComputedStyle(node).animationDelay));
+  expect(await delay(title)).toBeGreaterThan(await delay(crumbs));
+  await expect(title).toHaveCSS('opacity', '1');
+  await expect(page.locator('#conception')).toBeVisible();
+  await context.close();
+});

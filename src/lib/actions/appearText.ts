@@ -11,6 +11,9 @@ const TARGETS = 'h1, h2, h3, h4, p, li, dt, dd, blockquote, figure';
 const EXCLUDED =
   'nav, [aria-hidden="true"], .sr-only, .section-title, .timeline, .terrain-step, .bref, .list-cascade, .tag-cascade, [data-no-appear]';
 
+/** Déplacement de l'ouverture de page (app.css, `load-rise`), avec un peu de marge. */
+const LOAD_SHIFT = 16;
+
 /** Décalage entre deux éléments qui arrivent à l'écran en même temps. */
 const STAGGER = 60;
 
@@ -68,7 +71,10 @@ export function appearText(node: HTMLElement) {
     }
     if (nested) continue;
     taken.add(el);
-    if (el.getBoundingClientRect().top <= window.innerHeight) continue;
+    // La marge couvre l'ouverture de page : pendant qu'elle joue, le contenu
+    // est décalé de 14 px vers le bas, et un texte au ras du bord de l'écran
+    // serait pris à tort pour un texte situé dessous.
+    if (el.getBoundingClientRect().top <= window.innerHeight + LOAD_SHIFT) continue;
     el.setAttribute('data-appear', 'pending');
     obs.observe(el);
   }
