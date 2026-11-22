@@ -56,3 +56,50 @@ test.describe('on a phone', () => {
     await expect(steps.last()).toHaveCSS('opacity', '1');
   });
 });
+
+test.describe('text appearing while reading', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  for (const route of [
+    '/accompagnement',
+    '/a-propos',
+    '/projects',
+    '/projects/ofelia',
+    '/mentions-legales'
+  ]) {
+    test(`${route}: text waits below the fold, and none of it stays hidden`, async ({ page }) => {
+      await page.goto(route);
+      const pending = page.locator('[data-appear="pending"]');
+      // L'action s'installe à l'hydratation, après l'événement `load` : on
+      // attend qu'elle ait marqué le texte situé sous l'écran.
+      await expect.poll(() => pending.count()).toBeGreaterThan(3);
+      // Ce qui est à l'écran au chargement n'est jamais masqué.
+      const hiddenOnScreen = await page.evaluate(
+        () =>
+          [...document.querySelectorAll<HTMLElement>('[data-appear="pending"]')].filter(
+            (el) => el.getBoundingClientRect().top < window.innerHeight
+          ).length
+      );
+      expect(hiddenOnScreen).toBe(0);
+
+      // On lit la page jusqu'en bas, écran par écran.
+      const height = await page.evaluate(() => document.documentElement.scrollHeight);
+      for (let y = 0; y <= height; y += 500) {
+        await page.evaluate((top) => window.scrollTo(0, top), y);
+        await page.waitForTimeout(60);
+      }
+      // Garde-fou : un texte resté masqué serait un contenu perdu.
+      await expect(pending).toHaveCount(0);
+      // Les derniers éléments finissent leur entrée : on attend qu'aucun ne
+      // soit plus transparent.
+      const invisible = () =>
+        page.evaluate(
+          () =>
+            [...document.querySelectorAll<HTMLElement>('[data-appear]')].filter(
+              (el) => el.offsetParent !== null && getComputedStyle(el).opacity === '0'
+            ).length
+        );
+      await expect.poll(invisible).toBe(0);
+    });
+  }
+});

@@ -397,6 +397,26 @@ body {
   animation-delay: calc(var(--i, 0) * 110ms + 200ms);
 }
 
+/* ── Texte qui apparaît ──
+   Sur les pages intérieures, l'action `appearText` marque presque chaque
+   titre et chaque paragraphe : `pending` tant qu'il attend sous l'écran, `in`
+   quand il y entre. Il monte alors de quelques pixels. Une animation plutôt
+   qu'une transition : une fois jouée elle ne laisse aucun `transform` sur
+   l'élément. */
+@keyframes appear-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+[data-appear='pending'] {
+  opacity: 0;
+}
+[data-appear='in'] {
+  animation: appear-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--appear-delay, 0ms);
+}
+
 /* ── Titre de section ──
    Dans une section révélée, les filets se tirent depuis le libellé et celui-ci
    se resserre jusqu'à son interlettrage. Hors section révélée, rien ne joue. */
@@ -955,6 +975,7 @@ body {
   .menu-item,
   .hero-word > span,
   .hero-follow,
+  [data-appear],
   .terrain-step,
   .terrain-step::after,
   .tag-cascade > *,
