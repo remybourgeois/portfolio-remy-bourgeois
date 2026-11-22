@@ -8,7 +8,7 @@
   import Button from '$lib/components/Button.svelte';
   import SectionTitle from '$lib/components/SectionTitle.svelte';
   import PageCta from '$lib/components/PageCta.svelte';
-  import { FEATURED_PROJECTS, heroSize } from '$lib/data/projects';
+  import { FEATURED_PROJECTS, heroSize, fanSheets } from '$lib/data/projects';
   import { TESTIMONIALS } from '$lib/data/testimonials';
   import { EXPERTISES } from '$lib/data/expertises';
   import { CLIENTS } from '$lib/data/clients';
@@ -24,6 +24,7 @@
   import { md, jsonLd } from '$lib/utils/text';
   import { projectSrcset } from '$lib/utils/img';
   import { playInView } from '$lib/actions/playInView';
+  import { fanCard } from '$lib/actions/fanCard';
 
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
@@ -438,12 +439,21 @@
         <div class="flex flex-col gap-8">
           {#each homeProjects as project, i (project.slug)}
             {@const alt = i % 2 !== 0}
+            {@const sheets = fanSheets(project)}
+            <!--
+              Éventail : les autres écrans du projet sont empilés derrière le
+              visuel et s'écartent à l'ouverture de la carte (action `fanCard`,
+              app.css « Éventail »). `video: false` : la vidéo garde sa lecture
+              dès qu'elle est visible, l'éventail n'y touche pas.
+            -->
             <div
+              use:fanCard={{ watch: '.fan-stage', video: false }}
+              data-fan={sheets.length + 1}
               class="w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/[0.07] transition-all duration-500 group"
             >
               <div class="flex flex-col lg:flex-row">
                 <div
-                  class="flex-1 relative min-h-[240px] md:min-h-[300px] flex items-center justify-center overflow-hidden {alt
+                  class="fan-stage [--fan-w:52%] lg:[--fan-w:min(56%,400px)] flex-1 relative min-h-[240px] md:min-h-[300px] flex items-center justify-center overflow-hidden {alt
                     ? 'lg:order-1'
                     : 'lg:order-2'} p-4 lg:p-6"
                 >
@@ -454,31 +464,49 @@
                     aria-hidden="true"
                     class="absolute inset-0 z-10 w-full h-full focus:outline-none"
                   >
-                    {#if project.video}
-                      <video
-                        src={project.video}
-                        poster={project.videoPoster}
-                        use:playInView
-                        preload="none"
-                        loop
-                        muted
-                        playsinline
-                        aria-hidden="true"
-                        width={heroSize(project).width}
-                        height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
-                      ></video>
-                    {:else if project.image || project.media?.length}
-                      <img
-                        src={project.image || project.media![0].src}
-                        srcset={projectSrcset(project.image || project.media![0].src)}
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        alt=""
-                        width={heroSize(project).width}
-                        height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
-                        loading="lazy"
-                      />
+                    {#if project.video || project.image || project.media?.length}
+                      {#each sheets as sheet, n (sheet.src)}
+                        <span class="fan-sheet {n === 0 ? 'fan-sheet-l' : 'fan-sheet-r'}">
+                          <img
+                            src={sheet.src}
+                            srcset={projectSrcset(sheet.src)}
+                            sizes="(min-width: 1024px) 400px, 60vw"
+                            alt=""
+                            width={sheet.width}
+                            height={sheet.height}
+                            class="w-full h-full object-cover object-top"
+                            loading="lazy"
+                          />
+                        </span>
+                      {/each}
+                      <span class="fan-sheet fan-sheet-front">
+                        {#if project.video}
+                          <video
+                            src={project.video}
+                            poster={project.videoPoster}
+                            use:playInView
+                            preload="none"
+                            loop
+                            muted
+                            playsinline
+                            aria-hidden="true"
+                            width={heroSize(project).width}
+                            height={heroSize(project).height}
+                            class="w-full h-full object-cover object-top"
+                          ></video>
+                        {:else}
+                          <img
+                            src={project.image || project.media![0].src}
+                            srcset={projectSrcset(project.image || project.media![0].src)}
+                            sizes="(min-width: 1024px) 400px, 60vw"
+                            alt=""
+                            width={heroSize(project).width}
+                            height={heroSize(project).height}
+                            class="w-full h-full object-cover object-top"
+                            loading="lazy"
+                          />
+                        {/if}
+                      </span>
                     {:else}
                       <span class="eyebrow text-white/50">Bientôt</span>
                     {/if}

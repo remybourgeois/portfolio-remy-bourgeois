@@ -107,3 +107,19 @@ test('a tall section reveals as soon as it enters the viewport on mobile', async
   );
   await expect(wrapper).toHaveClass(/opacity-100/, { timeout: 1000 });
 });
+
+test('a featured project fans out its screens on hover', async ({ page }) => {
+  const title = page.getByRole('link', { name: 'Crédit Agricole', exact: true });
+  await title.scrollIntoViewIfNeeded();
+  const card = page.locator('[data-fan]').filter({ has: title });
+  await expect(card.locator('.fan-sheet')).toHaveCount(3);
+  await card.hover();
+  await expect(card).toHaveAttribute('data-fan-open', '');
+  await expect(async () => {
+    const [left, front, right] = await Promise.all(
+      ['.fan-sheet-l', '.fan-sheet-front', '.fan-sheet-r'].map((s) => card.locator(s).boundingBox())
+    );
+    expect(left!.x).toBeLessThan(front!.x - 20);
+    expect(right!.x + right!.width).toBeGreaterThan(front!.x + front!.width + 20);
+  }).toPass({ timeout: 5000 });
+});

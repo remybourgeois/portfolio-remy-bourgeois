@@ -239,7 +239,9 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(52%, 260px);
+  /* `--fan-w` : la carte choisit la largeur de ses feuilles. L'accueil, dont
+     le visuel est plus grand, en demande de plus larges. */
+  width: var(--fan-w, min(52%, 260px));
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 0.625rem;
