@@ -121,3 +121,16 @@ test('the top bar marks the current page with a single indicator', async ({ page
     expect(Math.abs(a!.width - b!.width)).toBeLessThan(1);
   }).toPass({ timeout: 5000 });
 });
+
+test('a button sinks while pressed and comes back when released', async ({ page }) => {
+  const button = page.getByRole('link', { name: 'Voir les projets', exact: true });
+  const box = (await button.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect(button).toHaveAttribute('data-pressed', '');
+  await expect.poll(async () => (await button.boundingBox())!.width).toBeLessThan(box.width - 2);
+  // On quitte le bouton sans relâcher dessus : relâcher suivrait le lien.
+  await page.mouse.move(0, 0);
+  await expect(button).not.toHaveAttribute('data-pressed', '');
+  await page.mouse.up();
+});

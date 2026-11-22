@@ -359,6 +359,41 @@ body {
   animation-delay: calc(var(--i, 0) * 110ms + 200ms);
 }
 
+/* ── Bouton ──
+   `data-pressed` est posé par Button.svelte tant que le doigt ou la souris
+   appuie. L'aller est court et sans ressort, le retour se fait avec. La flèche
+   n'avance au survol qu'avec un pointeur fin : au toucher, `:hover` reste
+   collé après un tap. */
+.btn-press {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.62s var(--ease-spring);
+}
+.btn-press .btn-icon {
+  transition: transform 0.62s var(--ease-spring);
+}
+.btn-press[data-pressed] {
+  transform: scale(0.94);
+  transition-duration: 0.15s, 0.15s, 0.15s, 90ms;
+  transition-timing-function: ease, ease, ease, ease-out;
+}
+.btn-press[data-pressed] .btn-icon {
+  transition: transform 90ms ease-out;
+}
+.btn-press[data-pressed] .btn-icon-right {
+  transform: translateX(5px);
+}
+.btn-press[data-pressed] .btn-icon-left {
+  transform: translateY(-2px) rotate(-8deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-press:hover .btn-icon-right {
+    transform: translateX(4px);
+  }
+}
+
 /* ── Témoignage ──
    Replié : quatre lignes de `text-sm leading-relaxed` (4 × 22,75 px), la
    dernière estompée par un masque. Ouvert : la hauteur vient du composant, et
@@ -544,6 +579,14 @@ body {
   .fan-sheet,
   .nav-indicator.is-ready {
     transition: none;
+  }
+  /* Le changement de couleur reste, c'est le déplacement qu'on retire. */
+  .btn-press,
+  .btn-press[data-pressed],
+  .btn-press .btn-icon,
+  .btn-press[data-pressed] .btn-icon,
+  .btn-press:hover .btn-icon-right {
+    transform: none;
   }
 }
 
