@@ -68,6 +68,15 @@
   );
 }
 
+/* Variante `mouse:` : ne s'applique qu'avec un pointeur fin capable de
+   survol. `hover:` seul ne suffit pas pour un élément qu'on invite à toucher :
+   sur un téléphone, l'état de survol reste collé après un toucher. */
+@custom-variant mouse {
+  @media (hover: hover) and (pointer: fine) {
+    @slot;
+  }
+}
+
 /* Libellé de section et de champ : le seul petit texte du site. 12 px est le
    plancher (règle « Pas de typo sous 12 px ») ; les 9, 10 et 11 px uppercase
    qui le précédaient passaient sous le seuil pour un gain illisible. */
@@ -386,6 +395,23 @@ body {
 [data-reveal='shown'] .icon-settle {
   animation: icon-settle 0.8s var(--ease-spring) backwards;
   animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+
+/* ── Carte touchée ──
+   Les animations du toucher sont lancées par l'action `tapFeedback` et non
+   d'ici : voir son commentaire. Il ne reste en CSS que l'anneau qui s'échappe
+   de la pastille, invisible au repos. */
+.tap-card {
+  -webkit-tap-highlight-color: transparent;
+}
+.tap-card .tap-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-tertiary);
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ── Bouton ──

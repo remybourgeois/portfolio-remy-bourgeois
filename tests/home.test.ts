@@ -178,3 +178,25 @@ test('a button sinks while pressed and comes back when released', async ({ page 
   await expect(button).not.toHaveAttribute('data-pressed', '');
   await page.mouse.up();
 });
+
+test('an expertise card reacts to a tap without replaying its reveal', async ({ page }) => {
+  const card = page.locator('.tap-card').filter({ hasText: 'Design systems et tokens' });
+  await card.scrollIntoViewIfNeeded();
+  // Le tracé de l'icône demande une longueur normalisée sur chaque forme.
+  await expect(card.locator('svg > *').first()).toHaveAttribute('pathLength', '1');
+  const shivering = () =>
+    card.evaluate((el) => el.getAnimations().some((a) => a.id === 'tap-shiver'));
+  // On attend la fin de l'apparition de la section avant de toucher.
+  await expect.poll(() => card.evaluate((el) => el.getAnimations().length)).toBe(0);
+  expect(await shivering()).toBe(false);
+  await card.click();
+  expect(await shivering()).toBe(true);
+  // Une fois le frisson passé, plus rien ne tourne : ni lui, ni l'animation
+  // d'apparition de la carte ou de son icône, qu'un toucher faisait rejouer.
+  await expect
+    .poll(() =>
+      card.evaluate((el) => el.getAnimations({ subtree: true }).map((a) => a.playState).length)
+    )
+    .toBe(0);
+  await expect(card).toHaveCSS('opacity', '1');
+});

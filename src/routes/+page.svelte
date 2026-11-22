@@ -25,6 +25,7 @@
   import { projectSrcset } from '#lib/utils/img.ts';
   import { playInView } from '#lib/actions/playInView.ts';
   import { fanCard } from '#lib/actions/fanCard.ts';
+  import { tapFeedback } from '#lib/actions/tapFeedback.ts';
 
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
@@ -393,12 +394,17 @@
         <SectionTitle align="center" class="mb-16">Expertises</SectionTitle>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
           {#each EXPERTISES as exp, i (exp.id)}
+            <!-- Au toucher, la carte frissonne et son icône se redessine
+                 (action `tapFeedback`, app.css « Carte touchée »). La carte
+                 ne mène nulle part : l'effet reste léger pour ne pas promettre
+                 une ouverture. -->
             <div
+              use:tapFeedback
               style:--i={Math.min(i, 5)}
-              class="reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
+              class="tap-card reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary mouse:hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
-                class="icon-settle mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
+                class="tap-icon icon-settle relative mb-4 p-3 bg-white/10 rounded-full w-fit mouse:group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
               >
                 <Icon name={exp.icon} size={24} className="text-tertiary" />
               </div>
