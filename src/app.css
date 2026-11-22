@@ -464,12 +464,12 @@ body {
 @keyframes menu-item-in {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-18px);
   }
 }
 .menu-item {
-  animation: menu-item-in 0.5s var(--ease-spring) backwards;
-  animation-delay: calc(var(--k, 0) * 55ms + 80ms);
+  animation: menu-item-in 0.6s var(--ease-spring) backwards;
+  animation-delay: calc(var(--k, 0) * 90ms + 100ms);
 }
 
 /* ── Titre d'accueil ──
@@ -530,6 +530,163 @@ body {
 }
 .tag-cascade > :nth-child(n + 6) {
   --k: 5;
+}
+
+/* ── Carrousel des études de cas ──
+   La piste revient à sa place avec le ressort. Pendant le glissement elle
+   suit le doigt sans transition : `is-dragging` est posé par la page. */
+.car-track {
+  transition: transform 0.56s var(--ease-spring);
+}
+.car-track.is-dragging {
+  transition: none;
+}
+
+/* ── En bref ──
+   Les trois faits de l'encadré montent l'un après l'autre quand il entre à
+   l'écran (`data-seen`). `--b` est leur rang. */
+@keyframes bref-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+[data-seen] .bref > * {
+  animation: bref-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--b, 0) * 140ms);
+}
+.bref > :nth-child(2) {
+  --b: 1;
+}
+.bref > :nth-child(3) {
+  --b: 2;
+}
+
+/* ── Frise ──
+   Un trait de fond, discret, et par-dessus un trait plein dont la hauteur
+   suit `--p`. Sans l'action `scrollLine`, `--p` vaut 1 et chaque étape est
+   allumée : la frise est simplement tracée. Avec elle (`data-progress`), une
+   étape reste éteinte tant qu'elle n'a pas reçu `data-reached`. */
+.timeline::before,
+.timeline::after {
+  content: '';
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+}
+.timeline::before {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+.timeline::after {
+  background: var(--color-primary);
+  transform-origin: top;
+  transform: scaleY(var(--p, 1));
+}
+.timeline-step::before {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: -4px;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.5s var(--ease-spring);
+}
+.timeline[data-progress] .timeline-step[data-reached]::before {
+  transform: scale(1.25);
+}
+.timeline[data-progress] .timeline-step:not([data-reached])::before {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-canvas));
+  background: var(--color-canvas);
+}
+
+/* ── Liste en cascade ──
+   Les lignes d'une liste arrivent l'une après l'autre quand leur carte entre
+   à l'écran (`data-seen`). `--k` est leur rang. */
+@keyframes list-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+[data-seen] .list-cascade > * {
+  animation: list-in 0.52s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--k, 0) * 70ms + 100ms);
+}
+.list-cascade > :nth-child(2) {
+  --k: 1;
+}
+.list-cascade > :nth-child(3) {
+  --k: 2;
+}
+.list-cascade > :nth-child(4) {
+  --k: 3;
+}
+.list-cascade > :nth-child(5) {
+  --k: 4;
+}
+.list-cascade > :nth-child(6) {
+  --k: 5;
+}
+.list-cascade > :nth-child(n + 7) {
+  --k: 6;
+}
+
+/* ── Terrains ──
+   Trois cartes qui arrivent dans l'ordre (`--i`), reliées par un trait qui se
+   trace de l'une à la suivante : vertical quand elles sont empilées,
+   horizontal quand elles sont côte à côte. Le trait occupe exactement
+   l'espace entre deux cartes (`gap-6`). */
+@keyframes terrain-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes terrain-link {
+  from {
+    transform: scale(var(--sx, 1), var(--sy, 0));
+  }
+}
+.terrain-step {
+  position: relative;
+}
+.terrain-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 2rem;
+  width: 2px;
+  height: 1.5rem;
+  background: var(--color-primary);
+  transform-origin: top left;
+}
+@media (min-width: 768px) {
+  .terrain-step:not(:last-child)::after {
+    --sx: 0;
+    --sy: 1;
+    top: 2.1rem;
+    left: 100%;
+    width: 1.5rem;
+    height: 2px;
+  }
+}
+[data-reveal='shown'] .terrain-step {
+  animation: terrain-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 260ms);
+}
+[data-reveal='shown'] .terrain-step::after {
+  animation: terrain-link 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 260ms + 320ms);
 }
 
 /* ── Carte touchée ──
@@ -770,7 +927,9 @@ body {
   .nav-indicator.is-ready {
     transition: none;
   }
-  .burger i {
+  .burger i,
+  .car-track,
+  .timeline-step::before {
     transition: none;
   }
   .section-title,
@@ -778,7 +937,11 @@ body {
   .menu-item,
   .hero-word > span,
   .hero-follow,
-  [data-seen] .tag-cascade > * {
+  .terrain-step,
+  .terrain-step::after,
+  [data-seen] .tag-cascade > *,
+  [data-seen] .list-cascade > *,
+  [data-seen] .bref > * {
     animation: none !important;
   }
   /* Le changement de couleur reste, c'est le déplacement qu'on retire. */

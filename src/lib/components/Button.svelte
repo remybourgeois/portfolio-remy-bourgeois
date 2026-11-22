@@ -1,6 +1,7 @@
 <!-- src/lib/components/Button.svelte -->
 <script lang="ts">
-  import { onDestroy, type Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
+  import { press } from '#lib/actions/press.ts';
   import Icon from '#lib/components/Icons.svelte';
   import type { IconName } from '#lib/components/Icons.svelte';
 
@@ -45,33 +46,6 @@
   };
   const classes = $derived(`${base} ${sizes[size]} ${variants[variant]} ${className}`);
   const iconSize = $derived(size === 'sm' ? 14 : 16);
-
-  // Réponse au toucher : le bouton s'enfonce sous le doigt puis revient avec le
-  // ressort (app.css, « Bouton »). L'état vient d'ici et non de `:active` : sur
-  // un toucher bref, `:active` dure moins qu'une image et rien ne se verrait.
-  // L'enfoncement est donc tenu 120 ms au minimum.
-  const MIN_PRESS = 120;
-  let pressed = $state(false);
-  let pressedAt = 0;
-  let releaseTimer: ReturnType<typeof setTimeout> | undefined;
-
-  function press() {
-    clearTimeout(releaseTimer);
-    pressedAt = Date.now();
-    pressed = true;
-  }
-  function release() {
-    if (!pressed) return;
-    clearTimeout(releaseTimer);
-    releaseTimer = setTimeout(
-      () => (pressed = false),
-      Math.max(0, MIN_PRESS - (Date.now() - pressedAt))
-    );
-  }
-  function keydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ') press();
-  }
-  onDestroy(() => clearTimeout(releaseTimer));
 </script>
 
 {#snippet content()}
@@ -90,31 +64,12 @@
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
     class={classes}
-    data-pressed={pressed ? '' : undefined}
-    onpointerdown={press}
-    onpointerup={release}
-    onpointercancel={release}
-    onpointerleave={release}
-    onkeydown={keydown}
-    onkeyup={release}
-    onblur={release}
+    use:press
   >
     {@render content()}
   </a>
 {:else}
-  <button
-    type="button"
-    {onclick}
-    class={classes}
-    data-pressed={pressed ? '' : undefined}
-    onpointerdown={press}
-    onpointerup={release}
-    onpointercancel={release}
-    onpointerleave={release}
-    onkeydown={keydown}
-    onkeyup={release}
-    onblur={release}
-  >
+  <button type="button" {onclick} class={classes} use:press>
     {@render content()}
   </button>
 {/if}

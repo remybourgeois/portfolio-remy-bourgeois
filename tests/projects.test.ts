@@ -94,3 +94,51 @@ test('the project video only plays while its card is open', async ({ page }) => 
     .poll(() => card.locator('video').evaluate((v: HTMLVideoElement) => v.paused))
     .toBe(true);
 });
+
+test.describe('with a finger', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('the carousel follows the finger and moves on when released', async ({ page }) => {
+    await page.goto('/projects/credit-agricole');
+    const track = page.locator('.car-track');
+    await track.scrollIntoViewIfNeeded();
+    // Playwright n'a pas de geste de balayage : on émet les événements tactiles.
+    const touch = (type: string, x: number, y: number) =>
+      track.evaluate(
+        (el, [t, cx, cy]) => {
+          const point = new Touch({
+            identifier: 1,
+            target: el,
+            clientX: cx as number,
+            clientY: cy as number
+          });
+          const list = t === 'touchend' ? [] : [point];
+          el.dispatchEvent(
+            new TouchEvent(t as string, {
+              bubbles: true,
+              touches: list,
+              targetTouches: list,
+              changedTouches: [point]
+            })
+          );
+        },
+        [type, x, y]
+      );
+    await touch('touchstart', 300, 400);
+    await touch('touchmove', 280, 401);
+    await touch('touchmove', 150, 402);
+    // L'image accompagne le doigt, sans transition, avant qu'il ne se lève.
+    await expect(track).toHaveClass(/is-dragging/);
+    await expect(track).toHaveAttribute('style', /-\s?150px/);
+    await touch('touchend', 150, 402);
+    await expect(track).not.toHaveClass(/is-dragging/);
+    await expect(page.getByText('2 / 3')).toBeVisible();
+  });
+
+  test('the summary block marks itself as seen', async ({ page }) => {
+    await page.goto('/projects/ofelia');
+    const summary = page.getByRole('region', { name: 'En bref' });
+    await expect(summary).toHaveAttribute('data-seen', '');
+    await expect(summary.locator('.bref > *').last()).toHaveCSS('opacity', '1');
+  });
+});

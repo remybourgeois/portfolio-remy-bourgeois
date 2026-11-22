@@ -9,7 +9,7 @@
   let menuOpen = $state(false);
   // Durée d'ouverture et de fermeture du menu mobile. Ramenée à zéro au
   // montage si le visiteur demande moins de mouvement.
-  let menuMs = $state(300);
+  let menuMs = $state(380);
   let currentPath = $derived(page.url.pathname);
   /**
    * La barre vit partout sauf sur /intro, où elle recouvrirait la scène WebGL

@@ -1,7 +1,9 @@
 <!-- src/routes/projects/[slug]/+page.svelte -->
 <script lang="ts">
   import type { PageData } from './$types';
+  import { tick } from 'svelte';
   import Icon from '#lib/components/Icons.svelte';
+  import { seen } from '#lib/actions/seen.ts';
   import Tag from '#lib/components/Tag.svelte';
   import Button from '#lib/components/Button.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
@@ -56,7 +58,16 @@
   // ── Carousel ───────────────────────────────────────────────────────────────
   let carIndex = $state(0);
   let carTrack = $state<HTMLDivElement | null>(null);
-  let touchX = $state(0);
+  // Glissement au doigt : l'image suit le geste (`dragX`, en pixels) au lieu
+  // de ne bouger qu'une fois le doigt levé.
+  let dragX = $state(0);
+  let dragging = $state(false);
+  let touchStart = { x: 0, y: 0 };
+  // Sens du geste, décidé à ses premiers pixels : à la verticale il est rendu
+  // à la page, qui défile normalement.
+  let touchAxis: 'x' | 'y' | null = null;
+  // Un glissement ne doit pas ouvrir la lightbox au moment où le doigt se lève.
+  let swipedAt = 0;
 
   function carPrev() {
     carIndex = (carIndex - 1 + slides.length) % slides.length;
@@ -69,11 +80,33 @@
   }
 
   function onTouchStart(e: TouchEvent) {
-    touchX = e.touches[0].clientX;
+    touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    touchAxis = null;
+    dragX = 0;
   }
-  function onTouchEnd(e: TouchEvent) {
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 40) dx < 0 ? carNext() : carPrev();
+  function onTouchMove(e: TouchEvent) {
+    const dx = e.touches[0].clientX - touchStart.x;
+    const dy = e.touches[0].clientY - touchStart.y;
+    if (touchAxis === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+      touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    }
+    if (touchAxis !== 'x') return;
+    dragging = true;
+    // Aux extrémités, l'image résiste : elle ne suit le doigt qu'au tiers.
+    const atEdge = (carIndex === 0 && dx > 0) || (carIndex === slides.length - 1 && dx < 0);
+    dragX = atEdge ? dx / 3 : dx;
+  }
+  function onTouchEnd() {
+    if (touchAxis === 'x') {
+      swipedAt = Date.now();
+      // Un cinquième de la largeur suffit à changer d'image.
+      const limit = (carTrack?.clientWidth ?? 320) * 0.18;
+      if (dragX < -limit && carIndex < slides.length - 1) carIndex += 1;
+      else if (dragX > limit && carIndex > 0) carIndex -= 1;
+    }
+    dragging = false;
+    dragX = 0;
+    touchAxis = null;
   }
 
   // Reset du carousel + lightbox à chaque changement de projet (navigation client-side).
@@ -112,13 +145,40 @@
   const lbCaption = $derived(slides[lbIndex]?.caption ?? null);
   const lbBadge = $derived(slides.length > 1 ? `${lbIndex + 1} / ${slides.length}` : null);
 
-  function openSlide(i: number, trigger?: HTMLButtonElement) {
+  async function openSlide(i: number, trigger?: HTMLButtonElement) {
+    // Le doigt vient de faire glisser le carrousel : ce n'est pas un toucher.
+    if (Date.now() - swipedAt < 350) return;
+    const from = trigger?.querySelector('img, video')?.getBoundingClientRect();
     lbTrigger = trigger ?? null;
     lbIndex = i;
     lbOpen = true;
     lockScroll(true);
+    await tick();
+    growFrom(from);
     // Focus déplacé vers "Fermer" après le rendu
     setTimeout(() => lbCloseEl?.focus(), 50);
+  }
+
+  /**
+   * Fait grandir le visuel de la lightbox depuis la place qu'il occupait dans
+   * le carrousel : on mesure les deux rectangles et on anime de l'un à l'autre.
+   */
+  function growFrom(from: DOMRect | undefined) {
+    const media = document.querySelector<HTMLElement>('.lb-media');
+    if (!from || !media || typeof media.animate !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const to = media.getBoundingClientRect();
+    if (!to.width || !to.height) return;
+    media.animate(
+      [
+        {
+          transformOrigin: 'top left',
+          transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`
+        },
+        { transformOrigin: 'top left', transform: 'none' }
+      ],
+      { duration: 480, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }
+    );
   }
 
   function closeLightbox() {
@@ -293,7 +353,7 @@
             autoplay
             width={lbSlide.width}
             height={lbSlide.height}
-            class="max-w-full max-h-[78vh] object-contain rounded-xl"
+            class="lb-media max-w-full max-h-[78vh] object-contain rounded-xl"
           ></video>
         {:else}
           <img
@@ -303,7 +363,7 @@
             alt={lbCaption ?? project.title}
             width={lbSlide.width}
             height={lbSlide.height}
-            class="max-w-full max-h-[78vh] object-contain rounded-xl"
+            class="lb-media max-w-full max-h-[78vh] object-contain rounded-xl"
           />
         {/if}
       </div>
@@ -400,12 +460,15 @@
 
   <!-- ── En bref ─────────────────────────────────────────────────────────── -->
   <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
+  <!-- Les trois faits montent l'un après l'autre à l'arrivée de l'encadré,
+       et la stack apparaît élément par élément (app.css, « En bref »). -->
   <section
+    use:seen
     aria-labelledby="en-bref-title"
     class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
   >
     <h2 id="en-bref-title" class="eyebrow text-white/60 mb-5">En bref</h2>
-    <dl class="grid gap-5 md:grid-cols-3 md:gap-8">
+    <dl class="bref grid gap-5 md:grid-cols-3 md:gap-8">
       <div>
         <dt class="eyebrow text-white/60 mb-2">Contexte</dt>
         <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
@@ -413,7 +476,7 @@
       <div>
         <dt class="eyebrow text-white/60 mb-2">Stack &amp; méthodes</dt>
         <dd>
-          <ul class="flex flex-wrap gap-2">
+          <ul class="tag-cascade flex flex-wrap gap-2">
             {#each project.summary.stack as item (item)}
               <Tag as="li">{item}</Tag>
             {/each}
@@ -433,16 +496,17 @@
   {#if slides.length > 0}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07] group"
+      class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07] group [touch-action:pan-y]"
       ontouchstart={onTouchStart}
+      ontouchmove={onTouchMove}
       ontouchend={onTouchEnd}
+      ontouchcancel={onTouchEnd}
     >
       <!-- Track -->
       <div
         bind:this={carTrack}
-        class="flex"
-        style="transform: translateX(-{carIndex *
-          100}%); transition: transform 0.45s cubic-bezier(.4,0,.2,1);"
+        class="car-track flex {dragging ? 'is-dragging' : ''}"
+        style:transform="translateX(calc(-{carIndex * 100}% + {dragX}px))"
       >
         {#each slides as slide, i (slide.src)}
           <button
