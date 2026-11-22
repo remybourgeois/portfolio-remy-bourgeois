@@ -31,8 +31,11 @@
     // reste la bonne au lieu de rester bloquée à 0.
     count = 0;
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
+      // Tout le lot, pas seulement son premier signal : un navigateur occupé
+      // livre « hors écran » puis « à l'écran » d'un seul coup, et ne lire que
+      // le premier laissait le compteur à zéro.
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
         obs.disconnect();
         let start: number | undefined;
         const tick = (ts: number) => {
