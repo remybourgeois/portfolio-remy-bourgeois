@@ -484,7 +484,6 @@
             -->
             <div
               use:fanCard={{ watch: '.fan-stage', video: false }}
-              use:seen
               data-fan={sheets.length + 1}
               class="w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/[0.07] transition-all duration-500 group"
             >
@@ -582,7 +581,7 @@
                       {project.title}
                     </a>
                   </h3>
-                  <div class="tag-cascade flex flex-wrap gap-2 mb-6">
+                  <div use:seen class="tag-cascade flex flex-wrap gap-2 mb-6">
                     {#each project.tags as tag (tag)}
                       <Tag>{tag}</Tag>
                     {/each}

@@ -476,7 +476,7 @@
       <div>
         <dt class="eyebrow text-white/60 mb-2">Stack &amp; méthodes</dt>
         <dd>
-          <ul class="tag-cascade flex flex-wrap gap-2">
+          <ul use:seen class="tag-cascade flex flex-wrap gap-2">
             {#each project.summary.stack as item (item)}
               <Tag as="li">{item}</Tag>
             {/each}

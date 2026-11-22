@@ -115,7 +115,6 @@
         href="/projects/{project.slug}"
         aria-label="Voir le projet {project.title}"
         use:fanCard
-        use:seen
         data-fan={sheets.length + 1}
         class="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden
                hover:bg-white/[0.08] hover:border-white/20 hover:shadow-glow-card
@@ -200,7 +199,7 @@
           >
             {project.title}
           </h2>
-          <div class="tag-cascade flex flex-wrap gap-2">
+          <div use:seen class="tag-cascade flex flex-wrap gap-2">
             {#each project.tags as tag (tag)}
               <Tag>{tag}</Tag>
             {/each}

@@ -204,7 +204,6 @@
         <!-- `scroll-mt` : les ancres #conception, #audit et #mise-en-place sont
              liées depuis l'accueil, et la barre fixe recouvrirait le titre. -->
         <section
-          use:seen
           id={format.id}
           aria-labelledby="{format.id}-title"
           class="h-full flex flex-col rounded-3xl border p-8 scroll-mt-28 {i === 0
@@ -231,9 +230,9 @@
           {/if}
 
           <p class="eyebrow text-white/60 mb-3">{format.listTitle}</p>
-          <!-- Les lignes arrivent l'une après l'autre quand la carte entre à
+          <!-- Les lignes arrivent l'une après l'autre quand la liste entre à
                l'écran (app.css, « Liste en cascade »). -->
-          <ul class="list-cascade flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
+          <ul use:seen class="list-cascade flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
             {#each format.items as item (item)}
               <li class="flex gap-3 text-white/70 text-sm leading-relaxed">
                 <span
@@ -291,7 +290,7 @@
         <!-- Les trois cartes arrivent dans l'ordre, reliées par un trait qui se
              trace de l'une à la suivante (app.css, « Terrains »). -->
         {#each TERRAINS as terrain, i (terrain.slug)}
-          <li class="terrain-step" style:--i={i}>
+          <li use:seen class="terrain-step" style:--i={i}>
             <a
               href="/projects/{terrain.slug}"
               class="group flex h-full flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-6

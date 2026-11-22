@@ -236,10 +236,12 @@ test.describe('on a phone', () => {
 
   test('the tags of a project card come in when the card is seen', async ({ page }) => {
     const title = page.getByRole('link', { name: 'iPify', exact: true });
-    const card = page.locator('[data-fan]').filter({ has: title });
-    await expect(card).not.toHaveAttribute('data-seen', '');
-    await title.scrollIntoViewIfNeeded();
-    await expect(card).toHaveAttribute('data-seen', '');
-    await expect(card.locator('.tag-cascade > *').last()).toHaveCSS('opacity', '1');
+    const tags = page.locator('[data-fan]').filter({ has: title }).locator('.tag-cascade');
+    // Sous l'écran, la rangée attend, masquée : elle ne joue qu'une fois vue.
+    await expect(tags).toHaveAttribute('data-seen-pending', '');
+    await tags.scrollIntoViewIfNeeded();
+    await expect(tags).toHaveAttribute('data-seen', '');
+    await expect(tags).not.toHaveAttribute('data-seen-pending', '');
+    await expect(tags.locator('> *').last()).toHaveCSS('opacity', '1');
   });
 });

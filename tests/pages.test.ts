@@ -36,14 +36,23 @@ test('a profile link sinks while pressed', async ({ page }) => {
   await page.mouse.up();
 });
 
-test('the service cards and the three grounds come in when seen', async ({ page }) => {
-  await page.goto('/accompagnement');
-  const card = page.locator('#conception');
-  await card.scrollIntoViewIfNeeded();
-  await expect(card).toHaveAttribute('data-seen', '');
-  await expect(card.locator('.list-cascade > *').last()).toHaveCSS('opacity', '1');
-  const steps = page.locator('.terrain-step');
-  await expect(steps).toHaveCount(3);
-  await steps.last().scrollIntoViewIfNeeded();
-  await expect(steps.last()).toHaveCSS('opacity', '1');
+test.describe('on a phone', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('the service lists and the three grounds come in when seen', async ({ page }) => {
+    await page.goto('/accompagnement');
+    // Le déclenchement porte sur la liste elle-même : posée en bas d'une haute
+    // carte, elle jouait son entrée avant qu'on n'arrive dessus.
+    const list = page.locator('#mise-en-place .list-cascade');
+    await expect(list).toHaveAttribute('data-seen-pending', '');
+    await list.scrollIntoViewIfNeeded();
+    await expect(list).toHaveAttribute('data-seen', '');
+    await expect(list.locator('> *').last()).toHaveCSS('opacity', '1');
+    const steps = page.locator('.terrain-step');
+    await expect(steps).toHaveCount(3);
+    await expect(steps.last()).toHaveAttribute('data-seen-pending', '');
+    await steps.last().scrollIntoViewIfNeeded();
+    await expect(steps.last()).toHaveAttribute('data-seen', '');
+    await expect(steps.last()).toHaveCSS('opacity', '1');
+  });
 });

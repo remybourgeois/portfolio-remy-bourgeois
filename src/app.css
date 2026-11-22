@@ -503,16 +503,19 @@ body {
 }
 
 /* ── Étiquettes ──
-   Les étiquettes d'une carte projet apparaissent l'une après l'autre quand la
-   carte entre à l'écran (`data-seen`, posé par l'action `seen`). Sans
-   l'attribut, elles sont simplement là. */
+   Les étiquettes apparaissent l'une après l'autre quand leur rangée entre à
+   l'écran (`data-seen`, posé sur elle par l'action `seen`). En attendant sous
+   l'écran, elles sont masquées. Sans l'action, elles sont simplement là. */
 @keyframes tag-pop {
   from {
     opacity: 0;
     transform: scale(0.8) translateY(6px);
   }
 }
-[data-seen] .tag-cascade > * {
+.tag-cascade[data-seen-pending] > * {
+  opacity: 0;
+}
+.tag-cascade[data-seen] > * {
   animation: tag-pop 0.52s var(--ease-spring) backwards;
   animation-delay: calc(var(--k, 0) * 60ms + 120ms);
 }
@@ -550,6 +553,9 @@ body {
     opacity: 0;
     transform: translateY(14px);
   }
+}
+[data-seen-pending] .bref > * {
+  opacity: 0;
 }
 [data-seen] .bref > * {
   animation: bref-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
@@ -610,15 +616,19 @@ body {
 }
 
 /* ── Liste en cascade ──
-   Les lignes d'une liste arrivent l'une après l'autre quand leur carte entre
-   à l'écran (`data-seen`). `--k` est leur rang. */
+   Les lignes d'une liste arrivent l'une après l'autre quand la liste entre à
+   l'écran (`data-seen`, posé sur elle par l'action `seen`). `--k` est leur
+   rang. En attendant sous l'écran, elles sont masquées. */
 @keyframes list-in {
   from {
     opacity: 0;
     transform: translateX(-10px);
   }
 }
-[data-seen] .list-cascade > * {
+.list-cascade[data-seen-pending] > * {
+  opacity: 0;
+}
+.list-cascade[data-seen] > * {
   animation: list-in 0.52s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   animation-delay: calc(var(--k, 0) * 70ms + 100ms);
 }
@@ -642,10 +652,12 @@ body {
 }
 
 /* ── Terrains ──
-   Trois cartes qui arrivent dans l'ordre (`--i`), reliées par un trait qui se
-   trace de l'une à la suivante : vertical quand elles sont empilées,
-   horizontal quand elles sont côte à côte. Le trait occupe exactement
-   l'espace entre deux cartes (`gap-6`). */
+   Trois cartes reliées par un trait qui se trace de l'une à la suivante :
+   vertical quand elles sont empilées, horizontal quand elles sont côte à
+   côte. Chaque carte joue son entrée quand elle arrive à l'écran
+   (`data-seen`). Empilées, elles arrivent donc une à une au fil du
+   défilement ; côte à côte elles arrivent ensemble, et `--i` les décale. Le
+   trait occupe exactement l'espace entre deux cartes (`gap-6`). */
 @keyframes terrain-rise {
   from {
     opacity: 0;
@@ -671,6 +683,9 @@ body {
   transform-origin: top left;
 }
 @media (min-width: 768px) {
+  .terrain-step {
+    --terrain-stagger: 260ms;
+  }
   .terrain-step:not(:last-child)::after {
     --sx: 0;
     --sy: 1;
@@ -680,13 +695,16 @@ body {
     height: 2px;
   }
 }
-[data-reveal='shown'] .terrain-step {
-  animation: terrain-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
-  animation-delay: calc(var(--i, 0) * 260ms);
+.terrain-step[data-seen-pending] {
+  opacity: 0;
 }
-[data-reveal='shown'] .terrain-step::after {
-  animation: terrain-link 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
-  animation-delay: calc(var(--i, 0) * 260ms + 320ms);
+.terrain-step[data-seen] {
+  animation: terrain-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * var(--terrain-stagger, 0ms));
+}
+.terrain-step[data-seen]::after {
+  animation: terrain-link 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * var(--terrain-stagger, 0ms) + 380ms);
 }
 
 /* ── Carte touchée ──
@@ -939,9 +957,9 @@ body {
   .hero-follow,
   .terrain-step,
   .terrain-step::after,
-  [data-seen] .tag-cascade > *,
-  [data-seen] .list-cascade > *,
-  [data-seen] .bref > * {
+  .tag-cascade > *,
+  .list-cascade > *,
+  .bref > * {
     animation: none !important;
   }
   /* Le changement de couleur reste, c'est le déplacement qu'on retire. */
