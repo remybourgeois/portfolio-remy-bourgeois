@@ -1,11 +1,15 @@
 <!-- src/lib/components/Nav.svelte -->
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { slide } from 'svelte/transition';
   import { page } from '$app/state';
-  import Icon from '#lib/components/Icons.svelte';
   import IntroCta from '#lib/components/IntroCta.svelte';
   import { LAB_URL } from '#lib/data/site.ts';
 
   let menuOpen = $state(false);
+  // Durée d'ouverture et de fermeture du menu mobile. Ramenée à zéro au
+  // montage si le visiteur demande moins de mouvement.
+  let menuMs = $state(380);
   let currentPath = $derived(page.url.pathname);
   /**
    * La barre vit partout sauf sur /intro, où elle recouvrirait la scène WebGL
@@ -25,6 +29,42 @@
 
   const isActive = (href: string, exact: boolean) =>
     exact ? currentPath === href : currentPath.startsWith(href);
+
+  // Repère de la page courante dans la barre desktop : un trait unique qui
+  // glisse d'un lien à l'autre. Sa position est mesurée sur le lien actif, donc
+  // elle suit la largeur réelle des libellés sans rien coder en dur.
+  let linksEl = $state<HTMLDivElement | null>(null);
+  let indicator = $state({ x: 0, width: 0, shown: false });
+  let indicatorReady = $state(false);
+
+  function placeIndicator() {
+    const active = linksEl?.querySelector<HTMLElement>('[aria-current="page"]');
+    // Sous 1024 px la barre est en `display: none` : rien à mesurer.
+    if (!active || active.offsetWidth === 0) {
+      indicator.shown = false;
+      return;
+    }
+    indicator = { x: active.offsetLeft, width: active.offsetWidth, shown: true };
+  }
+
+  $effect(() => {
+    void currentPath;
+    placeIndicator();
+  });
+
+  onMount(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) menuMs = 0;
+    if (!linksEl) return;
+    // La largeur des liens change quand DM Sans remplace la police de repli,
+    // et la barre apparaît ou disparaît au passage des 1024 px.
+    const ro = new ResizeObserver(placeIndicator);
+    ro.observe(linksEl);
+    const raf = requestAnimationFrame(() => (indicatorReady = true));
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  });
 
   // Le menu mobile se referme à chaque navigation, y compris au clic sur le
   // lien de la page courante, qui ne déclenche pas de changement d'URL.
@@ -61,7 +101,14 @@
       Les liens passent au menu déroulant sous 1024 px et non sous 768 : entre
       les deux, la barre porte déjà le CTA et n'a plus la place de les aligner.
     -->
-    <div class="hidden lg:flex items-center gap-6">
+    <div bind:this={linksEl} class="relative hidden lg:flex items-center gap-6">
+      <span
+        aria-hidden="true"
+        class="nav-indicator pointer-events-none absolute left-0 bottom-1 h-0.5 rounded-full bg-accent shadow-glow-accent
+               {indicator.shown ? 'opacity-100' : 'opacity-0'} {indicatorReady ? 'is-ready' : ''}"
+        style:width="{indicator.width}px"
+        style:transform="translateX({indicator.x}px)"
+      ></span>
       {#each LINKS as link (link.href)}
         <a
           href={link.href}
@@ -86,21 +133,29 @@
         aria-expanded={menuOpen}
         aria-controls="mobile-menu"
       >
-        <Icon name={menuOpen ? 'X' : 'Menu'} size={20} />
+        <!-- Trois barres qui se croisent à l'ouverture (app.css, « Menu
+             mobile ») : le bouton se transforme au lieu de changer d'icône. -->
+        <span class="burger {menuOpen ? 'is-open' : ''}" aria-hidden="true"
+          ><i></i><i></i><i></i></span
+        >
       </button>
     </div>
   </div>
 
   {#if menuOpen}
+    <!-- Le panneau se déplie, puis les liens arrivent l'un après l'autre
+         (`--k` est leur rang). -->
     <div
       id="mobile-menu"
+      transition:slide={{ duration: menuMs }}
       class="lg:hidden border-t border-white/5 px-6 py-4 flex flex-col gap-2 bg-canvas/95"
     >
-      {#each LINKS as link (link.href)}
+      {#each LINKS as link, k (link.href)}
         <a
           href={link.href}
           aria-current={isActive(link.href, link.exact) ? 'page' : undefined}
-          class="flex items-center gap-3 text-sm transition-colors py-3 min-h-[44px]
+          style:--k={k}
+          class="menu-item flex items-center gap-3 text-sm transition-colors py-3 min-h-[44px]
                  {isActive(link.href, link.exact)
             ? 'text-white font-medium'
             : 'text-white/70 hover:text-white'}"

@@ -1,6 +1,7 @@
 <!-- src/lib/components/PageShell.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { appearText } from '#lib/actions/appearText.ts';
 
   /**
    * Conteneur des pages intérieures : même gouttière, même hauteur sous la
@@ -14,7 +15,11 @@
 </script>
 
 <main id="main-content" class="min-h-screen bg-canvas text-white">
-  <div class="max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
+  <!-- `page-cascade` : à l'ouverture, le fil d'Ariane, le titre, l'accroche
+       puis le contenu arrivent l'un après l'autre (app.css, « Ouverture de
+       page »). `appearText` prend le relais pour le texte situé plus bas, qui
+       se révèle au fil de la lecture. -->
+  <div use:appearText class="page-cascade max-w-6xl mx-auto px-6 md:px-8 pt-32 pb-24">
     {@render children()}
   </div>
 </main>

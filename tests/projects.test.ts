@@ -57,3 +57,88 @@ test.describe('on a touch device', () => {
     expect(box!.width).toBeGreaterThan(390 * 0.75);
   });
 });
+
+test('a project card fans out its screens on hover', async ({ page }) => {
+  await page.goto('/projects');
+  const card = page.getByRole('link', { name: 'Voir le projet Crédit Agricole' });
+  // Trois écrans : le visuel d'ouverture et deux feuilles derrière lui.
+  await expect(card.locator('.fan-sheet')).toHaveCount(3);
+  await expect(card).not.toHaveAttribute('data-fan-open', '');
+  await card.hover();
+  await expect(card).toHaveAttribute('data-fan-open', '');
+  // Les deux feuilles du dessous finissent de part et d'autre du visuel.
+  await expect(async () => {
+    const [left, front, right] = await Promise.all(
+      ['.fan-sheet-l', '.fan-sheet-front', '.fan-sheet-r'].map((s) => card.locator(s).boundingBox())
+    );
+    expect(left!.x).toBeLessThan(front!.x - 20);
+    expect(right!.x + right!.width).toBeGreaterThan(front!.x + front!.width + 20);
+  }).toPass({ timeout: 5000 });
+});
+
+test('the project video only plays while its card is open', async ({ page }) => {
+  const videos: string[] = [];
+  page.on('request', (r) => {
+    if (/\.mp4(\?|$)/.test(r.url())) videos.push(new URL(r.url()).pathname);
+  });
+  await page.goto('/projects');
+  await page.waitForLoadState('networkidle');
+  expect(videos).toEqual([]);
+  const card = page.getByRole('link', { name: 'Voir le projet Ofelia' });
+  await card.hover();
+  await expect
+    .poll(() => card.locator('video').evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(false);
+  await page.mouse.move(0, 0);
+  await expect
+    .poll(() => card.locator('video').evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(true);
+});
+
+test.describe('with a finger', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('the carousel follows the finger and moves on when released', async ({ page }) => {
+    await page.goto('/projects/credit-agricole');
+    const track = page.locator('.car-track');
+    await track.scrollIntoViewIfNeeded();
+    // Playwright n'a pas de geste de balayage : on émet les événements tactiles.
+    const touch = (type: string, x: number, y: number) =>
+      track.evaluate(
+        (el, [t, cx, cy]) => {
+          const point = new Touch({
+            identifier: 1,
+            target: el,
+            clientX: cx as number,
+            clientY: cy as number
+          });
+          const list = t === 'touchend' ? [] : [point];
+          el.dispatchEvent(
+            new TouchEvent(t as string, {
+              bubbles: true,
+              touches: list,
+              targetTouches: list,
+              changedTouches: [point]
+            })
+          );
+        },
+        [type, x, y]
+      );
+    await touch('touchstart', 300, 400);
+    await touch('touchmove', 280, 401);
+    await touch('touchmove', 150, 402);
+    // L'image accompagne le doigt, sans transition, avant qu'il ne se lève.
+    await expect(track).toHaveClass(/is-dragging/);
+    await expect(track).toHaveAttribute('style', /-\s?150px/);
+    await touch('touchend', 150, 402);
+    await expect(track).not.toHaveClass(/is-dragging/);
+    await expect(page.getByText('2 / 3')).toBeVisible();
+  });
+
+  test('the summary block marks itself as seen', async ({ page }) => {
+    await page.goto('/projects/ofelia');
+    const summary = page.getByRole('region', { name: 'En bref' });
+    await expect(summary).toHaveAttribute('data-seen', '');
+    await expect(summary.locator('.bref > *').last()).toHaveCSS('opacity', '1');
+  });
+});

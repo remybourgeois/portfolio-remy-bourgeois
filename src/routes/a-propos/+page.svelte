@@ -1,5 +1,7 @@
 <!-- src/routes/a-propos/+page.svelte -->
 <script lang="ts">
+  import { scrollLine } from '#lib/actions/scrollLine.ts';
+  import { press } from '#lib/actions/press.ts';
   import RevealOnScroll from '#lib/components/RevealOnScroll.svelte';
   import Icon from '#lib/components/Icons.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
@@ -187,11 +189,13 @@
   <section class="mb-20" aria-labelledby="parcours-title">
     <SectionTitle id="parcours-title" class="mb-10">Parcours</SectionTitle>
 
-    <ol class="flex flex-col gap-8 max-w-4xl">
+    <!-- Le trait de la frise se trace avec la lecture et chaque étape
+         s'allume quand on l'atteint (action `scrollLine`, app.css « Frise »). -->
+    <ol use:scrollLine class="timeline relative flex flex-col gap-8 max-w-4xl">
       {#each TIMELINE as step (step.period)}
         <!-- RevealOnScroll rend un <div> : il doit vivre DANS le <li>, sinon
              l'<ol> a des enfants directs invalides (axe: list / listitem). -->
-        <li class="pl-5 border-l-2 border-primary/50">
+        <li class="timeline-step relative pl-5">
           <RevealOnScroll>
             <p class="eyebrow text-accent mb-2">{step.period}</p>
             <h3 class="text-lg font-semibold mb-3">{step.title}</h3>
@@ -227,11 +231,12 @@
             href={url}
             target="_blank"
             rel="me noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-3 rounded-full border border-white/15 hover:border-white/35
-                   text-white/60 hover:text-white text-xs transition-colors min-h-[44px]
+            use:press
+            class="btn-press inline-flex items-center gap-2 px-4 py-3 rounded-full border border-white/15 hover:border-white/35
+                   text-white/60 hover:text-white text-xs min-h-[44px]
                    focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <Icon name="ExternalLink" size={12} />
+            <Icon name="ExternalLink" size={12} className="btn-icon btn-icon-left" />
             {new URL(url).hostname.replace(/^www\./, '')}
           </a>
         </li>

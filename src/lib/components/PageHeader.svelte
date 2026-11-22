@@ -44,7 +44,7 @@
         « g » d'Accompagnement en tête, n'étaient tout simplement pas peints.
       -->
       <h1
-        class="text-[clamp(1.9rem,7.5vw,3rem)] font-semibold tracking-tight leading-[1.2] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60"
+        class="load-step [--load-rank:1] text-[clamp(1.9rem,7.5vw,3rem)] font-semibold tracking-tight leading-[1.2] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60"
       >
         {title}
       </h1>
@@ -57,14 +57,14 @@
           sous les 75 caractères.
         -->
         <p
-          class="body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-[46rem] [text-wrap:pretty]"
+          class="load-step [--load-rank:2] body-text text-white/70 text-base md:text-lg font-light leading-relaxed max-w-[46rem] [text-wrap:pretty]"
         >
           {@render lede()}
         </p>
       {/if}
     </div>
     {#if media}
-      <div class="flex-shrink-0">{@render media()}</div>
+      <div class="load-step [--load-rank:2] flex-shrink-0">{@render media()}</div>
     {/if}
   </div>
 </header>

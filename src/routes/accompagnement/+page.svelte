@@ -1,5 +1,6 @@
 <!-- src/routes/accompagnement/+page.svelte -->
 <script lang="ts">
+  import { seen } from '#lib/actions/seen.ts';
   import RevealOnScroll from '#lib/components/RevealOnScroll.svelte';
   import Icon from '#lib/components/Icons.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
@@ -229,7 +230,9 @@
           {/if}
 
           <p class="eyebrow text-white/60 mb-3">{format.listTitle}</p>
-          <ul class="flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
+          <!-- Les lignes arrivent l'une après l'autre quand la liste entre à
+               l'écran (app.css, « Liste en cascade »). -->
+          <ul use:seen class="list-cascade flex flex-col gap-2.5 mb-6 list-none p-0 m-0">
             {#each format.items as item (item)}
               <li class="flex gap-3 text-white/70 text-sm leading-relaxed">
                 <span
@@ -284,8 +287,10 @@
         refondre ou qu'il reste à inventer. Les trois cas ont été traités.
       </p>
       <ol class="grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0 m-0">
+        <!-- Les trois cartes arrivent dans l'ordre, reliées par un trait qui se
+             trace de l'une à la suivante (app.css, « Terrains »). -->
         {#each TERRAINS as terrain, i (terrain.slug)}
-          <li>
+          <li use:seen class="terrain-step" style:--i={i}>
             <a
               href="/projects/{terrain.slug}"
               class="group flex h-full flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-6

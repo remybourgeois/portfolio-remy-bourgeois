@@ -1,6 +1,7 @@
 <!-- src/lib/components/Button.svelte -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { press } from '#lib/actions/press.ts';
   import Icon from '#lib/components/Icons.svelte';
   import type { IconName } from '#lib/components/Icons.svelte';
 
@@ -36,7 +37,7 @@
   } = $props();
 
   const base =
-    'inline-flex items-center justify-center gap-3 rounded-full font-medium transition-colors focus:outline-none focus-visible:ring-2';
+    'btn-press inline-flex items-center justify-center gap-3 rounded-full font-medium focus:outline-none focus-visible:ring-2';
   const sizes = { md: 'px-6 sm:px-8 py-4 text-base', sm: 'px-5 py-3 text-sm' };
   const variants = {
     primary: 'bg-primary-strong text-white hover:bg-primary-hover focus-visible:ring-white',
@@ -49,11 +50,11 @@
 
 {#snippet content()}
   {#if iconLeft}
-    <Icon name={iconLeft} size={iconSize} className="flex-shrink-0" />
+    <Icon name={iconLeft} size={iconSize} className="btn-icon btn-icon-left flex-shrink-0" />
   {/if}
   {@render children()}
   {#if iconRight}
-    <Icon name={iconRight} size={iconSize} className="flex-shrink-0" />
+    <Icon name={iconRight} size={iconSize} className="btn-icon btn-icon-right flex-shrink-0" />
   {/if}
 {/snippet}
 
@@ -63,11 +64,12 @@
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
     class={classes}
+    use:press
   >
     {@render content()}
   </a>
 {:else}
-  <button type="button" {onclick} class={classes}>
+  <button type="button" {onclick} class={classes} use:press>
     {@render content()}
   </button>
 {/if}

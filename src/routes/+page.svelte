@@ -8,7 +8,7 @@
   import Button from '#lib/components/Button.svelte';
   import SectionTitle from '#lib/components/SectionTitle.svelte';
   import PageCta from '#lib/components/PageCta.svelte';
-  import { FEATURED_PROJECTS, heroSize } from '#lib/data/projects.ts';
+  import { FEATURED_PROJECTS, heroSize, fanSheets } from '#lib/data/projects.ts';
   import { TESTIMONIALS } from '#lib/data/testimonials.ts';
   import { EXPERTISES } from '#lib/data/expertises.ts';
   import { CLIENTS } from '#lib/data/clients.ts';
@@ -24,7 +24,16 @@
   import { md, jsonLd } from '#lib/utils/text.ts';
   import { projectSrcset } from '#lib/utils/img.ts';
   import { playInView } from '#lib/actions/playInView.ts';
+  import { fanCard } from '#lib/actions/fanCard.ts';
+  import { tapFeedback } from '#lib/actions/tapFeedback.ts';
+  import { seen } from '#lib/actions/seen.ts';
+  import { appearText } from '#lib/actions/appearText.ts';
 
+  // Le titre du hero, découpé en mots dans le gabarit pour son animation.
+  const HERO_TITLE = 'Lead Design System & Senior Product Designer';
+  // L'espace entre deux mots, écrite ici : dans le gabarit, Svelte la
+  // supprimerait en bord de bloc et les mots se toucheraient.
+  const SPACE = ' ';
   const homeProjects = FEATURED_PROJECTS;
   // Liste dupliquée pour que le défilement boucle sans couture.
   const marqueeItems = [...CLIENTS, ...CLIENTS];
@@ -91,8 +100,25 @@
     expandedTestimonial = id;
   }
 
-  function scrollToTop() {
+  function scrollToTop(event: MouseEvent) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // La flèche décolle par le haut du bouton et revient par le bas : le
+    // toucher est confirmé avant même que la page ne commence à remonter.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const button = event.currentTarget as HTMLElement;
+    button.animate([{ transform: 'scale(0.88)' }, { transform: 'scale(1)' }], {
+      duration: 420,
+      easing: 'ease-out'
+    });
+    button.querySelector('.top-arrow')?.animate(
+      [
+        { transform: 'translateY(0)', offset: 0 },
+        { transform: 'translateY(-34px)', offset: 0.45 },
+        { transform: 'translateY(34px)', offset: 0.46 },
+        { transform: 'translateY(0)', offset: 1 }
+      ],
+      { duration: 620, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }
+    );
   }
 </script>
 
@@ -171,7 +197,11 @@
     aria-hidden="true"
   ></div>
 
+  <!-- `appearText` : comme sur les pages intérieures, le texte situé sous
+       l'écran se révèle au fil de la lecture, titre après paragraphe. Les
+       cartes gardent leur propre entrée, leur texte arrive juste après. -->
   <main
+    use:appearText
     id="main-content"
     class="min-h-screen flex flex-col items-center pt-32 pb-20 px-6 md:px-8 max-w-6xl mx-auto w-full relative z-40"
   >
@@ -189,7 +219,11 @@
         class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,320px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] gap-10 lg:gap-16 items-start mb-20"
       >
         <div class="max-w-[44rem]">
-          <div class="flex items-center gap-4 mb-7 md:hidden">
+          <!-- Ouverture en cascade, comme sur les pages intérieures : chaque
+               bloc du hero porte `load-step` et son rang (app.css,
+               « Ouverture de page »). Le titre garde ses mots qui montent un
+               par un, calés entre le nom et l'accroche. -->
+          <div class="load-step [--load-rank:0] flex items-center gap-4 mb-7 md:hidden">
             <img
               src="/assets/remy-bourgeois-320.webp"
               alt="Portrait de Rémy Bourgeois"
@@ -202,11 +236,19 @@
           </div>
 
           <h1 class="leading-tight mb-6">
-            <span class="block eyebrow text-accent mb-3">Rémy Bourgeois</span>
+            <span class="load-step [--load-rank:1] block eyebrow text-accent mb-3"
+              >Rémy Bourgeois</span
+            >
+            <!-- Chaque mot monte derrière un cache à l'ouverture de la page
+                 (app.css, « Titre d'accueil »). Le texte reste entier dans le
+                 HTML, mot après mot, séparés par de vraies espaces. -->
             <span
               class="block text-4xl md:text-[3.25rem] lg:text-[3.75rem] font-bold text-white tracking-tight leading-[1.04] [text-wrap:balance]"
-              >Lead Design System &amp; Senior Product Designer</span
             >
+              {#each HERO_TITLE.split(' ') as word, k (k)}
+                <span class="hero-word"><span style:--k={k}>{word}</span></span>{SPACE}
+              {/each}
+            </span>
           </h1>
 
           <!--
@@ -214,16 +256,20 @@
             blanc, puis un paragraphe en gris sans aucun mot en gras. L'ancien
             hero mettait douze mots en violet et rien ne gagnait.
           -->
-          <p class="text-xl md:text-2xl font-medium text-white leading-snug mb-5">
+          <p
+            class="load-step [--load-rank:6] text-xl md:text-2xl font-medium text-white leading-snug mb-5"
+          >
             Je supprime le décalage entre le design et le code.
           </p>
-          <p class="text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]">
+          <p
+            class="load-step [--load-rank:7] text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]"
+          >
             14 ans de design produit, dont 7 ans en robotique humanoïde. Je conçois des design
             systems et des produits IA directement dans le code, avec les équipes qui vont les faire
             vivre. Un développeur senior relit chacune de mes Pull Requests.
           </p>
 
-          <div class="flex flex-wrap gap-3 mt-9">
+          <div class="load-step [--load-rank:8] flex flex-wrap gap-3 mt-9">
             <Button href="mailto:{EMAIL}" iconLeft="Mail">M'écrire</Button>
             <Button href="/projects" variant="secondary" iconRight="ArrowRight">
               Voir les projets
@@ -240,7 +286,7 @@
           hero »), rien ne dépend de la position de la souris, et le repos
           reste la version qu'on voit au toucher.
         -->
-        <div class="hidden md:block relative md:mt-1">
+        <div class="load-step [--load-rank:2] hidden md:block relative md:mt-1">
           <span
             class="absolute -inset-6 rounded-[3rem] blur-[30px] pointer-events-none bg-primary/20"
             aria-hidden="true"
@@ -281,7 +327,7 @@
 
     <!-- Client marquee. Le défilement est décoratif : c'est la liste hors
          écran qu'un lecteur d'écran lit à sa place. -->
-    <section class="w-full mb-20" aria-label="Clients et partenaires">
+    <section class="load-step [--load-rank:9] w-full mb-20" aria-label="Clients et partenaires">
       <ul class="sr-only">
         {#each CLIENTS as client (client.name)}
           <li>{client.name}</li>
@@ -394,18 +440,19 @@
         <SectionTitle align="center" class="mb-16">Expertises</SectionTitle>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
           {#each EXPERTISES as exp, i (exp.id)}
+            <!-- Au toucher, la carte frissonne et son icône se redessine
+                 (action `tapFeedback`, app.css « Carte touchée »). La carte
+                 ne mène nulle part : l'effet reste léger pour ne pas promettre
+                 une ouverture. -->
             <div
+              use:tapFeedback
               style:--i={Math.min(i, 5)}
-              class="reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary hover:translate-y-[-4px] transition-all duration-300"
+              class="tap-card reveal-item group relative flex flex-col items-center text-center p-6 md:p-8 rounded-xl bg-white/5 border border-white/10 shadow-glow-primary mouse:hover:translate-y-[-4px] transition-all duration-300"
             >
               <div
-                class="mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
+                class="tap-icon icon-settle relative mb-4 p-3 bg-white/10 rounded-full w-fit mouse:group-hover:rotate-[15deg] transition-transform duration-300 shadow-glow-primary"
               >
-                <Icon
-                  name={exp.icon}
-                  size={24}
-                  className="text-white group-hover:text-tertiary transition-colors"
-                />
+                <Icon name={exp.icon} size={24} className="text-tertiary" />
               </div>
               <h3 class="text-lg font-semibold mb-2">{exp.title}</h3>
               <p class="text-sm text-white/70">{exp.desc}</p>
@@ -443,12 +490,21 @@
         <div class="flex flex-col gap-8">
           {#each homeProjects as project, i (project.slug)}
             {@const alt = i % 2 !== 0}
+            {@const sheets = fanSheets(project)}
+            <!--
+              Éventail : les autres écrans du projet sont empilés derrière le
+              visuel et s'écartent à l'ouverture de la carte (action `fanCard`,
+              app.css « Éventail »). `video: false` : la vidéo garde sa lecture
+              dès qu'elle est visible, l'éventail n'y touche pas.
+            -->
             <div
+              use:fanCard={{ watch: '.fan-stage', video: false }}
+              data-fan={sheets.length + 1}
               class="w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/[0.07] transition-all duration-500 group"
             >
               <div class="flex flex-col lg:flex-row">
                 <div
-                  class="flex-1 relative min-h-[240px] md:min-h-[300px] flex items-center justify-center overflow-hidden {alt
+                  class="fan-stage [--fan-w:52%] lg:[--fan-w:min(56%,400px)] flex-1 relative min-h-[240px] md:min-h-[300px] flex items-center justify-center overflow-hidden {alt
                     ? 'lg:order-1'
                     : 'lg:order-2'} p-4 lg:p-6"
                 >
@@ -459,31 +515,49 @@
                     aria-hidden="true"
                     class="absolute inset-0 z-10 w-full h-full focus:outline-none"
                   >
-                    {#if project.video}
-                      <video
-                        src={project.video}
-                        poster={project.videoPoster}
-                        use:playInView
-                        preload="none"
-                        loop
-                        muted
-                        playsinline
-                        aria-hidden="true"
-                        width={heroSize(project).width}
-                        height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
-                      ></video>
-                    {:else if project.image || project.media?.length}
-                      <img
-                        src={project.image || project.media![0].src}
-                        srcset={projectSrcset(project.image || project.media![0].src)}
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        alt=""
-                        width={heroSize(project).width}
-                        height={heroSize(project).height}
-                        class="w-full h-full object-contain shadow-2xl transition-transform duration-700 motion-safe:group-hover:scale-[1.04]"
-                        loading="lazy"
-                      />
+                    {#if project.video || project.image || project.media?.length}
+                      {#each sheets as sheet, n (sheet.src)}
+                        <span class="fan-sheet {n === 0 ? 'fan-sheet-l' : 'fan-sheet-r'}">
+                          <img
+                            src={sheet.src}
+                            srcset={projectSrcset(sheet.src)}
+                            sizes="(min-width: 1024px) 400px, 60vw"
+                            alt=""
+                            width={sheet.width}
+                            height={sheet.height}
+                            class="w-full h-full object-cover object-top"
+                            loading="lazy"
+                          />
+                        </span>
+                      {/each}
+                      <span class="fan-sheet fan-sheet-front">
+                        {#if project.video}
+                          <video
+                            src={project.video}
+                            poster={project.videoPoster}
+                            use:playInView
+                            preload="none"
+                            loop
+                            muted
+                            playsinline
+                            aria-hidden="true"
+                            width={heroSize(project).width}
+                            height={heroSize(project).height}
+                            class="w-full h-full object-cover object-top"
+                          ></video>
+                        {:else}
+                          <img
+                            src={project.image || project.media![0].src}
+                            srcset={projectSrcset(project.image || project.media![0].src)}
+                            sizes="(min-width: 1024px) 400px, 60vw"
+                            alt=""
+                            width={heroSize(project).width}
+                            height={heroSize(project).height}
+                            class="w-full h-full object-cover object-top"
+                            loading="lazy"
+                          />
+                        {/if}
+                      </span>
                     {:else}
                       <span class="eyebrow text-white/50">Bientôt</span>
                     {/if}
@@ -522,7 +596,7 @@
                       {project.title}
                     </a>
                   </h3>
-                  <div class="flex flex-wrap gap-2 mb-6">
+                  <div use:seen class="tag-cascade flex flex-wrap gap-2 mb-6">
                     {#each project.tags as tag (tag)}
                       <Tag>{tag}</Tag>
                     {/each}
@@ -576,7 +650,7 @@
     <button
       onclick={scrollToTop}
       aria-label="Remonter en haut"
-      class="fixed bottom-8 right-8 z-[100] h-11 w-11 rounded-full bg-primary/20 border border-white/10 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm flex items-center justify-center"
+      class="fixed bottom-8 right-8 z-[100] h-11 w-11 overflow-hidden rounded-full bg-primary/20 border border-white/10 text-white hover:bg-primary/60 transition-all shadow-lg backdrop-blur-sm flex items-center justify-center"
     >
       <!-- Anneau de progression : `pathLength="1"` ramène le périmètre à 1,
            le décalage du tiret est donc directement la part restante. -->
@@ -598,7 +672,7 @@
           style:stroke-dashoffset={1 - scrollProgress}
         />
       </svg>
-      <Icon name="ChevronUp" size={20} />
+      <span class="top-arrow flex"><Icon name="ChevronUp" size={20} /></span>
     </button>
   {/if}
 </div>

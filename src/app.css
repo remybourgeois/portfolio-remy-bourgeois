@@ -36,6 +36,45 @@
   --shadow-glow-emerald: 0 0 8px color-mix(in srgb, var(--color-emerald-400) 80%, transparent);
   /* Portée d'un portrait ou d'une vignette posés sur le fond. */
   --shadow-lift: 0 20px 40px rgb(0 0 0 / 0.45);
+
+  /* Ressort sous-amorti : la valeur dépasse sa cible d'environ 9 % puis s'y
+     pose. Donne `ease-spring` et `var(--ease-spring)`. Un navigateur qui ne
+     connaît pas `linear()` ignore la déclaration et garde son `ease`. */
+  --ease-spring: linear(
+    0,
+    0.05,
+    0.18,
+    0.35,
+    0.53,
+    0.7,
+    0.84,
+    0.95,
+    1.03,
+    1.075,
+    1.095,
+    1.095,
+    1.083,
+    1.065,
+    1.046,
+    1.029,
+    1.015,
+    1.005,
+    0.999,
+    0.996,
+    0.995,
+    0.996,
+    0.998,
+    1
+  );
+}
+
+/* Variante `mouse:` : ne s'applique qu'avec un pointeur fin capable de
+   survol. `hover:` seul ne suffit pas pour un élément qu'on invite à toucher :
+   sur un téléphone, l'état de survol reste collé après un toucher. */
+@custom-variant mouse {
+  @media (hover: hover) and (pointer: fine) {
+    @slot;
+  }
 }
 
 /* Libellé de section et de champ : le seul petit texte du site. 12 px est le
@@ -203,6 +242,99 @@ body {
   animation-delay: calc(var(--i, 0) * 80ms);
 }
 
+/* ── Repère de la barre de navigation ──
+   Un seul trait, déplacé sous le lien de la page courante. `is-ready` n'arrive
+   qu'après la première mesure : sans ça le trait traverserait la barre depuis
+   la gauche à chaque chargement. */
+.nav-indicator {
+  transition: opacity 0.2s ease;
+}
+.nav-indicator.is-ready {
+  transition:
+    transform 0.62s var(--ease-spring),
+    width 0.62s var(--ease-spring),
+    opacity 0.2s ease;
+}
+
+/* ── Éventail des cartes projet ──
+   Chaque feuille est centrée dans le visuel de la carte puis déplacée par ses
+   variables : au repos la pile laisse dépasser les écrans du dessous, à
+   l'ouverture (`data-fan-open`, posé par l'action `fanCard`) ils s'écartent.
+   Une seule propriété animée, `transform`. */
+.fan-sheet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* `--fan-w` : la carte choisit la largeur de ses feuilles. L'accueil, dont
+     le visuel est plus grand, en demande de plus larges. */
+  width: var(--fan-w, min(52%, 260px));
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  border: 1px solid color-mix(in srgb, white 20%, transparent);
+  background: var(--color-panel-to);
+  box-shadow: var(--shadow-lift);
+  transform: translate(-50%, -50%) translate(var(--tx, 0%), var(--ty, 0%)) rotate(var(--r, 0deg))
+    scale(var(--s, 1));
+  transition: transform 0.62s var(--ease-spring);
+}
+.fan-sheet-l {
+  --tx: -5%;
+  --r: -3deg;
+  --s: 0.93;
+}
+.fan-sheet-r {
+  --tx: 5%;
+  --r: 3deg;
+  --s: 0.93;
+  transition-delay: 40ms;
+}
+.fan-sheet-front {
+  transition-delay: 80ms;
+}
+[data-fan-open] .fan-sheet-l {
+  --tx: -42%;
+  --ty: 5%;
+  --r: -9deg;
+  --s: 0.9;
+}
+[data-fan-open] .fan-sheet-r {
+  --tx: 42%;
+  --ty: 5%;
+  --r: 9deg;
+  --s: 0.9;
+}
+[data-fan-open] .fan-sheet-front {
+  --ty: -5%;
+  --s: 1.04;
+}
+/* Deux feuilles : une de chaque côté de l'axe, pour que la paire reste centrée. */
+[data-fan='2'] .fan-sheet-l {
+  --tx: -4%;
+  --r: -2deg;
+  --s: 0.96;
+}
+[data-fan='2'] .fan-sheet-front {
+  --tx: 4%;
+  --r: 2deg;
+}
+[data-fan='2'][data-fan-open] .fan-sheet-l {
+  --tx: -24%;
+  --ty: 2%;
+  --r: -7deg;
+  --s: 0.96;
+}
+[data-fan='2'][data-fan-open] .fan-sheet-front {
+  --tx: 24%;
+  --ty: -2%;
+  --r: 7deg;
+  --s: 1;
+}
+/* Une seule feuille : rien à écarter, elle avance simplement. */
+[data-fan='1'][data-fan-open] .fan-sheet-front {
+  --ty: 0%;
+}
+
 /* ── Halo de section ──
    Lueur violette derrière les sections Impact et contact. C'était un
    rectangle plein passé dans `blur(100px)` : le résultat est le même à l'œil,
@@ -225,6 +357,449 @@ body {
     color-mix(in srgb, var(--color-primary) 1.5%, transparent) 70%,
     transparent 100%
   );
+}
+
+/* ── Compteur ──
+   Chaque chiffre est une colonne 0-9 vue par une fenêtre d'une hauteur de
+   ligne. `--d` est le rang visé, `--k` le rang de la colonne dans le nombre :
+   les colonnes partent l'une après l'autre et se posent avec le ressort. */
+.counter-digit {
+  display: inline-block;
+  height: 1lh;
+  overflow: hidden;
+  vertical-align: top;
+}
+.counter-strip {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--d, 0) * -1lh));
+  transition: transform var(--counter-ms, 950ms) var(--ease-spring);
+  transition-delay: calc(var(--k, 0) * var(--counter-stagger, 80ms));
+}
+.counter-strip > span {
+  display: block;
+  height: 1lh;
+}
+
+/* ── Icônes des expertises ──
+   Dans une section révélée, chaque icône se visse en place après sa carte.
+   `backwards` : l'animation rend la main une fois jouée, et la rotation du
+   survol continue de fonctionner. Sans section révélée (mouvement réduit,
+   section déjà à l'écran), rien ne s'applique et l'icône est simplement là. */
+@keyframes icon-settle {
+  from {
+    opacity: 0.5;
+    transform: scale(0.55) rotate(-35deg);
+  }
+}
+[data-reveal='shown'] .icon-settle {
+  animation: icon-settle 0.8s var(--ease-spring) backwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+
+/* ── Ouverture de page ──
+   À l'ouverture d'une page, le haut arrive en cascade. Sur les pages
+   intérieures (`page-cascade`) : le fil d'Ariane, puis les éléments de
+   l'en-tête marqués `load-step`, puis le contenu. Sur l'accueil et la page
+   d'erreur, qui n'ont pas ce conteneur, chaque bloc porte `load-step`. `--load-rank` est le rang de chacun. Tout est en CSS, pour partir
+   au premier affichage : attendre le JavaScript montrerait le contenu, le
+   ferait disparaître, puis le ferait revenir. Un bloc situé sous l'écran joue
+   cette entrée sans qu'on la voie, et son texte se révèle ensuite au
+   défilement. */
+@keyframes load-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.page-cascade > nav,
+.page-cascade > header ~ *,
+.load-step {
+  animation: load-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--load-rank, 0) * 90ms);
+}
+.page-cascade > header ~ * {
+  --load-rank: 3;
+}
+.page-cascade > header ~ * ~ * {
+  --load-rank: 4;
+}
+
+/* ── Texte qui apparaît ──
+   Sur toutes les pages, l'action `appearText` marque presque chaque
+   titre et chaque paragraphe : `pending` tant qu'il attend sous l'écran, `in`
+   quand il y entre. Il monte alors de quelques pixels. Une animation plutôt
+   qu'une transition : une fois jouée elle ne laisse aucun `transform` sur
+   l'élément. */
+@keyframes appear-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* L'attribut est écrit deux fois pour peser plus lourd : ces règles doivent
+   l'emporter sur l'ouverture de page quand un même élément porte les deux
+   (un bloc du hero resté sous l'écran sur un petit téléphone, par exemple). */
+[data-appear][data-appear='pending'] {
+  opacity: 0;
+}
+[data-appear][data-appear='in'] {
+  animation: appear-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--appear-delay, 0ms);
+}
+
+/* ── Titre de section ──
+   Dans une section révélée, les filets se tirent depuis le libellé et celui-ci
+   se resserre jusqu'à son interlettrage. Hors section révélée, rien ne joue. */
+@keyframes title-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes title-label {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+}
+[data-reveal='shown'] .section-title {
+  animation: title-label 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+[data-reveal='shown'] .section-title-line {
+  transform-origin: right center;
+  animation: title-line 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+[data-reveal='shown'] .section-title-line:last-child {
+  transform-origin: left center;
+}
+
+/* ── Menu mobile ──
+   Le bouton : trois barres, celle du milieu s'efface et les deux autres se
+   croisent. Les liens : ils arrivent l'un après l'autre à l'ouverture. */
+.burger {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 14px;
+}
+.burger i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 0.52s var(--ease-spring),
+    opacity 0.16s ease;
+}
+.burger i:nth-child(1) {
+  top: 0;
+}
+.burger i:nth-child(2) {
+  top: 6px;
+}
+.burger i:nth-child(3) {
+  top: 12px;
+}
+.burger.is-open i:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.burger.is-open i:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.3);
+}
+.burger.is-open i:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+.menu-item {
+  animation: menu-item-in 0.6s var(--ease-spring) backwards;
+  animation-delay: calc(var(--k, 0) * 90ms + 100ms);
+}
+
+/* ── Titre d'accueil ──
+   Chaque mot monte derrière un cache à l'ouverture de la page. Le cache laisse
+   un peu de place sous la ligne de base, sinon il coupe les jambages. */
+@keyframes hero-word-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.hero-word > span {
+  display: inline-block;
+  animation: hero-word-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  /* 180 ms : le titre part au rang 2 de l'ouverture de page, après le nom. */
+  animation-delay: calc(180ms + var(--k, 0) * 70ms);
+}
+
+/* ── Étiquettes ──
+   Les étiquettes apparaissent l'une après l'autre quand leur rangée entre à
+   l'écran (`data-seen`, posé sur elle par l'action `seen`). En attendant sous
+   l'écran, elles sont masquées. Sans l'action, elles sont simplement là. */
+@keyframes tag-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+}
+.tag-cascade[data-seen-pending] > * {
+  opacity: 0;
+}
+.tag-cascade[data-seen] > * {
+  animation: tag-pop 0.52s var(--ease-spring) backwards;
+  animation-delay: calc(var(--k, 0) * 60ms + 120ms);
+}
+.tag-cascade > :nth-child(2) {
+  --k: 1;
+}
+.tag-cascade > :nth-child(3) {
+  --k: 2;
+}
+.tag-cascade > :nth-child(4) {
+  --k: 3;
+}
+.tag-cascade > :nth-child(5) {
+  --k: 4;
+}
+.tag-cascade > :nth-child(n + 6) {
+  --k: 5;
+}
+
+/* ── Carrousel des études de cas ──
+   La piste revient à sa place avec le ressort. Pendant le glissement elle
+   suit le doigt sans transition : `is-dragging` est posé par la page. */
+.car-track {
+  transition: transform 0.56s var(--ease-spring);
+}
+.car-track.is-dragging {
+  transition: none;
+}
+
+/* ── En bref ──
+   Les trois faits de l'encadré montent l'un après l'autre quand il entre à
+   l'écran (`data-seen`). `--b` est leur rang. */
+@keyframes bref-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+[data-seen-pending] .bref > * {
+  opacity: 0;
+}
+[data-seen] .bref > * {
+  animation: bref-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--b, 0) * 140ms);
+}
+.bref > :nth-child(2) {
+  --b: 1;
+}
+.bref > :nth-child(3) {
+  --b: 2;
+}
+
+/* ── Frise ──
+   Un trait de fond, discret, et par-dessus un trait plein dont la hauteur
+   suit `--p`. Sans l'action `scrollLine`, `--p` vaut 1 et chaque étape est
+   allumée : la frise est simplement tracée. Avec elle (`data-progress`), une
+   étape reste éteinte tant qu'elle n'a pas reçu `data-reached`. */
+.timeline::before,
+.timeline::after {
+  content: '';
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+}
+.timeline::before {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+.timeline::after {
+  background: var(--color-primary);
+  transform-origin: top;
+  transform: scaleY(var(--p, 1));
+}
+.timeline-step::before {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: -4px;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.5s var(--ease-spring);
+}
+.timeline[data-progress] .timeline-step[data-reached]::before {
+  transform: scale(1.25);
+}
+.timeline[data-progress] .timeline-step:not([data-reached])::before {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-canvas));
+  background: var(--color-canvas);
+}
+
+/* ── Liste en cascade ──
+   Les lignes d'une liste arrivent l'une après l'autre quand la liste entre à
+   l'écran (`data-seen`, posé sur elle par l'action `seen`). `--k` est leur
+   rang. En attendant sous l'écran, elles sont masquées. */
+@keyframes list-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+.list-cascade[data-seen-pending] > * {
+  opacity: 0;
+}
+.list-cascade[data-seen] > * {
+  animation: list-in 0.52s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--k, 0) * 70ms + 100ms);
+}
+.list-cascade > :nth-child(2) {
+  --k: 1;
+}
+.list-cascade > :nth-child(3) {
+  --k: 2;
+}
+.list-cascade > :nth-child(4) {
+  --k: 3;
+}
+.list-cascade > :nth-child(5) {
+  --k: 4;
+}
+.list-cascade > :nth-child(6) {
+  --k: 5;
+}
+.list-cascade > :nth-child(n + 7) {
+  --k: 6;
+}
+
+/* ── Terrains ──
+   Trois cartes reliées par un trait qui se trace de l'une à la suivante :
+   vertical quand elles sont empilées, horizontal quand elles sont côte à
+   côte. Chaque carte joue son entrée quand elle arrive à l'écran
+   (`data-seen`). Empilées, elles arrivent donc une à une au fil du
+   défilement ; côte à côte elles arrivent ensemble, et `--i` les décale. Le
+   trait occupe exactement l'espace entre deux cartes (`gap-6`). */
+@keyframes terrain-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes terrain-link {
+  from {
+    transform: scale(var(--sx, 1), var(--sy, 0));
+  }
+}
+.terrain-step {
+  position: relative;
+}
+.terrain-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 2rem;
+  width: 2px;
+  height: 1.5rem;
+  background: var(--color-primary);
+  transform-origin: top left;
+}
+@media (min-width: 768px) {
+  .terrain-step {
+    --terrain-stagger: 260ms;
+  }
+  .terrain-step:not(:last-child)::after {
+    --sx: 0;
+    --sy: 1;
+    top: 2.1rem;
+    left: 100%;
+    width: 1.5rem;
+    height: 2px;
+  }
+}
+.terrain-step[data-seen-pending] {
+  opacity: 0;
+}
+.terrain-step[data-seen] {
+  animation: terrain-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * var(--terrain-stagger, 0ms));
+}
+.terrain-step[data-seen]::after {
+  animation: terrain-link 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * var(--terrain-stagger, 0ms) + 380ms);
+}
+
+/* ── Carte touchée ──
+   Les animations du toucher sont lancées par l'action `tapFeedback` et non
+   d'ici : voir son commentaire. Il ne reste en CSS que l'anneau qui s'échappe
+   de la pastille, invisible au repos. */
+.tap-card {
+  -webkit-tap-highlight-color: transparent;
+}
+.tap-card .tap-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-tertiary);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Bouton ──
+   `data-pressed` est posé par Button.svelte tant que le doigt ou la souris
+   appuie. L'aller est court et sans ressort, le retour se fait avec. La flèche
+   n'avance au survol qu'avec un pointeur fin : au toucher, `:hover` reste
+   collé après un tap. */
+.btn-press {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.62s var(--ease-spring);
+}
+.btn-press .btn-icon {
+  transition: transform 0.62s var(--ease-spring);
+}
+.btn-press[data-pressed] {
+  transform: scale(0.94);
+  transition-duration: 0.15s, 0.15s, 0.15s, 90ms;
+  transition-timing-function: ease, ease, ease, ease-out;
+}
+.btn-press[data-pressed] .btn-icon {
+  transition: transform 90ms ease-out;
+}
+.btn-press[data-pressed] .btn-icon-right {
+  transform: translateX(5px);
+}
+.btn-press[data-pressed] .btn-icon-left {
+  transform: translateY(-2px) rotate(-8deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-press:hover .btn-icon-right {
+    transform: translateX(4px);
+  }
 }
 
 /* ── Témoignage ──
@@ -408,8 +983,38 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .testimonial-clip {
+  .testimonial-clip,
+  .fan-sheet,
+  .nav-indicator.is-ready {
     transition: none;
+  }
+  .burger i,
+  .car-track,
+  .timeline-step::before {
+    transition: none;
+  }
+  .section-title,
+  .section-title-line,
+  .menu-item,
+  .hero-word > span,
+  [data-appear],
+  .page-cascade > nav,
+  .page-cascade > header ~ *,
+  .load-step,
+  .terrain-step,
+  .terrain-step::after,
+  .tag-cascade > *,
+  .list-cascade > *,
+  .bref > * {
+    animation: none !important;
+  }
+  /* Le changement de couleur reste, c'est le déplacement qu'on retire. */
+  .btn-press,
+  .btn-press[data-pressed],
+  .btn-press .btn-icon,
+  .btn-press[data-pressed] .btn-icon,
+  .btn-press:hover .btn-icon-right {
+    transform: none;
   }
 }
 
