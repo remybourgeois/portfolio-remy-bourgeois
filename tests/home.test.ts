@@ -134,3 +134,22 @@ test('a button sinks while pressed and comes back when released', async ({ page 
   await expect(button).not.toHaveAttribute('data-pressed', '');
   await page.mouse.up();
 });
+
+test('the logo strip has its final width before the logos load', async ({ page }) => {
+  // Logos retenus : c'est l'état d'une première visite, cache vide. La piste
+  // défile sur 50 % de sa largeur, une largeur qui change la fait sauter.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.route(/\/assets\/[a-z]+\.(png|svg|webp)$/, async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const track = page.locator('.marquee-track');
+  const width = () => track.evaluate((el) => el.scrollWidth);
+  const before = await width();
+  expect(before).toBeGreaterThan(2000);
+  release();
+  await page.waitForLoadState('load');
+  expect(await width()).toBe(before);
+});
