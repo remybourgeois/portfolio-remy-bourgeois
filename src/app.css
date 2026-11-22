@@ -321,6 +321,28 @@ body {
   --ty: 0%;
 }
 
+/* ── Compteur ──
+   Chaque chiffre est une colonne 0-9 vue par une fenêtre d'une hauteur de
+   ligne. `--d` est le rang visé, `--k` le rang de la colonne dans le nombre :
+   les colonnes partent l'une après l'autre et se posent avec le ressort. */
+.counter-digit {
+  display: inline-block;
+  height: 1lh;
+  overflow: hidden;
+  vertical-align: top;
+}
+.counter-strip {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--d, 0) * -1lh));
+  transition: transform var(--counter-ms, 950ms) var(--ease-spring);
+  transition-delay: calc(var(--k, 0) * var(--counter-stagger, 80ms));
+}
+.counter-strip > span {
+  display: block;
+  height: 1lh;
+}
+
 /* ── Témoignage ──
    Replié : quatre lignes de `text-sm leading-relaxed` (4 × 22,75 px), la
    dernière estompée par un masque. Ouvert : la hauteur vient du composant, et
