@@ -1,6 +1,5 @@
 <!-- src/lib/components/Nav.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Icon from '$lib/components/Icons.svelte';
   import IntroCta from '$lib/components/IntroCta.svelte';
@@ -26,41 +25,6 @@
 
   const isActive = (href: string, exact: boolean) =>
     exact ? currentPath === href : currentPath.startsWith(href);
-
-  // Repère de la page courante dans la barre desktop : un trait unique qui
-  // glisse d'un lien à l'autre. Sa position est mesurée sur le lien actif, donc
-  // elle suit la largeur réelle des libellés sans rien coder en dur.
-  let linksEl = $state<HTMLDivElement | null>(null);
-  let indicator = $state({ x: 0, width: 0, shown: false });
-  let indicatorReady = $state(false);
-
-  function placeIndicator() {
-    const active = linksEl?.querySelector<HTMLElement>('[aria-current="page"]');
-    // Sous 1024 px la barre est en `display: none` : rien à mesurer.
-    if (!active || active.offsetWidth === 0) {
-      indicator.shown = false;
-      return;
-    }
-    indicator = { x: active.offsetLeft, width: active.offsetWidth, shown: true };
-  }
-
-  $effect(() => {
-    void currentPath;
-    placeIndicator();
-  });
-
-  onMount(() => {
-    if (!linksEl) return;
-    // La largeur des liens change quand DM Sans remplace la police de repli,
-    // et la barre apparaît ou disparaît au passage des 1024 px.
-    const ro = new ResizeObserver(placeIndicator);
-    ro.observe(linksEl);
-    const raf = requestAnimationFrame(() => (indicatorReady = true));
-    return () => {
-      ro.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  });
 
   // Le menu mobile se referme à chaque navigation, y compris au clic sur le
   // lien de la page courante, qui ne déclenche pas de changement d'URL.
@@ -97,14 +61,7 @@
       Les liens passent au menu déroulant sous 1024 px et non sous 768 : entre
       les deux, la barre porte déjà le CTA et n'a plus la place de les aligner.
     -->
-    <div bind:this={linksEl} class="relative hidden lg:flex items-center gap-6">
-      <span
-        aria-hidden="true"
-        class="nav-indicator pointer-events-none absolute left-0 bottom-1 h-0.5 rounded-full bg-accent shadow-glow-accent
-               {indicator.shown ? 'opacity-100' : 'opacity-0'} {indicatorReady ? 'is-ready' : ''}"
-        style:width="{indicator.width}px"
-        style:transform="translateX({indicator.x}px)"
-      ></span>
+    <div class="hidden lg:flex items-center gap-6">
       {#each LINKS as link (link.href)}
         <a
           href={link.href}
