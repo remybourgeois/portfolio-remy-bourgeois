@@ -13,6 +13,7 @@ const PATHS = [
   '/',
   '/a-propos',
   '/accompagnement',
+  '/audit-design-system',
   '/projects',
   ...PROJECTS.map((p) => `/projects/${p.slug}`)
 ];

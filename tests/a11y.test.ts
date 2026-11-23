@@ -9,6 +9,7 @@ const ROUTES = [
   '/',
   '/a-propos',
   '/accompagnement',
+  '/audit-design-system',
   '/projects',
   '/projects/ofelia',
   '/projects/aldebaran'

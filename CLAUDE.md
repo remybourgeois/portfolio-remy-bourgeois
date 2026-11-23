@@ -134,7 +134,8 @@ Les marqueurs sont `ds-allow-contrast`, `ds-allow-autoplay`, `ds-allow-html`,
 ## Repères
 
 - Pages : `src/routes/` — `/` (portfolio, page indexable principale), `/intro`
-  (intro WebGL, `noindex`), `/a-propos`, `/projects`, `/projects/[slug]`.
+  (intro WebGL, `noindex`), `/a-propos`, `/accompagnement`, `/audit-design-system`, `/projects`,
+  `/projects/[slug]`.
   `/home` est redirigé en 301 vers `/` (`netlify.toml`).
 - Contenu : `src/lib/data/` · Médias : `static/assets/` (images **WebP**, audio **MP3**)
 - Images projet : variantes responsives 768/1280/1920 via `src/lib/utils/img.ts` (`projectSrcset`)

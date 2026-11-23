@@ -59,4 +59,4 @@ export const PROFILES = [
  * calculée depuis la date de build : un redéploiement sans changement de
  * contenu ne doit pas se présenter comme une mise à jour.
  */
-export const CONTENT_UPDATED = '2026-10-26';
+export const CONTENT_UPDATED = '2026-11-23';

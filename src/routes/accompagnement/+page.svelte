@@ -59,7 +59,7 @@
         'Une feuille de route en trois scénarios',
         'Les indicateurs à suivre ensuite'
       ],
-      meta: 'Au forfait · à distance · quelques semaines'
+      meta: 'À distance'
     },
     {
       id: 'mise-en-place',
@@ -127,7 +127,7 @@
   const TITLE = 'Accompagnement design system et conception produit | Rémy Bourgeois';
   const DESCRIPTION =
     'Conception produit, audit de design system et accompagnement à la mise en place. ' +
-    'Trois façons de travailler avec Rémy Bourgeois, Lead Design System à Lyon.';
+    'Trois façons de travailler avec Rémy Bourgeois, Senior Product Design Engineer à Lyon.';
 
   const CRUMBS = [
     { name: 'Accueil', path: '/' },
@@ -243,6 +243,17 @@
               </li>
             {/each}
           </ul>
+
+          {#if format.id === 'audit'}
+            <p class="text-sm mb-6">
+              <a
+                href="/audit-design-system"
+                class="inline-flex items-center min-h-[44px] text-accent hover:text-white underline underline-offset-4 transition-colors"
+              >
+                Voir le détail de l'audit design system
+              </a>
+            </p>
+          {/if}
 
           {#if format.id === 'mise-en-place'}
             <p class="eyebrow text-white/60 mb-2">Ce que vous gardez</p>

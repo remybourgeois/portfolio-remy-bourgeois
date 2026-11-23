@@ -63,6 +63,7 @@ test.describe('text appearing while reading', () => {
   for (const route of [
     '/',
     '/accompagnement',
+    '/audit-design-system',
     '/a-propos',
     '/projects',
     '/projects/ofelia',
@@ -133,4 +134,32 @@ test('text jumped over by a scroll leap is not left hidden', async ({ page }) =>
   // au-dessus de l'écran sans y avoir été vu doit quand même être révélé.
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(pending).toHaveCount(0);
+});
+
+test('the audit page carries a single action, an email with its subject', async ({ page }) => {
+  await page.goto('/audit-design-system');
+  await expect(page.getByRole('heading', { level: 1, name: 'Audit design system' })).toBeVisible();
+  const cta = page.getByRole('main').getByRole('link', { name: 'Parlons de votre design system' });
+  await expect(cta).toHaveAttribute(
+    'href',
+    'mailto:remy.bourgeois@gmail.com?subject=Audit%20design%20system'
+  );
+  // Un seul bouton sur la page : pas de second appel à côté du premier.
+  await expect(page.getByRole('main').locator('.btn-press')).toHaveCount(1);
+  // Ni tarif, ni durée : le format se discute au cas par cas.
+  await expect(page.getByRole('main')).not.toContainText(/€|forfait|semaines|jours/);
+});
+
+test('the audit is reachable from the top bar and from the home page', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const nav = page.getByRole('navigation', { name: 'Navigation principale' });
+  await expect(nav.getByRole('link', { name: 'Audit', exact: true })).toHaveAttribute(
+    'href',
+    '/audit-design-system'
+  );
+  await expect(page.getByRole('link', { name: "Découvrir l'audit" })).toHaveAttribute(
+    'href',
+    '/audit-design-system'
+  );
 });

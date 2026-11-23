@@ -51,9 +51,17 @@ test('case studies expose a heading structure and a hand-written description', a
   const html = await (await request.get('/projects/ofelia')).text();
 
   expect(html).toContain('<h1');
-  for (const section of ['Contexte', 'Challenge', 'Résultat']) {
-    expect(html, `${section} n'est pas un <h2>`).toMatch(new RegExp(`<h2[^>]*>${section}</h2>`));
+  // Sur Ofelia, le bloc « Résultat » est devenu « Approche » : les résultats
+  // ont leur propre bloc, en fin de page, après les quatre blocs titrés.
+  for (const section of ['Contexte', 'Challenge', 'Approche', 'Résultats']) {
+    expect(html, `${section} n'est pas un <h2>`).toMatch(
+      new RegExp(`<h2[^>]*>\\s*${section}\\s*</h2>`)
+    );
   }
+  expect(html).toMatch(/<h2[^>]*>Un design system dans le code, unique source de vérité<\/h2>/);
+  const other = await (await request.get('/projects/credit-agricole')).text();
+  expect(other).toMatch(/<h2[^>]*>Résultat clé<\/h2>/);
+  expect(other).toMatch(/<h2[^>]*>\s*Résultat\s*<\/h2>/);
 
   const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
   expect(desc.length).toBeGreaterThan(80);
@@ -66,7 +74,8 @@ test('case studies open with an extractable summary', async ({ request }) => {
     const html = await (await request.get(`/projects/${slug}`)).text();
     // Le résultat chiffré était enfoui en fin de paragraphe : il doit
     // figurer dans un bloc court, présent dès le HTML prérendu.
-    expect(html).toMatch(/<h2[^>]*>En bref<\/h2>/);
+    // Le titre est un `SectionTitle` : un filet décoratif précède le libellé.
+    expect(html).toMatch(/<h2[^>]*id="en-bref-title"[^>]*>[\s\S]*?En bref[\s\S]*?<\/h2>/);
     for (const label of ['Contexte', 'Stack &amp; méthodes', 'Impact']) {
       expect(html, `${label} absent de l'encadré sur ${slug}`).toMatch(
         new RegExp(`<dt[^>]*>${label}</dt>`)
@@ -95,6 +104,7 @@ test('sitemap lists the indexable pages, dates them, and drops the old home', as
   expect(xml).toContain('<loc>https://remybourgeois.com/</loc>');
   expect(xml).toContain('<loc>https://remybourgeois.com/a-propos</loc>');
   expect(xml).toContain('<loc>https://remybourgeois.com/accompagnement</loc>');
+  expect(xml).toContain('<loc>https://remybourgeois.com/audit-design-system</loc>');
   expect(xml).not.toContain('/home');
   // /intro est en noindex : la déclarer serait contradictoire.
   expect(xml).not.toContain('/intro');

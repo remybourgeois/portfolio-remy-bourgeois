@@ -4,7 +4,9 @@
   import { tick } from 'svelte';
   import Icon from '#lib/components/Icons.svelte';
   import { seen } from '#lib/actions/seen.ts';
+  import { playInView } from '#lib/actions/playInView.ts';
   import Tag from '#lib/components/Tag.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
   import Button from '#lib/components/Button.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
   import Breadcrumb from '#lib/components/Breadcrumb.svelte';
@@ -460,35 +462,48 @@
     {/if}
   </header>
 
+  <!-- ── Résultat à retenir ──────────────────────────────────────────────── -->
+  <!-- Le fait que le lecteur doit garder, avant tout le reste : il était
+       jusque-là en dernière ligne de la page. -->
+  {#if project.keyResult}
+    <div class="mb-10 pl-5 border-l-2 border-primary/50 max-w-[46rem]">
+      <h2 class="eyebrow text-accent mb-3">Résultat clé</h2>
+      <p class="text-xl md:text-2xl font-medium text-white leading-snug [text-wrap:pretty]">
+        {project.keyResult}
+      </p>
+    </div>
+  {/if}
+
   <!-- ── En bref ─────────────────────────────────────────────────────────── -->
   <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
-  <!-- Les trois faits montent l'un après l'autre à l'arrivée de l'encadré,
+  <!-- Les trois cartes montent l'une après l'autre à l'arrivée du bloc,
        et la stack apparaît élément par élément (app.css, « En bref »). -->
-  <section
-    use:seen
-    aria-labelledby="en-bref-title"
-    class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
-  >
-    <h2 id="en-bref-title" class="eyebrow text-white/60 mb-5">En bref</h2>
-    <dl class="bref grid gap-5 md:grid-cols-3 md:gap-8">
-      <div>
-        <dt class="eyebrow text-white/60 mb-2">Contexte</dt>
+  <section use:seen aria-labelledby="en-bref-title" class="mb-10">
+    <!-- Le titre sort du cadre et prend la forme des titres de section : en
+         `eyebrow` à l'intérieur, il se lisait comme un quatrième libellé. -->
+    <SectionTitle id="en-bref-title" class="mb-6">En bref</SectionTitle>
+    <!-- Trois cartes, l'impact en premier et teinté : à gauche sur grand
+         écran, en haut sur téléphone. C'est le fait à retenir, et en troisième
+         position il arrivait après la liste des outils. -->
+    <dl class="bref grid gap-4 md:grid-cols-3 md:gap-6">
+      <div class="rounded-2xl border border-primary/30 bg-primary/[0.07] p-6">
+        <dt class="eyebrow text-accent mb-3">Impact</dt>
+        <dd class="text-base text-white leading-relaxed font-medium">
+          {project.summary.impact}
+        </dd>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <dt class="eyebrow text-white/60 mb-3">Contexte</dt>
         <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
       </div>
-      <div>
-        <dt class="eyebrow text-white/60 mb-2">Stack &amp; méthodes</dt>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <dt class="eyebrow text-white/60 mb-3">Stack &amp; méthodes</dt>
         <dd>
           <ul use:seen class="tag-cascade flex flex-wrap gap-2">
             {#each project.summary.stack as item (item)}
               <Tag as="li">{item}</Tag>
             {/each}
           </ul>
-        </dd>
-      </div>
-      <div>
-        <dt class="eyebrow text-accent mb-2">Impact</dt>
-        <dd class="text-sm text-white/85 leading-relaxed font-medium">
-          {project.summary.impact}
         </dd>
       </div>
     </dl>
@@ -662,13 +677,106 @@
       </div>
     {/if}
 
-    <!-- Résultat -->
+    <!-- Résultat, ou l'approche quand les résultats ont leur propre bloc -->
     {#if project.outcome}
-      <div class="pl-5 border-l-2 border-emerald-400/50">
-        <h2 class="eyebrow text-emerald-400/70 mb-4">Résultat</h2>
+      <div
+        class="pl-5 {project.outcomeLabel
+          ? 'border-l border-white/[0.1]'
+          : 'border-l-2 border-emerald-400/50'}"
+      >
+        <h2 class="eyebrow mb-4 {project.outcomeLabel ? 'text-white/60' : 'text-emerald-400/70'}">
+          {project.outcomeLabel ?? 'Résultat'}
+        </h2>
         <p class="project-text text-white/60 text-base leading-[1.85]">
           {@html md(project.outcome)}
         </p>
+      </div>
+    {/if}
+
+    <!-- Blocs titrés : un texte, une liste, et au besoin un média légendé -->
+    {#each project.sections ?? [] as section (section.title)}
+      <section class="pl-5 border-l border-white/[0.1]">
+        <h2 class="text-xl md:text-2xl font-semibold text-white leading-snug mb-4">
+          {section.title}
+        </h2>
+        {#if section.body}
+          <p class="text-white/60 text-base leading-[1.85]">{section.body}</p>
+        {/if}
+
+        {#if section.items}
+          <ul use:seen class="list-cascade flex flex-col gap-3 list-none p-0 m-0">
+            {#each section.items as item (item)}
+              <li class="flex gap-3 text-white/70 text-base leading-relaxed">
+                <span
+                  class="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"
+                  aria-hidden="true"
+                ></span>
+                {item}
+              </li>
+            {/each}
+          </ul>
+        {/if}
+
+        {#if section.media}
+          <figure class="mt-8">
+            <div
+              class="rounded-2xl overflow-hidden bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07]"
+            >
+              {#if section.media.type === 'video'}
+                <!-- Même lecture que les cartes : rien n'est téléchargé avant
+                     que la vidéo approche de l'écran, puis elle tourne en
+                     boucle, muette. -->
+                <video
+                  src={section.media.src}
+                  poster={section.media.poster}
+                  use:playInView
+                  preload="none"
+                  loop
+                  muted
+                  playsinline
+                  aria-label={section.media.alt}
+                  width={section.media.width}
+                  height={section.media.height}
+                  class="block w-full h-auto"
+                ></video>
+              {:else}
+                <img
+                  src={section.media.src}
+                  srcset={projectSrcset(section.media.src)}
+                  sizes="(min-width: 768px) 736px, 100vw"
+                  alt={section.media.alt ?? ''}
+                  loading="lazy"
+                  width={section.media.width}
+                  height={section.media.height}
+                  class="block w-full h-auto"
+                />
+              {/if}
+            </div>
+            {#if section.stats}
+              <figcaption class="mt-4 text-sm text-white/70 leading-relaxed">
+                {section.stats.join(' · ')}
+              </figcaption>
+            {/if}
+          </figure>
+        {/if}
+      </section>
+    {/each}
+
+    <!-- Résultats -->
+    {#if project.results}
+      <div class="pl-5 border-l-2 border-emerald-400/50">
+        <h2 class="eyebrow text-emerald-400/70 mb-4">Résultats</h2>
+        <ul use:seen class="list-cascade flex flex-col gap-4 list-none p-0 m-0">
+          {#each project.results as result (result)}
+            <li class="flex gap-3 text-white/85 text-base leading-relaxed">
+              <span
+                class="mt-2.5 w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"
+                aria-hidden="true"
+              ></span>
+              {result}
+            </li>
+          {/each}
+        </ul>
       </div>
     {/if}
   </div>
