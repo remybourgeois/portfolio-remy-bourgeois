@@ -74,7 +74,8 @@ test('case studies open with an extractable summary', async ({ request }) => {
     const html = await (await request.get(`/projects/${slug}`)).text();
     // Le résultat chiffré était enfoui en fin de paragraphe : il doit
     // figurer dans un bloc court, présent dès le HTML prérendu.
-    expect(html).toMatch(/<h2[^>]*>En bref<\/h2>/);
+    // Le titre est un `SectionTitle` : un filet décoratif précède le libellé.
+    expect(html).toMatch(/<h2[^>]*id="en-bref-title"[^>]*>[\s\S]*?En bref[\s\S]*?<\/h2>/);
     for (const label of ['Contexte', 'Stack &amp; méthodes', 'Impact']) {
       expect(html, `${label} absent de l'encadré sur ${slug}`).toMatch(
         new RegExp(`<dt[^>]*>${label}</dt>`)

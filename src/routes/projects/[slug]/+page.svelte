@@ -6,6 +6,7 @@
   import { seen } from '#lib/actions/seen.ts';
   import { playInView } from '#lib/actions/playInView.ts';
   import Tag from '#lib/components/Tag.svelte';
+  import SectionTitle from '#lib/components/SectionTitle.svelte';
   import Button from '#lib/components/Button.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
   import Breadcrumb from '#lib/components/Breadcrumb.svelte';
@@ -475,33 +476,28 @@
 
   <!-- ── En bref ─────────────────────────────────────────────────────────── -->
   <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
-  <!-- Les trois lignes montent l'une après l'autre à l'arrivée de l'encadré,
+  <!-- Les trois cartes montent l'une après l'autre à l'arrivée du bloc,
        et la stack apparaît élément par élément (app.css, « En bref »). -->
-  <section
-    use:seen
-    aria-labelledby="en-bref-title"
-    class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-8"
-  >
-    <!-- Le titre de l'encadré est un cran au-dessus de ses trois libellés :
-         en `eyebrow` comme eux, il se lisait comme un quatrième libellé. -->
-    <h2 id="en-bref-title" class="text-xl font-semibold text-white leading-snug mb-2">En bref</h2>
-    <!-- Une fiche en lignes, l'impact en premier : c'est le fait à retenir,
-         et en troisième colonne il arrivait après la liste des outils. -->
-    <dl class="bref divide-y divide-white/[0.08]">
-      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 py-5">
-        <dt class="eyebrow text-accent pt-1">Impact</dt>
-        <dd class="text-base text-white leading-relaxed font-medium max-w-[46rem]">
+  <section use:seen aria-labelledby="en-bref-title" class="mb-10">
+    <!-- Le titre sort du cadre et prend la forme des titres de section : en
+         `eyebrow` à l'intérieur, il se lisait comme un quatrième libellé. -->
+    <SectionTitle id="en-bref-title" class="mb-6">En bref</SectionTitle>
+    <!-- Trois cartes, l'impact en premier et teinté : à gauche sur grand
+         écran, en haut sur téléphone. C'est le fait à retenir, et en troisième
+         position il arrivait après la liste des outils. -->
+    <dl class="bref grid gap-4 md:grid-cols-3 md:gap-6">
+      <div class="rounded-2xl border border-primary/30 bg-primary/[0.07] p-6">
+        <dt class="eyebrow text-accent mb-3">Impact</dt>
+        <dd class="text-base text-white leading-relaxed font-medium">
           {project.summary.impact}
         </dd>
       </div>
-      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 py-5">
-        <dt class="eyebrow text-white/60 pt-1">Contexte</dt>
-        <dd class="text-sm text-white/70 leading-relaxed max-w-[46rem]">
-          {project.summary.context}
-        </dd>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <dt class="eyebrow text-white/60 mb-3">Contexte</dt>
+        <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
       </div>
-      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 pt-5">
-        <dt class="eyebrow text-white/60 pt-1">Stack &amp; méthodes</dt>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <dt class="eyebrow text-white/60 mb-3">Stack &amp; méthodes</dt>
         <dd>
           <ul use:seen class="tag-cascade flex flex-wrap gap-2">
             {#each project.summary.stack as item (item)}
