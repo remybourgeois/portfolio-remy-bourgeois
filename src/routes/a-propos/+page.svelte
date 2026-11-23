@@ -67,7 +67,7 @@
 </script>
 
 <svelte:head>
-  <title>À propos | Rémy Bourgeois, Lead Design System à Lyon</title>
+  <title>À propos | Rémy Bourgeois, Senior Product Design Engineer à Lyon</title>
   <meta
     name="description"
     content="Le parcours de Rémy Bourgeois : 7 ans en robotique humanoïde chez Aldebaran, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit."
@@ -76,7 +76,7 @@
   <meta property="og:type" content="profile" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:title" content="À propos | Rémy Bourgeois, Lead Design System" />
+  <meta property="og:title" content="À propos | Rémy Bourgeois, Senior Product Design Engineer" />
   <meta
     property="og:description"
     content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA. 14 ans de design produit."
@@ -90,7 +90,7 @@
   <meta property="profile:last_name" content="Bourgeois" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="À propos | Rémy Bourgeois, Lead Design System" />
+  <meta name="twitter:title" content="À propos | Rémy Bourgeois, Senior Product Design Engineer" />
   <meta
     name="twitter:description"
     content="7 ans en robotique humanoïde, 3 ans au Crédit Agricole, puis premier designer d'un assistant IA."
@@ -107,7 +107,7 @@
         '@type': 'AboutPage',
         '@id': SITE_URL + '/a-propos#webpage',
         url: SITE_URL + '/a-propos',
-        name: 'À propos | Rémy Bourgeois, Lead Design System à Lyon',
+        name: 'À propos | Rémy Bourgeois, Senior Product Design Engineer à Lyon',
         inLanguage: 'fr-FR',
         isPartOf: { '@id': WEBSITE_ID },
         about: { '@id': PERSON_ID },
@@ -123,9 +123,8 @@
        et « À propos » seul ne dit pas de qui. -->
   <PageHeader title="À propos de Rémy Bourgeois" crumbs={CRUMBS}>
     {#snippet lede()}
-      Rémy Bourgeois est Lead Design System et Senior Product Designer freelance, basé à Lyon. Il
-      conçoit depuis 14 ans des interfaces pour des produits complexes, et les implémente lui-même
-      dans le dépôt.
+      Rémy Bourgeois est Senior Product Design Engineer freelance, basé à Lyon. Il conçoit depuis 14
+      ans des interfaces pour des produits complexes, et les implémente lui-même dans le dépôt.
     {/snippet}
     {#snippet media()}
       <img

@@ -25,4 +25,6 @@ test('case study loads only the visible video', async ({ page }) => {
   // Les deux vidéos des slides 2 et 3 ne doivent pas être téléchargées d'emblée.
   expect(videos).not.toContain('/assets/ofelia-2.mp4');
   expect(videos).not.toContain('/assets/ofelia-3.mp4');
+  // Celle du Storybook est plus bas dans la page : elle attend d'être approchée.
+  expect(videos).not.toContain('/assets/ofelia-storybook.mp4');
 });

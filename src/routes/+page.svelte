@@ -20,6 +20,13 @@
     CONTENT_UPDATED,
     EMAIL
   } from '#lib/data/site.ts';
+  import {
+    AUDIT_PATH,
+    AUDIT_TITLE,
+    AUDIT_HOOK,
+    AUDIT_PROBLEM,
+    AUDIT_PROMISE
+  } from '#lib/data/audit.ts';
   import { personNode, reviewNodes, websiteNode } from '#lib/data/person.ts';
   import { md, jsonLd } from '#lib/utils/text.ts';
   import { projectSrcset } from '#lib/utils/img.ts';
@@ -30,7 +37,7 @@
   import { appearText } from '#lib/actions/appearText.ts';
 
   // Le titre du hero, découpé en mots dans le gabarit pour son animation.
-  const HERO_TITLE = 'Lead Design System & Senior Product Designer';
+  const HERO_TITLE = 'Senior Product Design Engineer';
   // L'espace entre deux mots, écrite ici : dans le gabarit, Svelte la
   // supprimerait en bord de bloc et les mots se toucheraient.
   const SPACE = ' ';
@@ -130,22 +137,19 @@
 />
 
 <svelte:head>
-  <title>Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois</title>
+  <title>Rémy Bourgeois | Senior Product Design Engineer à Lyon</title>
   <meta
     name="description"
-    content="Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon."
+    content="Rémy Bourgeois, Senior Product Design Engineer à Lyon. Je conçois des design systems et des produits IA directement dans le code, pour des SaaS B2B complexes."
   />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content={SITE_LOCALE} />
   <meta property="og:site_name" content={SITE_NAME} />
-  <meta
-    property="og:title"
-    content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois"
-  />
+  <meta property="og:title" content="Rémy Bourgeois | Senior Product Design Engineer à Lyon" />
   <meta
     property="og:description"
-    content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon."
+    content="Rémy Bourgeois, Senior Product Design Engineer à Lyon. Je conçois des design systems et des produits IA directement dans le code, pour des SaaS B2B complexes."
   />
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
@@ -154,13 +158,10 @@
   <meta property="og:url" content="{SITE_URL}/" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta
-    name="twitter:title"
-    content="Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois"
-  />
+  <meta name="twitter:title" content="Rémy Bourgeois | Senior Product Design Engineer à Lyon" />
   <meta
     name="twitter:description"
-    content="Design systems, IA conversationnelle et SaaS B2B complexes. 14 ans d'expérience, dont 7 ans en robotique humanoïde. Freelance à Lyon."
+    content="Rémy Bourgeois, Senior Product Design Engineer à Lyon. Je conçois des design systems et des produits IA directement dans le code, pour des SaaS B2B complexes."
   />
   <meta name="twitter:image" content={OG_IMAGE} />
   <meta name="twitter:image:alt" content="Rémy Bourgeois, Designing Intentions" />
@@ -174,9 +175,9 @@
         '@type': 'ProfilePage',
         '@id': SITE_URL + '/#profilepage',
         url: SITE_URL + '/',
-        name: 'Lead Design System et Senior Product Designer à Lyon | Rémy Bourgeois',
+        name: 'Rémy Bourgeois | Senior Product Design Engineer à Lyon',
         description:
-          "Je supprime le décalage entre le design et le code. Design systems, produits IA et SaaS B2B, conçus dans le code avec les équipes. 14 ans d'expérience, à Lyon.",
+          'Rémy Bourgeois, Senior Product Design Engineer à Lyon. Je conçois des design systems et des produits IA directement dans le code, pour des SaaS B2B complexes.',
         isPartOf: { '@id': websiteNode['@id'] },
         about: { '@id': personNode['@id'] },
         mainEntity: { '@id': personNode['@id'] },
@@ -259,14 +260,15 @@
           <p
             class="load-step [--load-rank:6] text-xl md:text-2xl font-medium text-white leading-snug mb-5"
           >
-            Je supprime le décalage entre le design et le code.
+            Je conçois des design systems et des produits IA directement dans le code, pour des SaaS
+            B2B complexes.
           </p>
           <p
             class="load-step [--load-rank:7] text-white/65 font-light leading-relaxed text-base md:text-lg max-w-[40rem]"
           >
-            14 ans de design produit, dont 7 ans en robotique humanoïde. Je conçois des design
-            systems et des produits IA directement dans le code, avec les équipes qui vont les faire
-            vivre. Un développeur senior relit chacune de mes Pull Requests.
+            14 ans de design produit, dont 7 ans en robotique humanoïde. Je travaille avec les
+            équipes qui vont faire vivre le produit, et un développeur senior relit chacune de mes
+            Pull Requests.
           </p>
 
           <div class="load-step [--load-rank:8] flex flex-wrap gap-3 mt-9">
@@ -615,6 +617,31 @@
           </Button>
         </div>
       </div>
+    </RevealOnScroll>
+
+    <!-- Audit design system : l'offre, entre les preuves et le contact -->
+    <RevealOnScroll>
+      <section class="w-full pt-20" aria-labelledby="audit-title">
+        <SectionTitle align="center" id="audit-title" class="mb-16">{AUDIT_TITLE}</SectionTitle>
+        <div
+          class="rounded-3xl border border-primary/30 bg-primary/[0.07] p-6 sm:p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-8"
+        >
+          <div class="flex-1 min-w-0">
+            <h3 class="text-2xl md:text-3xl font-semibold text-white leading-snug mb-4">
+              {AUDIT_HOOK}
+            </h3>
+            <p class="text-white/70 text-base leading-relaxed max-w-[40rem]">
+              {AUDIT_PROBLEM}
+              {AUDIT_PROMISE}
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <Button href={AUDIT_PATH} variant="secondary" iconRight="ArrowRight">
+              Découvrir l'audit
+            </Button>
+          </div>
+        </div>
+      </section>
     </RevealOnScroll>
 
     <!-- Contact -->

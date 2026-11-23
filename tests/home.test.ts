@@ -8,8 +8,8 @@ test('has correct page title', async ({ page }) => {
   await expect(page).toHaveTitle(/Rémy Bourgeois/);
 });
 
-test('shows Senior Product Designer heading', async ({ page }) => {
-  await expect(page.getByRole('heading', { name: /Senior Product Designer/ })).toBeVisible();
+test('shows Senior Product Design Engineer heading', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: /Senior Product Design Engineer/ })).toBeVisible();
 });
 
 test('impact counters settle on their final value', async ({ page }) => {
@@ -205,7 +205,7 @@ test('the hero title keeps its words apart for readers and crawlers', async ({ p
   // Le titre est découpé en mots pour son animation : il doit rester une
   // phrase, avec ses espaces, à l'écran comme dans le HTML prérendu.
   await expect(
-    page.getByRole('heading', { level: 1, name: /Lead Design System & Senior Product Designer/ })
+    page.getByRole('heading', { level: 1, name: /Senior Product Design Engineer/ })
   ).toBeVisible();
   const html = await (await request.get('/')).text();
   const text = html
@@ -213,7 +213,7 @@ test('the hero title keeps its words apart for readers and crawlers', async ({ p
     .replace(/<[^>]*>/g, '')
     .replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ');
-  expect(text).toContain('Lead Design System & Senior Product Designer');
+  expect(text).toContain('Senior Product Design Engineer');
 });
 
 test.describe('on a phone', () => {

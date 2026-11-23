@@ -21,6 +21,7 @@
     { href: '/', label: 'Accueil', exact: true },
     { href: '/projects', label: 'Projets', exact: false },
     { href: '/accompagnement', label: 'Accompagnement', exact: true },
+    { href: '/audit-design-system', label: 'Audit', exact: true },
     { href: '/a-propos', label: 'À propos', exact: true },
     // Le Lab est un site à part (lab.remybourgeois.com, dossier `lab/`) : lien
     // absolu, jamais « actif », ouvert dans le même onglet comme les autres.

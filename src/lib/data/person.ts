@@ -11,13 +11,13 @@ export const personNode = {
   name: 'Rémy Bourgeois',
   givenName: 'Rémy',
   familyName: 'Bourgeois',
-  jobTitle: ['Lead Design System', 'Senior Product Designer'],
+  jobTitle: 'Senior Product Design Engineer',
   description:
-    "Lead Design System et Senior Product Designer freelance basé à Lyon. 14 ans d'expérience en design systems, IA conversationnelle et interfaces SaaS B2B complexes, dont 7 ans en robotique humanoïde. Conçoit directement dans le code, ses Pull Requests étant relues par un développeur senior.",
+    "Senior Product Design Engineer freelance basé à Lyon. 14 ans d'expérience en design systems, IA conversationnelle et interfaces SaaS B2B complexes, dont 7 ans en robotique humanoïde. Conçoit directement dans le code, ses Pull Requests étant relues par un développeur senior.",
   // Champ prévu par Schema.org pour lever une homonymie. Plusieurs personnes
   // partagent ce nom : on dit explicitement laquelle est décrite ici.
   disambiguatingDescription:
-    "Lead Design System et Senior Product Designer freelance à Lyon, spécialisé en design systems, IA conversationnelle et SaaS B2B. Également directeur artistique, musicien et sound designer, ce versant sonore venant de ses 7 ans en robotique humanoïde chez Aldebaran. À ne pas confondre avec l'acteur français homonyme.",
+    "Senior Product Design Engineer freelance à Lyon, spécialisé en design systems, IA conversationnelle et SaaS B2B. Également directeur artistique, musicien et sound designer, ce versant sonore venant de ses 7 ans en robotique humanoïde chez Aldebaran. À ne pas confondre avec l'acteur français homonyme.",
   url: `${SITE_URL}/`,
   mainEntityOfPage: { '@id': `${SITE_URL}/#profilepage` },
   image: {
@@ -55,7 +55,7 @@ export const personNode = {
   ],
   hasOccupation: {
     '@type': 'Occupation',
-    name: 'Senior Product Designer',
+    name: 'Senior Product Design Engineer',
     occupationLocation: { '@type': 'City', name: 'Lyon' },
     skills: [
       'Design System',

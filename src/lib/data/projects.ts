@@ -8,6 +8,21 @@ export interface ProjectMedia {
   width: number;
   height: number;
   caption?: string;
+  /** Description du contenu, lue à la place de la vidéo ou de l'image. */
+  alt?: string;
+}
+
+/**
+ * Bloc titré d'une étude de cas, entre le challenge et les résultats : un
+ * texte, une liste courte, ou les deux, avec au besoin un média et la ligne
+ * de chiffres qui le légende.
+ */
+export interface ProjectSection {
+  title: string;
+  body?: string;
+  items?: string[];
+  media?: ProjectMedia;
+  stats?: string[];
 }
 
 export interface Project {
@@ -54,8 +69,18 @@ export interface Project {
     stack: string[];
     impact: string;
   };
+  /**
+   * Résultat à retenir, affiché en tête d'étude de cas, avant « En bref ».
+   * Uniquement un fait déjà établi ailleurs sur la page.
+   */
+  keyResult?: string;
   challenge?: string;
   outcome?: string;
+  /** Libellé du bloc `outcome`. « Résultat » par défaut. */
+  outcomeLabel?: string;
+  sections?: ProjectSection[];
+  /** Résultats courts, listés en fin d'étude de cas. */
+  results?: string[];
   role?: string;
   year?: string;
   url?: string;
@@ -80,7 +105,7 @@ export const PROJECTS: Project[] = [
         'Microsoft Teams'
       ],
       impact:
-        'Changer un composant passait de plusieurs semaines à quelques heures. Plus de hand-off : le designer ouvre ses propres Pull Requests, relues par un développeur front avant la mise en production.'
+        "De l'idée à la production : de plusieurs semaines à quelques heures. Plus de hand-off : le designer ouvre ses propres Pull Requests, relues par un développeur front avant la mise en production."
     },
     seoDescription:
       "Premier designer d'Ofelia : design system créé de zéro dans le code et UX d'un assistant IA agentique intégré à Slack et Teams.",
@@ -93,8 +118,57 @@ export const PROJECTS: Project[] = [
       "Éditeur historique du BPA (Business Process Automation) d'entreprise depuis 15 ans, Ofelia s'est donné une nouvelle ambition : **une suite logicielle d'orchestration IA gouvernée**.\n\nJe suis intervenu sur ce projet en tant que **premier designer**, seul à bord pour tout construire à partir d'une page blanche. Le cœur du produit, Ofelia Agentic, est un assistant IA conçu pour s'intégrer directement dans Slack et Teams. L'objectif ? Ne pas imposer un énième outil aux équipes, mais faire vivre l'IA là où elles collaborent déjà au quotidien.",
     challenge:
       "L'enjeu UX dépassait la simple création d'écrans. Il ne s'agissait pas de dessiner un chatbot classique, mais d'intégrer une véritable **collègue virtuelle** capable d'orchestrer des workflows complexes à partir d'une simple conversation.\n\nTrès vite, les limites de Figma sont apparues : les **interfaces statiques sont inadaptées** pour modéliser des interactions agentiques mouvantes. La tech avançait à toute vitesse, le design devait suivre le même tempo. Il fallait supprimer la friction entre la maquette et l'ingénierie.",
+    outcomeLabel: 'Approche',
     outcome:
-      "Après avoir posé les bases de l'UX, j'ai construit le **design system directement dans le code**, documenté dans Storybook :\n\n• **Des règles vérifiées, pas documentées** : un check automatique passe à chaque Pull Request sur les tokens, l'accessibilité et le respect du design system. Une documentation que personne ne relit ne protège rien.\n• **Un Lab** dans Storybook pour prototyper avec les vrais composants, au lieu de maquetter ce qui existe déjà.\n• **Zéro maquette morte** : j'ai abandonné le pixel-perfect statique pour itérer dans le code de production, avec Claude Code, sur Git et dans Storybook.\n• **Zéro perte d'information** : mes Pull Requests sont relues par un développeur front avant la mise en production. Le hand-off n'existe plus.\n\nLe résultat le plus net : **changer un composant passait de plusieurs semaines à quelques heures**. L'équipe estimait son rythme d'exécution environ dix fois plus rapide, un constat partagé et non une mesure. Le produit a été co-construit et validé en temps réel avec des clients prospects, ce qui a supprimé l'effet tunnel specs, design, dev.",
+      "Après avoir posé les bases de l'UX, j'ai construit le **design system directement dans le code**, documenté dans Storybook :\n\n• **Zéro maquette morte** : j'ai abandonné le pixel-perfect statique pour itérer dans le code de production, avec Claude Code, sur Git et dans Storybook.\n• **Zéro perte d'information** : mes Pull Requests sont relues par un développeur front avant la mise en production. Le hand-off n'existe plus.\n\nLe produit a été co-construit et validé en temps réel avec des clients prospects, ce qui a supprimé l'effet tunnel specs, design, dev.",
+    sections: [
+      {
+        title: 'Un design system dans le code, unique source de vérité',
+        body: "Au début, le design system vivait dans Figma, comme partout. En travaillant en binôme avec un développeur et avec Claude Code, on a compris qu'on pouvait supprimer le frottement et le déphasage entre la maquette et la production en gardant une seule source de vérité : le code. Design tokens, accessibilité intégrée, versionning sur GitHub, documentation dans Storybook. Figma n'est plus utilisé.",
+        media: {
+          type: 'video',
+          src: '/assets/ofelia-storybook.mp4',
+          poster: '/assets/poster-ofelia-storybook.webp',
+          width: 1440,
+          height: 1334,
+          alt: "Parcours du Storybook d'Ofelia : la page des tokens sémantiques, avec pour chaque surface sa valeur claire, sa valeur sombre et son niveau de contraste, puis la fiche du composant bouton avec ses tailles, ses états et ses règles à faire et à ne pas faire, et enfin un pattern de formulaire en plusieurs étapes."
+        },
+        stats: [
+          '35 composants documentés',
+          '90 couleurs primitives',
+          '10 fondations',
+          '8 patterns',
+          '7 pages complètes'
+        ]
+      },
+      {
+        title: 'Des garde-fous automatiques',
+        body: "Claude Code peut se tromper, et les premières incohérences sont apparues. J'ai donc mis en place un check automatique : chaque nouveau composant et chaque nouvelle page doivent respecter les tokens, l'accessibilité et le design system. Les règles sont lisibles par une machine et vérifiées en intégration continue. L'IA produit vite, le système garantit la cohérence."
+      },
+      {
+        title: 'Le Lab : prototyper avec les vrais composants',
+        body: "Le Lab est une section du Storybook où je prototype avec les vrais composants et les vraies données. Il remplace la maquette Figma, et il évite de monter une branche de développement du produit à chaque test, ce qui était trop lourd. Je filme le parcours interactif et je l'envoie aux équipes produit et tech. Il sert aussi de démonstration auprès de prospects. Les développeurs peuvent récupérer la branche pour tester eux-mêmes dans le Lab."
+      },
+      {
+        title: 'Un design system tenu par des règles, pas par de la discipline',
+        items: [
+          'Design tokens : une source unique au format standard DTCG',
+          'Deux niveaux de tokens : des couleurs primitives, puis des tokens sémantiques, seuls utilisés par les composants, chacun avec sa valeur claire et sombre',
+          'Accessibilité : cible WCAG 2.2, tableau de conformité publié dans la documentation',
+          "Tests de régression visuelle sur l'ensemble du design system",
+          "Tests d'interaction sur chaque composant de base, obligatoires pour valider une contribution",
+          "Chaque composant a la même fiche : anatomie, code copiable, règles d'usage, accessibilité, à faire et à ne pas faire",
+          'Un registre des composants manquants : on les signale au lieu de les recoder',
+          'Thème clair et thème sombre',
+          "Documentation : guide de rédaction, feuille de route, rapport d'adoption"
+        ]
+      }
+    ],
+    results: [
+      "De l'idée à la production : de plusieurs semaines à quelques heures",
+      '20 personnes utilisent le design system en autonomie.',
+      "Le système continue sans moi : à la fin de ma mission, la documentation vit dans le dépôt, les règles sont vérifiées automatiquement et l'équipe est autonome."
+    ],
     video: '/assets/ofelia.mp4',
     videoWidth: 2026,
     videoHeight: 1034,
@@ -137,6 +211,8 @@ export const PROJECTS: Project[] = [
     seoDescription:
       "Refonte du design system et conception des briques IA d'iPify, plateforme SaaS B2B LegalTech de gestion internationale de portefeuilles de brevets.",
     subject: 'Refonte de design system SaaS B2B',
+    keyResult:
+      'Une équipe autonome grâce au design system, et des maquettes Figma cohérentes avec le code grâce aux design tokens.',
     client: 'iPify',
     logo: '/assets/ipify.png',
     title: 'iPify',
@@ -214,6 +290,7 @@ export const PROJECTS: Project[] = [
     seoDescription:
       'Lead UI et référent Design System au Crédit Agricole : design tokens multi-marques et app Ma Banque, utilisée par plus de 30 millions de personnes.',
     subject: 'Design system multi-marques',
+    keyResult: 'Design system adopté par plus de 15 équipes produit, tokens multi-marques.',
     client: 'Crédit Agricole',
     logo: '/assets/ca.png',
     title: 'Crédit Agricole',

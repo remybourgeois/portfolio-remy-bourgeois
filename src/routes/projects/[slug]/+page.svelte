@@ -4,6 +4,7 @@
   import { tick } from 'svelte';
   import Icon from '#lib/components/Icons.svelte';
   import { seen } from '#lib/actions/seen.ts';
+  import { playInView } from '#lib/actions/playInView.ts';
   import Tag from '#lib/components/Tag.svelte';
   import Button from '#lib/components/Button.svelte';
   import PageShell from '#lib/components/PageShell.svelte';
@@ -460,6 +461,18 @@
     {/if}
   </header>
 
+  <!-- ── Résultat à retenir ──────────────────────────────────────────────── -->
+  <!-- Le fait que le lecteur doit garder, avant tout le reste : il était
+       jusque-là en dernière ligne de la page. -->
+  {#if project.keyResult}
+    <div class="mb-10 pl-5 border-l-2 border-primary/50 max-w-[46rem]">
+      <h2 class="eyebrow text-accent mb-3">Résultat clé</h2>
+      <p class="text-xl md:text-2xl font-medium text-white leading-snug [text-wrap:pretty]">
+        {project.keyResult}
+      </p>
+    </div>
+  {/if}
+
   <!-- ── En bref ─────────────────────────────────────────────────────────── -->
   <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
   <!-- Les trois faits montent l'un après l'autre à l'arrivée de l'encadré,
@@ -662,13 +675,106 @@
       </div>
     {/if}
 
-    <!-- Résultat -->
+    <!-- Résultat, ou l'approche quand les résultats ont leur propre bloc -->
     {#if project.outcome}
-      <div class="pl-5 border-l-2 border-emerald-400/50">
-        <h2 class="eyebrow text-emerald-400/70 mb-4">Résultat</h2>
+      <div
+        class="pl-5 {project.outcomeLabel
+          ? 'border-l border-white/[0.1]'
+          : 'border-l-2 border-emerald-400/50'}"
+      >
+        <h2 class="eyebrow mb-4 {project.outcomeLabel ? 'text-white/60' : 'text-emerald-400/70'}">
+          {project.outcomeLabel ?? 'Résultat'}
+        </h2>
         <p class="project-text text-white/60 text-base leading-[1.85]">
           {@html md(project.outcome)}
         </p>
+      </div>
+    {/if}
+
+    <!-- Blocs titrés : un texte, une liste, et au besoin un média légendé -->
+    {#each project.sections ?? [] as section (section.title)}
+      <section class="pl-5 border-l border-white/[0.1]">
+        <h2 class="text-xl md:text-2xl font-semibold text-white leading-snug mb-4">
+          {section.title}
+        </h2>
+        {#if section.body}
+          <p class="text-white/60 text-base leading-[1.85]">{section.body}</p>
+        {/if}
+
+        {#if section.items}
+          <ul use:seen class="list-cascade flex flex-col gap-3 list-none p-0 m-0">
+            {#each section.items as item (item)}
+              <li class="flex gap-3 text-white/70 text-base leading-relaxed">
+                <span
+                  class="mt-2.5 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"
+                  aria-hidden="true"
+                ></span>
+                {item}
+              </li>
+            {/each}
+          </ul>
+        {/if}
+
+        {#if section.media}
+          <figure class="mt-8">
+            <div
+              class="rounded-2xl overflow-hidden bg-gradient-to-br from-panel-from to-panel-to border border-white/[0.07]"
+            >
+              {#if section.media.type === 'video'}
+                <!-- Même lecture que les cartes : rien n'est téléchargé avant
+                     que la vidéo approche de l'écran, puis elle tourne en
+                     boucle, muette. -->
+                <video
+                  src={section.media.src}
+                  poster={section.media.poster}
+                  use:playInView
+                  preload="none"
+                  loop
+                  muted
+                  playsinline
+                  aria-label={section.media.alt}
+                  width={section.media.width}
+                  height={section.media.height}
+                  class="block w-full h-auto"
+                ></video>
+              {:else}
+                <img
+                  src={section.media.src}
+                  srcset={projectSrcset(section.media.src)}
+                  sizes="(min-width: 768px) 736px, 100vw"
+                  alt={section.media.alt ?? ''}
+                  loading="lazy"
+                  width={section.media.width}
+                  height={section.media.height}
+                  class="block w-full h-auto"
+                />
+              {/if}
+            </div>
+            {#if section.stats}
+              <figcaption class="mt-4 text-sm text-white/70 leading-relaxed">
+                {section.stats.join(' · ')}
+              </figcaption>
+            {/if}
+          </figure>
+        {/if}
+      </section>
+    {/each}
+
+    <!-- Résultats -->
+    {#if project.results}
+      <div class="pl-5 border-l-2 border-emerald-400/50">
+        <h2 class="eyebrow text-emerald-400/70 mb-4">Résultats</h2>
+        <ul use:seen class="list-cascade flex flex-col gap-4 list-none p-0 m-0">
+          {#each project.results as result (result)}
+            <li class="flex gap-3 text-white/85 text-base leading-relaxed">
+              <span
+                class="mt-2.5 w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"
+                aria-hidden="true"
+              ></span>
+              {result}
+            </li>
+          {/each}
+        </ul>
       </div>
     {/if}
   </div>

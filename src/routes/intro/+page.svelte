@@ -7,7 +7,7 @@
   <title>L'expérience | Rémy Bourgeois</title>
   <meta
     name="description"
-    content="Intro interactive du portfolio de Rémy Bourgeois, Lead Design System et Senior Product Designer."
+    content="Intro interactive du portfolio de Rémy Bourgeois, Senior Product Design Engineer."
   />
   <!--
     Volontairement hors index : cette page ne porte aucun contenu textuel, tout

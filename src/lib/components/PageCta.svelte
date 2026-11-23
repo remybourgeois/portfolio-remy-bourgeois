@@ -14,11 +14,17 @@
    * Le bouton principal dit ce qu'il fait (« M'écrire ») et ouvre le
    * courriel. Avant, l'adresse était le libellé du bouton : trop longue pour
    * la pilule à 390 px, `break-all` la coupait au milieu du nom de domaine.
+   *
+   * `primaryHref` et `primaryLabel` laissent une page d'offre nommer son
+   * action et préremplir l'objet du courriel. Sans `secondaryHref`, le bloc
+   * ne porte qu'un bouton.
    */
   let {
     title,
     lede,
     extra,
+    primaryHref = `mailto:${EMAIL}`,
+    primaryLabel = "M'écrire",
     secondaryHref,
     secondaryLabel,
     secondaryIcon,
@@ -27,8 +33,10 @@
     title: string;
     lede: Snippet;
     extra?: Snippet;
-    secondaryHref: string;
-    secondaryLabel: string;
+    primaryHref?: string;
+    primaryLabel?: string;
+    secondaryHref?: string;
+    secondaryLabel?: string;
     secondaryIcon?: 'ArrowRight' | 'Linkedin';
     secondaryExternal?: boolean;
   } = $props();
@@ -61,17 +69,19 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button href="mailto:{EMAIL}" iconLeft="Mail" class="w-full sm:w-auto">M'écrire</Button>
-      <Button
-        href={secondaryHref}
-        variant="secondary"
-        class="w-full sm:w-auto"
-        external={secondaryExternal}
-        iconLeft={secondaryIcon === 'Linkedin' ? 'Linkedin' : undefined}
-        iconRight={secondaryIcon === 'ArrowRight' ? 'ArrowRight' : undefined}
-      >
-        {secondaryLabel}
-      </Button>
+      <Button href={primaryHref} iconLeft="Mail" class="w-full sm:w-auto">{primaryLabel}</Button>
+      {#if secondaryHref}
+        <Button
+          href={secondaryHref}
+          variant="secondary"
+          class="w-full sm:w-auto"
+          external={secondaryExternal}
+          iconLeft={secondaryIcon === 'Linkedin' ? 'Linkedin' : undefined}
+          iconRight={secondaryIcon === 'ArrowRight' ? 'ArrowRight' : undefined}
+        >
+          {secondaryLabel}
+        </Button>
+      {/if}
     </div>
   </div>
 </div>
