@@ -475,33 +475,39 @@
 
   <!-- ── En bref ─────────────────────────────────────────────────────────── -->
   <!-- Résumé extractible tel quel par un moteur génératif : contexte, stack, impact. -->
-  <!-- Les trois faits montent l'un après l'autre à l'arrivée de l'encadré,
+  <!-- Les trois lignes montent l'une après l'autre à l'arrivée de l'encadré,
        et la stack apparaît élément par élément (app.css, « En bref »). -->
   <section
     use:seen
     aria-labelledby="en-bref-title"
-    class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-6"
+    class="mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 md:p-8"
   >
-    <h2 id="en-bref-title" class="eyebrow text-white/60 mb-5">En bref</h2>
-    <dl class="bref grid gap-5 md:grid-cols-3 md:gap-8">
-      <div>
-        <dt class="eyebrow text-white/60 mb-2">Contexte</dt>
-        <dd class="text-sm text-white/70 leading-relaxed">{project.summary.context}</dd>
+    <!-- Le titre de l'encadré est un cran au-dessus de ses trois libellés :
+         en `eyebrow` comme eux, il se lisait comme un quatrième libellé. -->
+    <h2 id="en-bref-title" class="text-xl font-semibold text-white leading-snug mb-2">En bref</h2>
+    <!-- Une fiche en lignes, l'impact en premier : c'est le fait à retenir,
+         et en troisième colonne il arrivait après la liste des outils. -->
+    <dl class="bref divide-y divide-white/[0.08]">
+      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 py-5">
+        <dt class="eyebrow text-accent pt-1">Impact</dt>
+        <dd class="text-base text-white leading-relaxed font-medium max-w-[46rem]">
+          {project.summary.impact}
+        </dd>
       </div>
-      <div>
-        <dt class="eyebrow text-white/60 mb-2">Stack &amp; méthodes</dt>
+      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 py-5">
+        <dt class="eyebrow text-white/60 pt-1">Contexte</dt>
+        <dd class="text-sm text-white/70 leading-relaxed max-w-[46rem]">
+          {project.summary.context}
+        </dd>
+      </div>
+      <div class="grid gap-2 md:grid-cols-[200px_1fr] md:gap-8 pt-5">
+        <dt class="eyebrow text-white/60 pt-1">Stack &amp; méthodes</dt>
         <dd>
           <ul use:seen class="tag-cascade flex flex-wrap gap-2">
             {#each project.summary.stack as item (item)}
               <Tag as="li">{item}</Tag>
             {/each}
           </ul>
-        </dd>
-      </div>
-      <div>
-        <dt class="eyebrow text-accent mb-2">Impact</dt>
-        <dd class="text-sm text-white/85 leading-relaxed font-medium">
-          {project.summary.impact}
         </dd>
       </div>
     </dl>
